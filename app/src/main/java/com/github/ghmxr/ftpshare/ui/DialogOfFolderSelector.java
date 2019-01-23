@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,6 @@ public class DialogOfFolderSelector extends AlertDialog {
     private Context context;
     private File file;
     private List<File> list=new ArrayList<>();
-    private String storage_path="";
     private Spinner spinner;
     private FileListAdapter adapter;
     private OnFolderSelectorDialogConfirmed listener_confirmed;
@@ -51,7 +51,6 @@ public class DialogOfFolderSelector extends AlertDialog {
             for(int i=0;i<storages.size();i++){
                 if(ValueUtil.isChildPathOfCertainPath(file, new File(storages.get(i)))) {
                     spinner.setSelection(i);
-                    storage_path=(String)spinner.getSelectedItem();
                     break;
                 }
             }
@@ -62,10 +61,7 @@ public class DialogOfFolderSelector extends AlertDialog {
         setButton(AlertDialog.BUTTON_POSITIVE, context.getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                try{
-                    listener_confirmed.onFolderSelectorDialogConfirmed(file.getAbsolutePath());
-                    cancel();
-                }catch (Exception e){e.printStackTrace();}
+                onDialogConfirmed();
             }
         });
         setButton(AlertDialog.BUTTON_NEGATIVE,context.getResources().getString(R.string.dialog_button_cancel),new DialogInterface.OnClickListener(){
@@ -74,6 +70,20 @@ public class DialogOfFolderSelector extends AlertDialog {
                 cancel();
             }
         });
+        setButton(AlertDialog.BUTTON_NEUTRAL,context.getResources().getString(R.string.dialog_button_default),new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                file=new File(Storage.getMainStoragePath());
+                onDialogConfirmed();
+            }
+        });
+    }
+
+    private void onDialogConfirmed(){
+        try{
+            listener_confirmed.onFolderSelectorDialogConfirmed(file.getAbsolutePath());
+            cancel();
+        }catch (Exception e){e.printStackTrace();}
     }
 
     @Override
@@ -97,8 +107,9 @@ public class DialogOfFolderSelector extends AlertDialog {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(!storage_path.equals((String)spinner.getSelectedItem())){
-                    refreshPath(new File((String)spinner.getSelectedItem()));
+                String selected=(String)spinner.getSelectedItem();
+                if(!ValueUtil.isChildPathOfCertainPath(file,new File(selected))){
+                    refreshPath(new File(selected));
                 }
             }
 

@@ -42,7 +42,7 @@ public abstract class AccountActivity extends AppCompatActivity {
         initializeAccountData();
         try{
            tv_account.setText(item.account);
-           tv_password.setText(item.password);
+           tv_password.setText(item.password.equals("")?getResources().getString(R.string.account_password_att):item.password);
            tv_path.setText(item.path);
            cb_writable.setChecked(item.writable);
 
@@ -116,7 +116,7 @@ public abstract class AccountActivity extends AppCompatActivity {
                                mask.append("*");
                                if(i>15) break;
                            }
-                           tv_password.setText(mask);
+                           tv_password.setText(mask.toString().equals("")?getResources().getString(R.string.account_password_att):mask.toString());
                        }
                    });
                }
@@ -134,6 +134,15 @@ public abstract class AccountActivity extends AppCompatActivity {
                            ((TextView)findViewById(R.id.account_path_value)).setText(path);
                        }
                    });
+               }
+           });
+
+           findViewById(R.id.account_writable).setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+                   CheckBox cb=findViewById(R.id.account_writable_cb);
+                   cb.toggle();
+                   item.writable=cb.isChecked();
                }
            });
         }catch (Exception e){

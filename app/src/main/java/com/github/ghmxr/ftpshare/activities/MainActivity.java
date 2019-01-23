@@ -1,23 +1,27 @@
 package com.github.ghmxr.ftpshare.activities;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.github.ghmxr.ftpshare.R;
 import com.github.ghmxr.ftpshare.data.AccountItem;
 import com.github.ghmxr.ftpshare.services.FtpService;
+import com.github.ghmxr.ftpshare.utils.APUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,37 +29,59 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private Menu menu;
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_main:
-                    findViewById(R.id.view_main).setVisibility(View.VISIBLE);
-                    findViewById(R.id.view_settings).setVisibility(View.GONE);
-                    menu.getItem(0).setVisible(false);
-                    return true;
-                case R.id.navigation_settings:
-                    findViewById(R.id.view_main).setVisibility(View.GONE);
-                    findViewById(R.id.view_settings).setVisibility(View.VISIBLE);
-                    menu.getItem(0).setVisible(true);
-                    return true;
-            }
-            return false;
-        }
-    };
-
+    private SwitchCompat switchCompat;
+    private CheckBox cb_wakelock,cb_anonymous,cb_anonymous_writable;
+    private TextView tv_main_value,tv_port,tv_anonymous_path;
+    private SwipeRefreshLayout swr_users;
+    private ListView listview_users;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        startService(new Intent(this, FtpService.class));
-        SharedPreferences settings=getSharedPreferences("settings", Activity.MODE_PRIVATE);
+        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_main:
+                        onMainInterfaceClicked();
+                        return true;
+                    case R.id.navigation_settings:
+                        onUserAccountInterfaceClicked();
+                        return true;
+                }
+                return false;
+            }
+        });
+
+        switchCompat=findViewById(R.id.main_switch);
+        cb_wakelock=findViewById(R.id.wakelock_cb);
+        cb_anonymous=findViewById(R.id.anonymous_cb);
+        cb_anonymous_writable=findViewById(R.id.anonymous_writable_cb);
+        tv_main_value=findViewById(R.id.main_att);
+        tv_port=findViewById(R.id.port_att);
+        tv_anonymous_path=findViewById(R.id.mode_anonymous_value);
+        swr_users=findViewById(R.id.view_normal_swr);
+        listview_users=findViewById(R.id.view_user_list);
+
+        initializeValues();
+    }
+
+    private void initializeValues(){
+        switchCompat.setChecked(FtpService.isFTPServiceRunning());
+    }
+
+    private void onMainInterfaceClicked(){
+        findViewById(R.id.view_main).setVisibility(View.VISIBLE);
+        findViewById(R.id.view_settings).setVisibility(View.GONE);
+        menu.getItem(0).setVisible(false);
+    }
+
+    private void onUserAccountInterfaceClicked(){
+        findViewById(R.id.view_main).setVisibility(View.GONE);
+        findViewById(R.id.view_settings).setVisibility(View.VISIBLE);
+        menu.getItem(0).setVisible(true);
     }
 
     @Override

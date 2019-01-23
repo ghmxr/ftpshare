@@ -9,10 +9,13 @@
     <string name="item_wakelock">保持唤醒</string>
     <string name="item_wakelock_att">FTP服务运行期间保持设备唤醒，可能会增大耗电量</string>
     <string name="item_writable">可写入</string>
+    <string name="account_anonymous">匿名模式</string>
+    <string name="account_anonymous_att">以匿名模式登录FTP服务</string>
     <string name="account_null_att">账户或密码不能为空</string>
     <string name="account_duplicate">账户名已存在</string>
     <string name="account_user">账户名称</string>
     <string name="account_password">密码</string>
+    <string name="account_password_att">请设置密码</string>
     <string name="account_path">主路径</string>
     <string name="account_path_dialog_title">选择路径</string>
     <string name="account_writable">允许写入</string>
@@ -21,7 +24,11 @@
     <string name="account_user_dialog_edittext_hint">输入账户名</string>
     <string name="account_password_dialog_title">密码</string>
     <string name="account_password_dialog_edittext_hint">输入密码</string>
-
+    <string name="anonymous_path">匿名模式主路径</string>
+    <string name="anonymous_writable">匿名模式下允许写入</string>
+    <string name="anonymous_writable_att">在匿名模式下允许在主路径写入数据</string>
+    <string name="ftp_status_not_running">FTP服务没有运行</string>
+    <string name="ftp_status_running_head">FTP服务运行于</string>
 
     <string name="action_account_save">保存</string>
     <string name="action_account_delete">删除</string>
@@ -30,4 +37,5 @@
     <string name="dialog_button_confirm">确定</string>
     <string name="dialog_button_cancel">取消</string>
     <string name="dialog_button_show_password">显示/隐藏密码</string>
+    <string name="dialog_button_default">恢复默认</string>
 </resources>

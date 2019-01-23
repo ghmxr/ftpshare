@@ -6,6 +6,7 @@ import android.view.MenuItem;
 
 import com.github.ghmxr.ftpshare.R;
 import com.github.ghmxr.ftpshare.data.AccountItem;
+import com.github.ghmxr.ftpshare.services.FtpService;
 
 public class AddAccountActivity extends AccountActivity {
     @Override
@@ -16,6 +17,7 @@ public class AddAccountActivity extends AccountActivity {
     @Override
     public void initializeAccountData() {
         item=new AccountItem();
+        item.account="user"+ (FtpService.list_account.size()+1);
     }
 
     @Override
