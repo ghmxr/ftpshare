@@ -26,7 +26,9 @@
         <activity android:name=".activities.AddAccountActivity"
             android:label="@string/activity_title_add"
             android:screenOrientation="portrait"/>
-        <activity android:name=".activities.EditAccountActivity"/>
+        <activity android:name=".activities.EditAccountActivity"
+            android:label="@string/activity_title_edit"
+            android:screenOrientation="portrait"/>
         <service android:name=".services.FtpService"/>
     </application>
 

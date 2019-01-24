@@ -9,8 +9,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -41,7 +39,7 @@ public class FtpService extends Service {
     public static PowerManager.WakeLock wakeLock;
     public static FtpService ftpService;
     private static MyHandler handler;
-    public static OnFTPServiceDestroyedListener listener;
+    public static OnFTPServiceStatusChangedListener listener;
 
     public static final int MESSAGE_START_FTP_COMPLETE=1;
     public static final int MESSAGE_START_FTP_ERROR=-1;
@@ -207,10 +205,16 @@ public class FtpService extends Service {
                         sendEmptyMessage(MESSAGE_WAKELOCK_RELEASE);
                     }
                     Log.d("FTP",""+FtpService.isFTPServiceRunning());
+                    try{
+                        if(listener!=null) listener.onFTPServiceStarted();
+                    }catch (Exception e){e.printStackTrace();}
                 }
                 break;
                 case MESSAGE_START_FTP_ERROR:{
                     stopSelf();
+                    try{
+                        if(listener!=null) listener.onFTPServiceStartError((Exception)msg.obj);
+                    }catch (Exception e){e.printStackTrace();}
                 }
                 break;
                 case MESSAGE_WAKELOCK_ACQUIRE:{
@@ -273,7 +277,7 @@ public class FtpService extends Service {
         }
     }
 
-    public static void setOnFTPServiceDestroyedListener(OnFTPServiceDestroyedListener ls){
+    public static void setOnFTPServiceStatusChangedListener(OnFTPServiceStatusChangedListener ls){
         listener=ls;
     }
 
@@ -292,7 +296,9 @@ public class FtpService extends Service {
         return "";
     }
 
-    public interface OnFTPServiceDestroyedListener {
+    public interface OnFTPServiceStatusChangedListener {
+        void onFTPServiceStarted();
+        void onFTPServiceStartError(Exception e);
         void onFTPServiceDestroyed();
     }
 }

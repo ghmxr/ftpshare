@@ -45,7 +45,7 @@ public abstract class AccountActivity extends AppCompatActivity {
         initializeAccountData();
         try{
            tv_account.setText(item.account);
-           tv_password.setText(item.password.equals("")?getResources().getString(R.string.account_password_att):item.password);
+           tv_password.setText(getPasswordDisplayValue(item.password));
            tv_path.setText(item.path);
            cb_writable.setChecked(item.writable);
 
@@ -114,12 +114,7 @@ public abstract class AccountActivity extends AppCompatActivity {
                        public void onClick(View v) {
                            item.password=editText.getText().toString().trim();
                            dialog.cancel();
-                           StringBuilder mask=new StringBuilder("");
-                           for(int i=0;i<item.password.length();i++) {
-                               mask.append("*");
-                               if(i>15) break;
-                           }
-                           tv_password.setText(mask.toString().equals("")?getResources().getString(R.string.account_password_att):mask.toString());
+                           tv_password.setText(getPasswordDisplayValue(item.password));
                        }
                    });
                }
@@ -155,6 +150,16 @@ public abstract class AccountActivity extends AppCompatActivity {
 
     public abstract void initializeAccountData();
 
+    private String getPasswordDisplayValue(String password){
+        if(password==null||password.trim().length()==0) return getResources().getString(R.string.account_password_att);
+        StringBuilder builder=new StringBuilder("");
+        for(int i=0;i<password.length();i++){
+            builder.append("*");
+            if(i>16) break;
+        }
+        return builder.toString();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_account,menu);
@@ -172,12 +177,16 @@ public abstract class AccountActivity extends AppCompatActivity {
     }
 
     public long save2DB(@Nullable Long id_update){
-        if(this.item.account.equals("")||this.item.password.equals("")){
+        if(this.item.account.equals("")){
             Snackbar.make(findViewById(R.id.view_account_root),getResources().getString(R.string.account_null_att),Snackbar.LENGTH_SHORT).show();
             return -1;
         }
+        if(this.item.account.equals(Constants.FTPConsts.NAME_ANONYMOUS)){
+            Snackbar.make(findViewById(R.id.view_account_root),getResources().getString(R.string.account_anonymous_name_set_att),Snackbar.LENGTH_SHORT).show();
+            return -1;
+        }
         for(AccountItem check: FtpService.list_account){
-            if(check.account.equals(this.item.account)){
+            if(check.account.equals(this.item.account)&&id_update==null){
                 Snackbar.make(findViewById(R.id.view_account_root),getResources().getString(R.string.account_duplicate),Snackbar.LENGTH_SHORT).show();
                 return -1;
             }

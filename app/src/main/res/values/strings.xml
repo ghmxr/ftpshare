@@ -3,16 +3,19 @@
     <string name="title_home">FTP服务</string>
     <string name="title_settings">账户设置</string>
     <string name="activity_title_add">添加</string>
+    <string name="activity_title_edit">编辑</string>
 
     <string name="item_main">启用FTP服务</string>
     <string name="item_port">端口号</string>
+    <string name="item_port_hint">输入端口号</string>
     <string name="item_wakelock">保持唤醒</string>
     <string name="item_wakelock_att">FTP服务运行期间保持设备唤醒，可能会增大耗电量</string>
     <string name="item_writable">可写入</string>
     <string name="account_anonymous">匿名模式</string>
     <string name="account_anonymous_att">以匿名模式登录FTP服务</string>
-    <string name="account_null_att">账户或密码不能为空</string>
+    <string name="account_null_att">账户名不能为空</string>
     <string name="account_duplicate">账户名已存在</string>
+    <string name="account_anonymous_name_set_att">请使用匿名模式来启用匿名登录(不能设置anonymous为账户名)</string>
     <string name="account_user">账户名称</string>
     <string name="account_password">密码</string>
     <string name="account_password_att">请设置密码</string>
@@ -30,6 +33,10 @@
     <string name="ftp_status_not_running">FTP服务没有运行</string>
     <string name="ftp_status_running_head">FTP服务运行于</string>
     <string name="attention_ftp_is_running">需要先关闭FTP服务才可以修改设置</string>
+    <string name="attention_opening_ftp">正在打开FTP服务&#8230;</string>
+    <string name="attention_invalid_port_number">请输入有效的数字</string>
+    <string name="attention_port_number_out_of_range">请输入1024~65535之间的数字</string>
+    <string name="attention_delete_confirm">再点击一次确定删除</string>
 
     <string name="action_account_save">保存</string>
     <string name="action_account_delete">删除</string>
