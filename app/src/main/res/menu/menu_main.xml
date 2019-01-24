@@ -14,5 +14,10 @@
         app:showAsAction="never"
         android:orderInCategory="1"
         android:visible="false"/>
+    <item
+        android:id="@+id/action_main_about"
+        android:title="@string/action_main_about"
+        app:showAsAction="never"
+        android:orderInCategory="2"/>
 
 </menu>

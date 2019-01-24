@@ -1,14 +1,17 @@
 package com.github.ghmxr.ftpshare.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
@@ -22,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +35,9 @@ import com.github.ghmxr.ftpshare.R;
 import com.github.ghmxr.ftpshare.data.AccountItem;
 import com.github.ghmxr.ftpshare.services.FtpService;
 import com.github.ghmxr.ftpshare.ui.DialogOfFolderSelector;
+import com.github.ghmxr.ftpshare.utils.ValueUtil;
+
+import org.apache.log4j.chainsaw.Main;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private Menu menu;
     private SwitchCompat switchCompat;
     private CheckBox cb_wakelock,cb_anonymous_writable;
-    private TextView tv_main_value,tv_port,tv_anonymous_path;
+    private TextView tv_main_value,tv_port,tv_ftp_address,tv_anonymous_path;
+    //private ImageView qrcode;
     private ListView listview_users;
 
     private static int MENU_ACCOUNT_ADD =0;
@@ -75,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         switchCompat=findViewById(R.id.main_switch);
+        tv_ftp_address=findViewById(R.id.ftp_address);
+        //qrcode=findViewById(R.id.qrcode);
         cb_wakelock=findViewById(R.id.wakelock_cb);
         cb_anonymous_writable=findViewById(R.id.anonymous_writable_cb);
         tv_main_value=findViewById(R.id.main_att);
@@ -117,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
                 switchCompat.setChecked(true);
                 tv_main_value.setText(FtpService.getFTPStatusDescription(MainActivity.this));
                 findViewById(R.id.main_area).setClickable(true);
+                setQRCodeArea(true,ValueUtil.getFTPServiceFullAddress(MainActivity.this));
             }
 
             @Override
@@ -127,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 //Toast.makeText(MainActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
                 Snackbar.make(findViewById(R.id.container),e.toString(),Snackbar.LENGTH_SHORT).show();
                 findViewById(R.id.main_area).setClickable(true);
+                setQRCodeArea(false,"invalid");
             }
 
             @Override
@@ -140,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
                 switchCompat.setEnabled(true);
                 tv_main_value.setText(FtpService.getFTPStatusDescription(MainActivity.this));
                 findViewById(R.id.main_area).setClickable(true);
+                setQRCodeArea(false,"invalid");
             }
         });
 
@@ -147,6 +160,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(!FtpService.isFTPServiceRunning()){
+                    if(Build.VERSION.SDK_INT>=23&&PermissionChecker.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
+                        Snackbar.make(findViewById(R.id.container),getResources().getString(R.string.permission_write_external),Snackbar.LENGTH_SHORT).show();
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
+                        return;
+                    }
                     if(!isAnonymousMode()&&FtpService.getUserAccountList(MainActivity.this).size()==0){
                         Snackbar.make(findViewById(R.id.container),getResources().getString(R.string.attention_no_user_account),Snackbar.LENGTH_SHORT).show();
                         return;
@@ -277,6 +295,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        setQRCodeArea(FtpService.isFTPServiceRunning(),ValueUtil.getFTPServiceFullAddress(this));
+    }
+
+    private void setQRCodeArea(boolean visible,String ftp){
+        try{
+            findViewById(R.id.area_address).setVisibility(visible?View.VISIBLE:View.GONE);
+            ImageView qrcode=findViewById(R.id.qrcode);
+            qrcode.setImageBitmap(ValueUtil.getQrCodeBitmapOfString(ftp,ValueUtil.dip2px(this,150),ValueUtil.dip2px(this,150)));
+            tv_ftp_address.setText(ftp);
+        }catch (Exception e){e.printStackTrace();}
     }
 
     private void onNavigationMainSelected(){
@@ -346,6 +375,32 @@ public class MainActivity extends AppCompatActivity {
                     findViewById(R.id.mode_anonymous).setVisibility((!isAnonymousMode)?View.VISIBLE:View.GONE);
                     if(isAnonymousMode) listview_users.setAdapter(new AccountAdapter(FtpService.getAccountList(this)));
                 }catch (Exception e){e.printStackTrace();}
+            }
+            break;
+            case R.id.action_main_about:{
+                View dialogView=LayoutInflater.from(this).inflate(R.layout.layout_dialog_about,null);
+                dialogView.findViewById(R.id.donate).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try{
+                            startActivity(Intent.parseUri("https://qr.alipay.com/FKX08041Y09ZGT6ZT91FA5",Intent.URI_INTENT_SCHEME));
+                        }
+                        catch (Exception e){
+                            e.printStackTrace();
+                            Toast.makeText(MainActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.about_title))
+                        .setView(dialogView)
+                        .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .show();
             }
             break;
         }

@@ -1,14 +1,20 @@
 package com.github.ghmxr.ftpshare.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.text.format.Formatter;
 
 import com.github.ghmxr.ftpshare.Constants;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.io.File;
+import java.util.Hashtable;
 import java.util.Locale;
 
 public class ValueUtil {
@@ -41,5 +47,34 @@ public class ValueUtil {
 
     public static String getFTPServiceFullAddress(Context context){
         return "ftp://"+ValueUtil.getIPAddressForFTPService(context)+":"+context.getSharedPreferences(Constants.PreferenceConsts.FILE_NAME,Context.MODE_PRIVATE).getInt(Constants.PreferenceConsts.PORT_NUMBER,Constants.PreferenceConsts.PORT_NUMBER_DEFAULT);
+    }
+    public static Bitmap getQrCodeBitmapOfString(String content,int w,int h){
+        try{
+            Hashtable<EncodeHintType,String> hints=new Hashtable<>();
+            hints.put(EncodeHintType.CHARACTER_SET,"utf-8");
+            BitMatrix bitMatrix=new QRCodeWriter().encode(content, BarcodeFormat.QR_CODE,w,h,hints);
+            int []pixels=new int[w*h];
+            for (int y = 0; y < h; y++){
+                for (int x = 0; x < w; x++){
+                    if (bitMatrix.get(x, y)){
+                        pixels[y * w + x] = 0xff000000;
+                    }
+                    else{
+                        pixels[y * w + x] = 0xffffffff;
+                    }
+                }
+            }
+            Bitmap bitmap= Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            bitmap.setPixels(pixels,0,w,0,0,w,h);
+            return bitmap;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static int dip2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
     }
 }

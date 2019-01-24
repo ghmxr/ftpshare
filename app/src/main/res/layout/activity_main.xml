@@ -155,13 +155,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal">
+                android:gravity="center_horizontal"
+                android:visibility="gone">
                 <ImageView
                     android:id="@+id/qrcode"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
-                    android:layout_marginTop="30dp"
-                    android:background="#000000"/>
+                    android:layout_marginTop="30dp"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -170,8 +170,7 @@
                     android:layout_marginBottom="100dp"
                     android:textColor="@color/color_black"
                     android:textStyle="bold"
-                    android:textSize="17sp"
-                    android:text="ftp://192.168.0.1:65535"/>
+                    android:textSize="17sp" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
