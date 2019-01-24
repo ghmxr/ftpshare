@@ -24,8 +24,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.AddAccountActivity"
-            android:label="Add"
+            android:label="@string/activity_title_add"
             android:screenOrientation="portrait"/>
+        <activity android:name=".activities.EditAccountActivity"/>
         <service android:name=".services.FtpService"/>
     </application>
 

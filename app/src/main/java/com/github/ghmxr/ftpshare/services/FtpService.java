@@ -62,7 +62,7 @@ public class FtpService extends Service {
                 @Override
                 public void run() {
                     synchronized (FtpService.class){
-                        refreshAccountList(FtpService.this);
+                        list_account=getAccountList(FtpService.this);
                         try{
                             startFTPService();
                             sendEmptyMessage(MESSAGE_START_FTP_COMPLETE);
@@ -93,8 +93,8 @@ public class FtpService extends Service {
         activity.startService(intent);
     }
 
-    public static void refreshAccountList(Context context){
-        list_account.clear();
+    public static List<AccountItem> getAccountList(Context context){
+        List<AccountItem> list=new ArrayList<>();
         SharedPreferences settings=context.getSharedPreferences(Constants.PreferenceConsts.FILE_NAME, Context.MODE_PRIVATE);
         if(settings.getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE,Constants.PreferenceConsts.ANONYMOUS_MODE_DEFAULT)){
             AccountItem item=new AccountItem();
@@ -102,26 +102,33 @@ public class FtpService extends Service {
             item.password="";
             item.path=settings.getString(Constants.PreferenceConsts.ANONYMOUS_MODE_PATH,Constants.PreferenceConsts.ANONYMOUS_MODE_PATH_DEFAULT);
             item.writable=settings.getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE_WRITABLE,Constants.PreferenceConsts.ANONYMOUS_MODE_WRITABLE_DEFAULT);
-            list_account.add(item);
-            return;
+            list.add(item);
+            return list;
         }
+        return getUserAccountList(context);
+    }
+
+    public static List<AccountItem> getUserAccountList(Context context){
+        List<AccountItem> list=new ArrayList<>();
         try{
             SQLiteDatabase db= new MySQLiteOpenHelper(context).getWritableDatabase();
             Cursor cursor=db.rawQuery("select * from "+Constants.SQLConsts.TABLE_NAME,null);
             while (cursor.moveToNext()){
                 try{
                     AccountItem item=new AccountItem();
+                    item.id=cursor.getInt(cursor.getColumnIndex(Constants.SQLConsts.COLUMN_ID));
                     item.account=cursor.getString(cursor.getColumnIndex(Constants.SQLConsts.COLUMN_ACCOUNT_NAME));
                     item.password=cursor.getString(cursor.getColumnIndex(Constants.SQLConsts.COLUMN_PASSWORD));
                     item.path=cursor.getString(cursor.getColumnIndex(Constants.SQLConsts.COLUMN_PATH));
                     item.writable=cursor.getInt(cursor.getColumnIndex(Constants.SQLConsts.COLUMN_WRITABLE))==1;
-                    list_account.add(item);
+                    list.add(item);
                 }catch (Exception e){e.printStackTrace();}
             }
             cursor.close();
         }catch (Exception e){
             e.printStackTrace();
         }
+        return list;
     }
 
     private void startFTPService() throws Exception{
@@ -169,15 +176,9 @@ public class FtpService extends Service {
         server.start();
     }
 
-    public void stopFTPService(){
-        /*try{
-            if(wakeLock!=null) wakeLock.release();
-            wakeLock=null;
-        }catch (Exception e){}*/
+    public static void stopService(){
         try{
-            //server.stop();
-            //server=null;
-            stopSelf();
+            if(ftpService!=null) ftpService.stopSelf();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -240,12 +241,6 @@ public class FtpService extends Service {
         super.onDestroy();
         Log.d("onDestroy","onDestroy method called");
         try{
-            if(wakeLock!=null){
-                wakeLock.release();
-                wakeLock=null;
-            }
-        }catch (Exception e){e.printStackTrace();}
-        try{
             if(server!=null){
                 server.stop();
                 server=null;
@@ -253,11 +248,19 @@ public class FtpService extends Service {
         }catch (Exception e){
             e.printStackTrace();
         }
-        ftpService=null;
+
+        try{
+            if(wakeLock!=null){
+                wakeLock.release();
+                wakeLock=null;
+            }
+        }catch (Exception e){e.printStackTrace();}
+
         try{
             if(listener!=null) listener.onFTPServiceDestroyed();
         }catch (Exception e){}
 
+        ftpService=null;
     }
 
     private static class MyHandler extends Handler{

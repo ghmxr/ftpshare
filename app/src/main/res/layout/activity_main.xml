@@ -178,63 +178,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
-        <RelativeLayout
-            android:id="@+id/anonymous_area"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="false"
-            android:background="?attr/selectableItemBackground">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_margin="20dp"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:textColor="@color/color_black"
-                    android:text="@string/account_anonymous"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:text="@string/account_anonymous_att"/>
-            </LinearLayout>
-            <CheckBox
-                android:id="@+id/anonymous_cb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"/>
-
-        </RelativeLayout>
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_below="@+id/anonymous_area"
-            android:background="#dddddd"/>
-
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/view_normal_swr"
+        <ListView
+            android:id="@+id/view_user_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/anonymous_area"
-            android:visibility="gone">
-            <ListView
-                android:id="@+id/view_user_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </android.support.v4.widget.SwipeRefreshLayout>
+            android:visibility="gone"/>
         <ScrollView
             android:id="@+id/mode_anonymous"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/anonymous_area"
             android:visibility="gone">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -309,7 +261,9 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="20dp"/>
+                        android:layout_marginRight="20dp"
+                        android:clickable="false"
+                        android:focusable="false"/>
                 </RelativeLayout>
                 <ImageView
                     android:layout_width="match_parent"

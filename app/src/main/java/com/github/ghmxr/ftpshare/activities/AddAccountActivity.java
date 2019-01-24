@@ -9,10 +9,6 @@ import com.github.ghmxr.ftpshare.data.AccountItem;
 import com.github.ghmxr.ftpshare.services.FtpService;
 
 public class AddAccountActivity extends AccountActivity {
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public void initializeAccountData() {
@@ -28,6 +24,7 @@ public class AddAccountActivity extends AccountActivity {
                 if(save2DB(null)>=0) {
                     setResult(RESULT_OK);
                     finish();
+                    return true;
                 }
             }
             break;

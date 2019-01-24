@@ -35,6 +35,9 @@ public abstract class AccountActivity extends AppCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
+        try{
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }catch (Exception e){e.printStackTrace();}
         tv_account=findViewById(R.id.account_user_value);
         tv_password=findViewById(R.id.account_password_value);
         tv_path=findViewById(R.id.account_path_value);
@@ -160,10 +163,15 @@ public abstract class AccountActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==android.R.id.home){
+            setResult(RESULT_CANCELED);
+            finish();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
-    public long save2DB(@Nullable Integer id_update){
+    public long save2DB(@Nullable Long id_update){
         if(this.item.account.equals("")||this.item.password.equals("")){
             Snackbar.make(findViewById(R.id.view_account_root),getResources().getString(R.string.account_null_att),Snackbar.LENGTH_SHORT).show();
             return -1;

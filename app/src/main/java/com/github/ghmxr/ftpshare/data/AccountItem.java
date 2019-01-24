@@ -10,9 +10,10 @@ public class AccountItem{
     public boolean writable=false;
     public AccountItem(){}
     public AccountItem(AccountItem another){
+        this.id=another.id;
         this.account=new String(another.account);
-        this.password=new String(another.account);
-        this.path=new String(another.account);
+        this.password=new String(another.password);
+        this.path=new String(another.path);
         this.writable=another.writable;
     }
 }
