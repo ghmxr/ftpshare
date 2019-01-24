@@ -1,6 +1,9 @@
 package com.github.ghmxr.ftpshare.services;
 
 import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -9,15 +12,19 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import com.github.ghmxr.ftpshare.Constants;
 import com.github.ghmxr.ftpshare.R;
+import com.github.ghmxr.ftpshare.activities.MainActivity;
 import com.github.ghmxr.ftpshare.data.AccountItem;
 import com.github.ghmxr.ftpshare.utils.APUtil;
 import com.github.ghmxr.ftpshare.utils.MySQLiteOpenHelper;
@@ -35,7 +42,7 @@ import java.util.List;
 
 public class FtpService extends Service {
     public static FtpServer server;
-    public static List<AccountItem> list_account=new ArrayList<>();
+    //public static List<AccountItem> list_account=new ArrayList<>();
     public static PowerManager.WakeLock wakeLock;
     public static FtpService ftpService;
     private static MyHandler handler;
@@ -43,8 +50,36 @@ public class FtpService extends Service {
 
     public static final int MESSAGE_START_FTP_COMPLETE=1;
     public static final int MESSAGE_START_FTP_ERROR=-1;
+    public static final int MESSAGE_STOP_FTP_COMPLETE=0;
     public static final int MESSAGE_WAKELOCK_ACQUIRE=5;
     public static final int MESSAGE_WAKELOCK_RELEASE=6;
+
+    /*private BroadcastReceiver receiver=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try{
+                if(intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)){
+                    NetworkInfo info=intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+                    if(info.getState().equals(NetworkInfo.State.CONNECTED)&&info.getType()==ConnectivityManager.TYPE_WIFI
+                            &&info.isConnected()){
+                        Log.d("Network",""+info.getState()+" "+info.getTypeName()+" "+info.isConnected());
+                        try{
+                            if(listener!=null) listener.onNetworkStatusChanged();
+                        }catch (Exception e){e.printStackTrace();}
+                    }
+                }else if(intent.getAction().equals("android.net.wifi.WIFI_AP_STATE_CHANGED")){
+                    int state=intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE,0);
+                    if(state==13){
+                        //stopService();
+                        Log.d("APState",""+state);
+                        try{
+                            if(listener!=null) listener.onNetworkStatusChanged();
+                        }catch (Exception e){e.printStackTrace();}
+                    }
+                }
+            }catch (Exception e){e.printStackTrace();}
+        }
+    };*/
 
     @Override
     public void onCreate() {
@@ -60,7 +95,7 @@ public class FtpService extends Service {
                 @Override
                 public void run() {
                     synchronized (FtpService.class){
-                        list_account=getAccountList(FtpService.this);
+                        //list_account=getAccountList(FtpService.this);
                         try{
                             startFTPService();
                             sendEmptyMessage(MESSAGE_START_FTP_COMPLETE);
@@ -144,7 +179,8 @@ public class FtpService extends Service {
             }
             factory.getUserManager().save(baseUser);
         }else{
-            for(AccountItem item:list_account){
+            List<AccountItem> list=getUserAccountList(this);
+            for(AccountItem item:list){
                 BaseUser baseUser = new BaseUser();
                 baseUser.setName(item.account);
                 baseUser.setPassword(item.password);
@@ -174,9 +210,45 @@ public class FtpService extends Service {
         server.start();
     }
 
+    private void makeThisForeground(){
+        try{
+            NotificationManager manager=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+            if(Build.VERSION.SDK_INT>=26){
+                NotificationChannel channel=new NotificationChannel("default","default",NotificationManager.IMPORTANCE_DEFAULT);
+                manager.createNotificationChannel(channel);
+            }
+            NotificationCompat.Builder builder=new NotificationCompat.Builder(this,"default");
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setContentTitle(getResources().getString(R.string.notification_title));
+            builder.setContentText(getFTPStatusDescription(this));
+
+            RemoteViews rv=new RemoteViews(getPackageName(),R.layout.layout_notification);
+            rv.setTextViewText(R.id.notification_title,getResources().getString(R.string.notification_title));
+            rv.setTextViewText(R.id.notification_text,getFTPStatusDescription(this));
+            builder.setCustomContentView(rv);
+
+            builder.setContentIntent(PendingIntent.getActivity(this,0,new Intent(this, MainActivity.class),PendingIntent.FLAG_UPDATE_CURRENT));
+
+            startForeground(1,builder.build());
+        }catch (Exception e){e.printStackTrace();}
+    }
+
     public static void stopService(){
         try{
-            if(ftpService!=null) ftpService.stopSelf();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    synchronized (FtpService.class){
+                        try{
+                            if(server!=null){
+                                server.stop();
+                                server=null;
+                            }
+                        }catch (Exception e){e.printStackTrace();}
+                        sendEmptyMessage(MESSAGE_STOP_FTP_COMPLETE);
+                    }
+                }
+            }).start();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -205,13 +277,20 @@ public class FtpService extends Service {
                         sendEmptyMessage(MESSAGE_WAKELOCK_RELEASE);
                     }
                     Log.d("FTP",""+FtpService.isFTPServiceRunning());
+                    /*try{
+                        IntentFilter filter=new IntentFilter();
+                        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+                        filter.addAction("android.net.wifi.WIFI_AP_STATE_CHANGED");
+                        registerReceiver(receiver,filter);
+                    }catch (Exception e){e.printStackTrace();}*/
                     try{
                         if(listener!=null) listener.onFTPServiceStarted();
                     }catch (Exception e){e.printStackTrace();}
+                    makeThisForeground();
                 }
                 break;
                 case MESSAGE_START_FTP_ERROR:{
-                    stopSelf();
+                    stopService();
                     try{
                         if(listener!=null) listener.onFTPServiceStartError((Exception)msg.obj);
                     }catch (Exception e){e.printStackTrace();}
@@ -236,6 +315,10 @@ public class FtpService extends Service {
                     }catch (Exception e){e.printStackTrace();}
                 }
                 break;
+                case MESSAGE_STOP_FTP_COMPLETE:{
+                    stopSelf();
+                }
+                break;
             }
         }catch (Exception e){e.printStackTrace();}
     }
@@ -245,21 +328,14 @@ public class FtpService extends Service {
         super.onDestroy();
         Log.d("onDestroy","onDestroy method called");
         try{
-            if(server!=null){
-                server.stop();
-                server=null;
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        try{
             if(wakeLock!=null){
                 wakeLock.release();
                 wakeLock=null;
             }
         }catch (Exception e){e.printStackTrace();}
-
+        /*try{
+            unregisterReceiver(receiver);
+        }catch (Exception e){e.printStackTrace();}*/
         try{
             if(listener!=null) listener.onFTPServiceDestroyed();
         }catch (Exception e){}
@@ -299,6 +375,7 @@ public class FtpService extends Service {
     public interface OnFTPServiceStatusChangedListener {
         void onFTPServiceStarted();
         void onFTPServiceStartError(Exception e);
+        void onNetworkStatusChanged();
         void onFTPServiceDestroyed();
     }
 }

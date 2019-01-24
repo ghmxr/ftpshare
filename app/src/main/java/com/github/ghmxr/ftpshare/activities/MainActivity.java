@@ -32,8 +32,6 @@ import com.github.ghmxr.ftpshare.data.AccountItem;
 import com.github.ghmxr.ftpshare.services.FtpService;
 import com.github.ghmxr.ftpshare.ui.DialogOfFolderSelector;
 
-import org.apache.log4j.chainsaw.Main;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,10 +47,10 @@ public class MainActivity extends AppCompatActivity {
     private static int MENU_ANONYMOUS_SWITCH=1;
 
     public static final int REQUEST_CODE_ADD=0;
-    public static final int REQUEST_CDOE_EDIT=1;
+    public static final int REQUEST_CODE_EDIT =1;
 
-    public static final int MESSAGE_FTP_SERVICE_STARTED=0;
-    public static final int MESSAGE_FTP_SERVICE_ERROR=1;
+    //public static final int MESSAGE_FTP_SERVICE_STARTED=0;
+    //public static final int MESSAGE_FTP_SERVICE_ERROR=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 if(isAnonymousMode()) return;
                 Intent intent=new Intent(MainActivity.this,EditAccountActivity.class);
                 intent.putExtra(EditAccountActivity.EXTRA_POSITION,position);
-                startActivityForResult(intent,REQUEST_CDOE_EDIT);
+                startActivityForResult(intent, REQUEST_CODE_EDIT);
             }
         });
 
@@ -126,13 +124,20 @@ public class MainActivity extends AppCompatActivity {
                 switchCompat.setEnabled(true);
                 switchCompat.setChecked(false);
                 tv_main_value.setText(FtpService.getFTPStatusDescription(MainActivity.this));
-                Toast.makeText(MainActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.container),e.toString(),Snackbar.LENGTH_SHORT).show();
                 findViewById(R.id.main_area).setClickable(true);
+            }
+
+            @Override
+            public void onNetworkStatusChanged() {
+                //tv_main_value.setText(FtpService.getFTPStatusDescription(MainActivity.this));
             }
 
             @Override
             public void onFTPServiceDestroyed() {
                 switchCompat.setChecked(false);
+                switchCompat.setEnabled(true);
                 tv_main_value.setText(FtpService.getFTPStatusDescription(MainActivity.this));
                 findViewById(R.id.main_area).setClickable(true);
             }
@@ -141,13 +146,20 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.main_area).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                findViewById(R.id.main_area).setClickable(false);
                 if(!FtpService.isFTPServiceRunning()){
+                    if(!isAnonymousMode()&&FtpService.getUserAccountList(MainActivity.this).size()==0){
+                        Snackbar.make(findViewById(R.id.container),getResources().getString(R.string.attention_no_user_account),Snackbar.LENGTH_SHORT).show();
+                        return;
+                    }
+                    findViewById(R.id.main_area).setClickable(false);
                     switchCompat.setChecked(true);
                     switchCompat.setEnabled(false);
                     tv_main_value.setText(getResources().getString(R.string.attention_opening_ftp));
                     FtpService.startService(MainActivity.this);
                 }else{
+                    switchCompat.setChecked(false);
+                    switchCompat.setEnabled(false);
+                    tv_main_value.setText(getResources().getString(R.string.attention_closing_ftp));
                     FtpService.stopService();
                 }
             }
@@ -345,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
             default:break;
-            case REQUEST_CODE_ADD: case REQUEST_CDOE_EDIT:{
+            case REQUEST_CODE_ADD: case REQUEST_CODE_EDIT:{
                 if(resultCode==RESULT_OK){
                     listview_users.setAdapter(new AccountAdapter(FtpService.getUserAccountList(this)));
                 }

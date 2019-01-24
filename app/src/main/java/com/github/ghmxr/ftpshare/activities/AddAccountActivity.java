@@ -13,7 +13,7 @@ public class AddAccountActivity extends AccountActivity {
     @Override
     public void initializeAccountData() {
         item=new AccountItem();
-        item.account="user"+ (FtpService.list_account.size()+1);
+        item.account="user"+ (FtpService.getUserAccountList(this).size()+1);
     }
 
     @Override

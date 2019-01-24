@@ -34,9 +34,12 @@
     <string name="ftp_status_running_head">FTP服务运行于</string>
     <string name="attention_ftp_is_running">需要先关闭FTP服务才可以修改设置</string>
     <string name="attention_opening_ftp">正在打开FTP服务&#8230;</string>
+    <string name="attention_closing_ftp">正在关闭FTP服务&#8230;</string>
     <string name="attention_invalid_port_number">请输入有效的数字</string>
     <string name="attention_port_number_out_of_range">请输入1024~65535之间的数字</string>
     <string name="attention_delete_confirm">再点击一次确定删除</string>
+    <string name="attention_no_user_account">请添加一个账户或者使用匿名模式来打开FTP服务</string>
+    <string name="notification_title">FTP服务正在运行</string>
 
     <string name="action_account_save">保存</string>
     <string name="action_account_delete">删除</string>

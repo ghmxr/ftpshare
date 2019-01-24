@@ -185,7 +185,7 @@ public abstract class AccountActivity extends AppCompatActivity {
             Snackbar.make(findViewById(R.id.view_account_root),getResources().getString(R.string.account_anonymous_name_set_att),Snackbar.LENGTH_SHORT).show();
             return -1;
         }
-        for(AccountItem check: FtpService.list_account){
+        for(AccountItem check: FtpService.getUserAccountList(this)){
             if(check.account.equals(this.item.account)&&id_update==null){
                 Snackbar.make(findViewById(R.id.view_account_root),getResources().getString(R.string.account_duplicate),Snackbar.LENGTH_SHORT).show();
                 return -1;

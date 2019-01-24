@@ -22,7 +22,7 @@ public class Constants {
          * this stands for a boolean value
          */
         public static final String ANONYMOUS_MODE="anonymous_mode";
-        public static final boolean ANONYMOUS_MODE_DEFAULT=false;
+        public static final boolean ANONYMOUS_MODE_DEFAULT=true;
         /**
          * this stands for a string value
          */
