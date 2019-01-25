@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_CODE_EDIT);
             }
         });
-        if(list.size()==0) findViewById(R.id.add_user_att).setVisibility(View.VISIBLE);
+        if(list.size()==0&&!isAnonymousMode()) findViewById(R.id.add_user_att).setVisibility(View.VISIBLE);
         else findViewById(R.id.add_user_att).setVisibility(View.GONE);
 
         FtpService.setOnFTPServiceStatusChangedListener(new FtpService.OnFTPServiceStatusChangedListener() {
@@ -396,7 +396,7 @@ public class MainActivity extends AppCompatActivity {
                     findViewById(R.id.mode_anonymous).setVisibility((!isAnonymousMode)?View.VISIBLE:View.GONE);
                     List<AccountItem> list=FtpService.getUserAccountList(this);
                     if(isAnonymousMode) listview_users.setAdapter(new AccountAdapter(list));
-                    if(list.size()==0) findViewById(R.id.add_user_att).setVisibility(View.VISIBLE);
+                    if(list.size()==0&&isAnonymousMode) findViewById(R.id.add_user_att).setVisibility(View.VISIBLE);
                     else findViewById(R.id.add_user_att).setVisibility(View.GONE);
                 }catch (Exception e){e.printStackTrace();}
             }
@@ -440,7 +440,7 @@ public class MainActivity extends AppCompatActivity {
                 if(resultCode==RESULT_OK){
                     List<AccountItem> list=FtpService.getUserAccountList(this);
                     listview_users.setAdapter(new AccountAdapter(list));
-                    if(list.size()==0) findViewById(R.id.add_user_att).setVisibility(View.VISIBLE);
+                    if(list.size()==0&&!isAnonymousMode()) findViewById(R.id.add_user_att).setVisibility(View.VISIBLE);
                     else findViewById(R.id.add_user_att).setVisibility(View.GONE);
                 }
             }

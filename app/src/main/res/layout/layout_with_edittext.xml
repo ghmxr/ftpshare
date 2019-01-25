@@ -9,6 +9,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
+            android:singleLine="true"
             android:id="@+id/dialog_edittext"/>
     </LinearLayout>
 </ScrollView>
