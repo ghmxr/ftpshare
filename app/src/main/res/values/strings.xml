@@ -41,6 +41,9 @@
     <string name="attention_no_user_account">请添加一个账户或者使用匿名模式来打开FTP服务</string>
     <string name="notification_title">FTP服务正在运行</string>
     <string name="permission_write_external">请为本应用授予存储读写权限</string>
+    <string name="attention_no_active_network">没有可用的网络连接，请连接WiFi或打开热点</string>
+    <string name="snackbar_action_goto">前往设置</string>
+    <string name="attention_add_a_user">请添加一个账户来使用</string>
 
     <string name="action_account_save">保存</string>
     <string name="action_account_delete">删除</string>
@@ -54,7 +57,7 @@
     <string name="dialog_button_show_password">显示/隐藏密码</string>
     <string name="dialog_button_default">恢复默认</string>
 
-    <string name="about_title">FTP Share(Build1)</string>
+    <string name="about_title">FTP Share(Build 1)</string>
     <string name="about_content">
         这是一个基于Android平台的实现FTP文件共享的应用。\n\n
         开源地址:\n

@@ -1,7 +1,6 @@
 package com.github.ghmxr.ftpshare.activities;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.ghmxr.ftpshare.R;
@@ -17,10 +16,16 @@ public class AddAccountActivity extends AccountActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_account_add,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             default:break;
-            case R.id.action_account_save:{
+            case R.id.action_account_add_save:{
                 if(save2DB(null)>=0) {
                     setResult(RESULT_OK);
                     finish();

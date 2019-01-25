@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -36,8 +37,6 @@ import com.github.ghmxr.ftpshare.data.AccountItem;
 import com.github.ghmxr.ftpshare.services.FtpService;
 import com.github.ghmxr.ftpshare.ui.DialogOfFolderSelector;
 import com.github.ghmxr.ftpshare.utils.ValueUtil;
-
-import org.apache.log4j.chainsaw.Main;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +104,8 @@ public class MainActivity extends AppCompatActivity {
         tv_anonymous_path.setText(settings.getString(Constants.PreferenceConsts.ANONYMOUS_MODE_PATH,Constants.PreferenceConsts.ANONYMOUS_MODE_PATH_DEFAULT));
         cb_anonymous_writable.setChecked(settings.getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE_WRITABLE,Constants.PreferenceConsts.ANONYMOUS_MODE_WRITABLE_DEFAULT));
         listview_users.setDivider(null);
-        listview_users.setAdapter(new AccountAdapter(FtpService.getUserAccountList(this)));
+        List<AccountItem> list=FtpService.getUserAccountList(this);
+        listview_users.setAdapter(new AccountAdapter(list));
         listview_users.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -119,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_CODE_EDIT);
             }
         });
+        if(list.size()==0) findViewById(R.id.add_user_att).setVisibility(View.VISIBLE);
+        else findViewById(R.id.add_user_att).setVisibility(View.GONE);
 
         FtpService.setOnFTPServiceStatusChangedListener(new FtpService.OnFTPServiceStatusChangedListener() {
             @Override
@@ -161,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!FtpService.isFTPServiceRunning()){
                     if(Build.VERSION.SDK_INT>=23&&PermissionChecker.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
-                        Snackbar.make(findViewById(R.id.container),getResources().getString(R.string.permission_write_external),Snackbar.LENGTH_SHORT).show();
+                        showSnackBarOfRequestingWritingPermission();
                         requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
                         return;
                     }
@@ -259,6 +261,11 @@ public class MainActivity extends AppCompatActivity {
                     showAttentionOfFTPisRunning();
                     return;
                 }
+                if(Build.VERSION.SDK_INT>=23&&PermissionChecker.checkSelfPermission(MainActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
+                    showSnackBarOfRequestingWritingPermission();
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
+                    return;
+                }
                 DialogOfFolderSelector dialog=new DialogOfFolderSelector(MainActivity.this,
                         settings.getString(Constants.PreferenceConsts.ANONYMOUS_MODE_PATH,Constants.PreferenceConsts.ANONYMOUS_MODE_PATH_DEFAULT));
                 dialog.show();
@@ -297,6 +304,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
         setQRCodeArea(FtpService.isFTPServiceRunning(),ValueUtil.getFTPServiceFullAddress(this));
+    }
+
+    private void showSnackBarOfRequestingWritingPermission(){
+        Snackbar snackbar=Snackbar.make(findViewById(R.id.container),getResources().getString(R.string.permission_write_external),Snackbar.LENGTH_SHORT);
+        snackbar.setAction(getResources().getString(R.string.snackbar_action_goto), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent appdetail = new Intent();
+                appdetail.setAction(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                appdetail.setData(Uri.fromParts("package", getApplication().getPackageName(), null));
+                startActivity(appdetail);
+            }
+        });
+        snackbar.show();
     }
 
     private void setQRCodeArea(boolean visible,String ftp){
@@ -373,7 +394,10 @@ public class MainActivity extends AppCompatActivity {
                     menu.getItem(MENU_ACCOUNT_ADD).setVisible(isAnonymousMode);
                     findViewById(R.id.view_user_list).setVisibility((!isAnonymousMode)?View.GONE:View.VISIBLE);
                     findViewById(R.id.mode_anonymous).setVisibility((!isAnonymousMode)?View.VISIBLE:View.GONE);
-                    if(isAnonymousMode) listview_users.setAdapter(new AccountAdapter(FtpService.getAccountList(this)));
+                    List<AccountItem> list=FtpService.getUserAccountList(this);
+                    if(isAnonymousMode) listview_users.setAdapter(new AccountAdapter(list));
+                    if(list.size()==0) findViewById(R.id.add_user_att).setVisibility(View.VISIBLE);
+                    else findViewById(R.id.add_user_att).setVisibility(View.GONE);
                 }catch (Exception e){e.printStackTrace();}
             }
             break;
@@ -414,7 +438,10 @@ public class MainActivity extends AppCompatActivity {
             default:break;
             case REQUEST_CODE_ADD: case REQUEST_CODE_EDIT:{
                 if(resultCode==RESULT_OK){
-                    listview_users.setAdapter(new AccountAdapter(FtpService.getUserAccountList(this)));
+                    List<AccountItem> list=FtpService.getUserAccountList(this);
+                    listview_users.setAdapter(new AccountAdapter(list));
+                    if(list.size()==0) findViewById(R.id.add_user_att).setVisibility(View.VISIBLE);
+                    else findViewById(R.id.add_user_att).setVisibility(View.GONE);
                 }
             }
             break;

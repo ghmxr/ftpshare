@@ -5,13 +5,16 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -54,14 +57,15 @@ public class FtpService extends Service {
     public static final int MESSAGE_WAKELOCK_ACQUIRE=5;
     public static final int MESSAGE_WAKELOCK_RELEASE=6;
 
-    /*private BroadcastReceiver receiver=new BroadcastReceiver() {
+    private BroadcastReceiver receiver=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             try{
                 if(intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)){
                     NetworkInfo info=intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-                    if(info.getState().equals(NetworkInfo.State.CONNECTED)&&info.getType()==ConnectivityManager.TYPE_WIFI
-                            &&info.isConnected()){
+                    if(info.getState().equals(NetworkInfo.State.DISCONNECTED)&&info.getType()==ConnectivityManager.TYPE_WIFI
+                            &&!info.isConnected()&&!APUtil.isAPEnabled(FtpService.this)){
+                        stopService();
                         Log.d("Network",""+info.getState()+" "+info.getTypeName()+" "+info.isConnected());
                         try{
                             if(listener!=null) listener.onNetworkStatusChanged();
@@ -69,8 +73,8 @@ public class FtpService extends Service {
                     }
                 }else if(intent.getAction().equals("android.net.wifi.WIFI_AP_STATE_CHANGED")){
                     int state=intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE,0);
-                    if(state==13){
-                        //stopService();
+                    if(state==11&&!ValueUtil.isWifiConnected(FtpService.this)){
+                        stopService();
                         Log.d("APState",""+state);
                         try{
                             if(listener!=null) listener.onNetworkStatusChanged();
@@ -79,7 +83,7 @@ public class FtpService extends Service {
                 }
             }catch (Exception e){e.printStackTrace();}
         }
-    };*/
+    };
 
     @Override
     public void onCreate() {
@@ -91,27 +95,29 @@ public class FtpService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         try{
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    synchronized (FtpService.class){
-                        //list_account=getAccountList(FtpService.this);
-                        try{
-                            startFTPService();
-                            sendEmptyMessage(MESSAGE_START_FTP_COMPLETE);
-                        }catch (Exception e){
-                            e.printStackTrace();
-                            Message msg=new Message();
-                            msg.what=MESSAGE_START_FTP_ERROR;
-                            msg.obj=e;
-                            sendMessage(msg);
-                        }
+            IntentFilter filter=new IntentFilter();
+            filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+            filter.addAction("android.net.wifi.WIFI_AP_STATE_CHANGED");
+            registerReceiver(receiver,filter);
+        }catch (Exception e){e.printStackTrace();}
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (FtpService.class){
+                    //list_account=getAccountList(FtpService.this);
+                    try{
+                        startFTPService();
+                        sendEmptyMessage(MESSAGE_START_FTP_COMPLETE);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        Message msg=new Message();
+                        msg.what=MESSAGE_START_FTP_ERROR;
+                        msg.obj=e;
+                        sendMessage(msg);
                     }
                 }
-            }).start();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+            }
+        }).start();
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -200,7 +206,7 @@ public class FtpService extends Service {
         if(manager!=null){
             NetworkInfo info=manager.getActiveNetworkInfo();
             if((info==null||info.getType()!=ConnectivityManager.TYPE_WIFI)&&!APUtil.isAPEnabled(this)) {
-                throw new Exception("There is no active network connection");
+                throw new Exception(getResources().getString(R.string.attention_no_active_network));
             }
         }
         try{
@@ -277,12 +283,6 @@ public class FtpService extends Service {
                         sendEmptyMessage(MESSAGE_WAKELOCK_RELEASE);
                     }
                     Log.d("FTP",""+FtpService.isFTPServiceRunning());
-                    /*try{
-                        IntentFilter filter=new IntentFilter();
-                        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-                        filter.addAction("android.net.wifi.WIFI_AP_STATE_CHANGED");
-                        registerReceiver(receiver,filter);
-                    }catch (Exception e){e.printStackTrace();}*/
                     try{
                         if(listener!=null) listener.onFTPServiceStarted();
                     }catch (Exception e){e.printStackTrace();}
@@ -328,14 +328,20 @@ public class FtpService extends Service {
         super.onDestroy();
         Log.d("onDestroy","onDestroy method called");
         try{
+            if(server!=null){
+                server.stop();
+                server=null;
+            }
+        }catch (Exception e){e.printStackTrace();}
+        try{
             if(wakeLock!=null){
                 wakeLock.release();
                 wakeLock=null;
             }
         }catch (Exception e){e.printStackTrace();}
-        /*try{
+        try{
             unregisterReceiver(receiver);
-        }catch (Exception e){e.printStackTrace();}*/
+        }catch (Exception e){e.printStackTrace();}
         try{
             if(listener!=null) listener.onFTPServiceDestroyed();
         }catch (Exception e){}

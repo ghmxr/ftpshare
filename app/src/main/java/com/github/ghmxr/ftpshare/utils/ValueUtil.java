@@ -77,4 +77,13 @@ public class ValueUtil {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
+
+    public static boolean isWifiConnected(Context context){
+        try{
+            ConnectivityManager connectivityManager=(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if(connectivityManager==null) return false;
+            if(connectivityManager.getActiveNetworkInfo().getType()==ConnectivityManager.TYPE_WIFI) return true;
+        }catch (Exception e){e.printStackTrace();}
+        return false;
+    }
 }

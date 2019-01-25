@@ -1,11 +1,16 @@
 package com.github.ghmxr.ftpshare.activities;
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.PasswordTransformationMethod;
@@ -123,6 +128,21 @@ public abstract class AccountActivity extends AppCompatActivity {
            findViewById(R.id.account_path).setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(View v) {
+                   if(Build.VERSION.SDK_INT>=23&&PermissionChecker.checkSelfPermission(AccountActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
+                       Snackbar snackbar=Snackbar.make(findViewById(R.id.view_account_root),getResources().getString(R.string.permission_write_external),Snackbar.LENGTH_SHORT);
+                       snackbar.setAction(getResources().getString(R.string.snackbar_action_goto), new View.OnClickListener() {
+                           @Override
+                           public void onClick(View v) {
+                               Intent appdetail = new Intent();
+                               appdetail.setAction(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                               appdetail.setData(Uri.fromParts("package", getApplication().getPackageName(), null));
+                               startActivity(appdetail);
+                           }
+                       });
+                       snackbar.show();
+                       requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
+                       return;
+                   }
                    DialogOfFolderSelector dialog=new DialogOfFolderSelector(AccountActivity.this,item.path);
                    dialog.show();
                    dialog.setOnFolderSelectorDialogConfirmedListener(new DialogOfFolderSelector.OnFolderSelectorDialogConfirmed() {
@@ -162,7 +182,7 @@ public abstract class AccountActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_account,menu);
+        //getMenuInflater().inflate(R.menu.menu_account,menu);
         return super.onCreateOptionsMenu(menu);
     }
 
