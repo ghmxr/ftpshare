@@ -168,7 +168,9 @@
                     android:id="@+id/ftp_address"
                     android:layout_marginTop="25dp"
                     android:layout_marginBottom="100dp"
-                    android:textColor="@color/color_black"
+                    android:clickable="true"
+                    android:textIsSelectable="true"
+                    android:textColor="@color/colorAccent"
                     android:textStyle="bold"
                     android:textSize="17sp" />
             </LinearLayout>

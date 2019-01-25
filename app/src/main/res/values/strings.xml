@@ -44,6 +44,7 @@
     <string name="attention_no_active_network">没有可用的网络连接，请连接WiFi或打开热点</string>
     <string name="snackbar_action_goto">前往设置</string>
     <string name="attention_add_a_user">请添加一个账户来使用</string>
+    <string name="attention_clipboard">已复制到剪贴板</string>
 
     <string name="action_account_save">保存</string>
     <string name="action_account_delete">删除</string>
@@ -60,6 +61,7 @@
     <string name="about_title">FTP Share(Build 1)</string>
     <string name="about_content">
         这是一个基于Apache FtpServer框架开发的Android平台实现FTP文件共享的应用。\n\n
+        如果您的手机浏览器无法访问FTP协议链接，建议您下载使用Chrome。\n\n
         开源地址:\n
         https://github.com/ghmxr/ftpshare \n\n
 

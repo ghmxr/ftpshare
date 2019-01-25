@@ -1,10 +1,13 @@
 package com.github.ghmxr.ftpshare.activities;
 
 import android.Manifest;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -320,12 +323,28 @@ public class MainActivity extends AppCompatActivity {
         snackbar.show();
     }
 
-    private void setQRCodeArea(boolean visible,String ftp){
+    private void setQRCodeArea(boolean visible, final String ftp){
         try{
             findViewById(R.id.area_address).setVisibility(visible?View.VISIBLE:View.GONE);
             ImageView qrcode=findViewById(R.id.qrcode);
             qrcode.setImageBitmap(ValueUtil.getQrCodeBitmapOfString(ftp,ValueUtil.dip2px(this,150),ValueUtil.dip2px(this,150)));
             tv_ftp_address.setText(ftp);
+            tv_ftp_address.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try{
+                        ClipboardManager manager=(ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+                        manager.setPrimaryClip(ClipData.newPlainText("FTP Address",ftp));
+                        Snackbar.make(findViewById(R.id.container),getResources().getString(R.string.attention_clipboard),Snackbar.LENGTH_SHORT).show();
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                        Toast.makeText(MainActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            tv_ftp_address.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+            tv_ftp_address.getPaint().setAntiAlias(true);
         }catch (Exception e){e.printStackTrace();}
     }
 
