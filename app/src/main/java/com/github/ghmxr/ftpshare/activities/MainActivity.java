@@ -42,6 +42,7 @@ import com.github.ghmxr.ftpshare.ui.DialogOfFolderSelector;
 import com.github.ghmxr.ftpshare.utils.ValueUtil;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int REQUEST_CODE_ADD=0;
     public static final int REQUEST_CODE_EDIT =1;
+    private static LinkedList<MainActivity> queue=new LinkedList<>();
 
     //public static final int MESSAGE_FTP_SERVICE_STARTED=0;
     //public static final int MESSAGE_FTP_SERVICE_ERROR=1;
@@ -65,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(!queue.contains(this)) queue.add(this);
+        //Log.d("MainActivity",""+queue.size());
         setContentView(R.layout.activity_main);
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
@@ -464,6 +468,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             break;
+        }
+    }
+
+    @Override
+    public void finish(){
+        super.finish();
+        if(queue.contains(this)) queue.remove(this);
+        while (queue.size()>0){
+            queue.getLast().finish();
         }
     }
 

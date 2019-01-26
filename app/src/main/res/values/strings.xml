@@ -58,7 +58,7 @@
     <string name="dialog_button_show_password">显示/隐藏密码</string>
     <string name="dialog_button_default">恢复默认</string>
 
-    <string name="about_title">FTP Share(Build 1)</string>
+    <string name="about_title">FTP Share(Build 2)</string>
     <string name="about_content">
         这是一个基于Apache FtpServer框架开发的Android平台实现FTP文件共享的应用。\n\n
         如果您的手机浏览器无法访问FTP协议链接，建议您下载使用Chrome。\n\n
