@@ -45,7 +45,6 @@ import java.util.List;
 
 public class FtpService extends Service {
     public static FtpServer server;
-    //public static List<AccountItem> list_account=new ArrayList<>();
     public static PowerManager.WakeLock wakeLock;
     public static FtpService ftpService;
     private static MyHandler handler;
@@ -94,17 +93,10 @@ public class FtpService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        try{
-            IntentFilter filter=new IntentFilter();
-            filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-            filter.addAction("android.net.wifi.WIFI_AP_STATE_CHANGED");
-            registerReceiver(receiver,filter);
-        }catch (Exception e){e.printStackTrace();}
         new Thread(new Runnable() {
             @Override
             public void run() {
                 synchronized (FtpService.class){
-                    //list_account=getAccountList(FtpService.this);
                     try{
                         startFTPService();
                         sendEmptyMessage(MESSAGE_START_FTP_COMPLETE);
@@ -130,21 +122,6 @@ public class FtpService extends Service {
     public static void startService(Activity activity){
         Intent intent=new Intent(activity,FtpService.class);
         activity.startService(intent);
-    }
-
-    public static List<AccountItem> getAccountList(Context context){
-        List<AccountItem> list=new ArrayList<>();
-        SharedPreferences settings=context.getSharedPreferences(Constants.PreferenceConsts.FILE_NAME, Context.MODE_PRIVATE);
-        if(settings.getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE,Constants.PreferenceConsts.ANONYMOUS_MODE_DEFAULT)){
-            AccountItem item=new AccountItem();
-            item.account=Constants.FTPConsts.NAME_ANONYMOUS;
-            item.password="";
-            item.path=settings.getString(Constants.PreferenceConsts.ANONYMOUS_MODE_PATH,Constants.PreferenceConsts.ANONYMOUS_MODE_PATH_DEFAULT);
-            item.writable=settings.getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE_WRITABLE,Constants.PreferenceConsts.ANONYMOUS_MODE_WRITABLE_DEFAULT);
-            list.add(item);
-            return list;
-        }
-        return getUserAccountList(context);
     }
 
     public static List<AccountItem> getUserAccountList(Context context){
@@ -277,6 +254,13 @@ public class FtpService extends Service {
             switch (msg.what){
                 default:break;
                 case MESSAGE_START_FTP_COMPLETE:{
+                    try{
+                        IntentFilter filter=new IntentFilter();
+                        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+                        filter.addAction("android.net.wifi.WIFI_AP_STATE_CHANGED");
+                        registerReceiver(receiver,filter);
+                    }catch (Exception e){e.printStackTrace();}
+
                     if(getSharedPreferences(Constants.PreferenceConsts.FILE_NAME,Context.MODE_PRIVATE).getBoolean(Constants.PreferenceConsts.WAKE_LOCK,Constants.PreferenceConsts.WAKE_LOCK_DEFAULT)){
                         sendEmptyMessage(MESSAGE_WAKELOCK_ACQUIRE);
                     }else {
@@ -345,7 +329,7 @@ public class FtpService extends Service {
         try{
             if(listener!=null) listener.onFTPServiceDestroyed();
         }catch (Exception e){}
-
+        handler=null;
         ftpService=null;
     }
 

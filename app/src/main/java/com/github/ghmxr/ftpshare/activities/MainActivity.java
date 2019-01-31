@@ -478,6 +478,7 @@ public class MainActivity extends AppCompatActivity {
         while (queue.size()>0){
             queue.getLast().finish();
         }
+        FtpService.setOnFTPServiceStatusChangedListener(null);
     }
 
     private boolean isAnonymousMode(){

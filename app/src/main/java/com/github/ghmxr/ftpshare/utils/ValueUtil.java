@@ -35,13 +35,15 @@ public class ValueUtil {
 
     public static String getIPAddressForFTPService(Context context){
         try{
-            if(APUtil.isAPEnabled(context)) return APUtil.AP_HOST_IP;
             ConnectivityManager manager=(ConnectivityManager)context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo=manager.getActiveNetworkInfo();
             if(networkInfo!=null&&networkInfo.getType()==ConnectivityManager.TYPE_WIFI){
                 return Formatter.formatIpAddress(((WifiManager)context.getApplicationContext().getSystemService(Context.WIFI_SERVICE)).getConnectionInfo().getIpAddress());
             }
         }catch (Exception e){e.printStackTrace();}
+        try{
+            if(APUtil.isAPEnabled(context)) return APUtil.getIPForAP();
+        }catch (Exception e){}
         return "0.0.0.0";
     }
 
