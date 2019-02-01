@@ -42,8 +42,11 @@ public class ValueUtil {
             }
         }catch (Exception e){e.printStackTrace();}
         try{
-            if(APUtil.isAPEnabled(context)) return APUtil.getIPForAP();
-        }catch (Exception e){}
+            if(APUtil.isAPEnabled(context)){
+                if(isCellularNetworkConnected(context)) return APUtil.AP_HOST_IP;
+                else return APUtil.getAvailableIP();
+            }
+        }catch (Exception e){e.printStackTrace();}
         return "0.0.0.0";
     }
 
@@ -86,6 +89,24 @@ public class ValueUtil {
             if(connectivityManager==null) return false;
             if(connectivityManager.getActiveNetworkInfo().getType()==ConnectivityManager.TYPE_WIFI) return true;
         }catch (Exception e){e.printStackTrace();}
+        return false;
+    }
+
+    public static boolean isCellularNetworkConnected(Context context){
+        try{
+            ConnectivityManager connectivityManager=(ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo=connectivityManager.getActiveNetworkInfo();
+            if(networkInfo==null) return false;
+            if(networkInfo.getType()==ConnectivityManager.TYPE_MOBILE) return true;
+            if(networkInfo.getType()==ConnectivityManager.TYPE_WIFI){
+                //Method getMobileDataEnabledMethod = ConnectivityManager.class.getDeclaredMethod("getMobileDataEnabled");
+                //getMobileDataEnabledMethod.setAccessible(true);
+                //return (Boolean) getMobileDataEnabledMethod.invoke(connectivityManager);
+                return false;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return false;
     }
 }

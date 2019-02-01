@@ -26,7 +26,7 @@ public class APUtil {
         }catch (Exception e){e.printStackTrace();}
         return false;
     }
-    public static String getIPForAP(){
+    public static String getAvailableIP(){
         try{
             Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
             NetworkInterface nif;

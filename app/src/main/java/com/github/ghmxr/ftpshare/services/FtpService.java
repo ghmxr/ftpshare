@@ -55,6 +55,7 @@ public class FtpService extends Service {
     public static final int MESSAGE_STOP_FTP_COMPLETE=0;
     public static final int MESSAGE_WAKELOCK_ACQUIRE=5;
     public static final int MESSAGE_WAKELOCK_RELEASE=6;
+    public static final int MESSAGE_REFRESH_FOREGROUND_NOTIFICATION=7;
 
     private BroadcastReceiver receiver=new BroadcastReceiver() {
         @Override
@@ -66,18 +67,12 @@ public class FtpService extends Service {
                             &&!info.isConnected()&&!APUtil.isAPEnabled(FtpService.this)){
                         stopService();
                         Log.d("Network",""+info.getState()+" "+info.getTypeName()+" "+info.isConnected());
-                        try{
-                            if(listener!=null) listener.onNetworkStatusChanged();
-                        }catch (Exception e){e.printStackTrace();}
                     }
                 }else if(intent.getAction().equals("android.net.wifi.WIFI_AP_STATE_CHANGED")){
                     int state=intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE,0);
                     if(state==11&&!ValueUtil.isWifiConnected(FtpService.this)){
                         stopService();
                         Log.d("APState",""+state);
-                        try{
-                            if(listener!=null) listener.onNetworkStatusChanged();
-                        }catch (Exception e){e.printStackTrace();}
                     }
                 }
             }catch (Exception e){e.printStackTrace();}
@@ -239,14 +234,14 @@ public class FtpService extends Service {
 
     public static void sendEmptyMessage(int what){
         try{
-            handler.sendEmptyMessage(what);
-        }catch (Exception e){}
+            if(handler!=null) handler.sendEmptyMessage(what);
+        }catch (Exception e){e.printStackTrace();}
     }
 
     public static void sendMessage(Message msg){
         try{
-            handler.sendMessage(msg);
-        }catch (Exception e){}
+            if(handler!=null) handler.sendMessage(msg);
+        }catch (Exception e){e.printStackTrace();}
     }
 
     private void processMessage(Message msg){
@@ -301,6 +296,10 @@ public class FtpService extends Service {
                 break;
                 case MESSAGE_STOP_FTP_COMPLETE:{
                     stopSelf();
+                }
+                break;
+                case MESSAGE_REFRESH_FOREGROUND_NOTIFICATION:{
+                    if(isFTPServiceRunning()) makeThisForeground();
                 }
                 break;
             }
@@ -365,7 +364,6 @@ public class FtpService extends Service {
     public interface OnFTPServiceStatusChangedListener {
         void onFTPServiceStarted();
         void onFTPServiceStartError(Exception e);
-        void onNetworkStatusChanged();
         void onFTPServiceDestroyed();
     }
 }

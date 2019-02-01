@@ -151,11 +151,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNetworkStatusChanged() {
-                //tv_main_value.setText(FtpService.getFTPStatusDescription(MainActivity.this));
-            }
-
-            @Override
             public void onFTPServiceDestroyed() {
                 switchCompat.setChecked(false);
                 switchCompat.setEnabled(true);
@@ -311,6 +306,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         setQRCodeArea(FtpService.isFTPServiceRunning(),ValueUtil.getFTPServiceFullAddress(this));
+        FtpService.sendEmptyMessage(FtpService.MESSAGE_REFRESH_FOREGROUND_NOTIFICATION);
     }
 
     private void showSnackBarOfRequestingWritingPermission(){
