@@ -197,6 +197,10 @@ public abstract class AccountActivity extends AppCompatActivity {
     }
 
     public long save2DB(@Nullable Long id_update){
+        if(FtpService.isFTPServiceRunning()){
+            Snackbar.make(findViewById(R.id.view_account_root),getResources().getString(R.string.attention_ftp_is_running),Snackbar.LENGTH_SHORT).show();
+            return -1;
+        }
         if(this.item.account.equals("")){
             Snackbar.make(findViewById(R.id.view_account_root),getResources().getString(R.string.account_null_att),Snackbar.LENGTH_SHORT).show();
             return -1;

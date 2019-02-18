@@ -52,6 +52,10 @@ public class EditAccountActivity extends AccountActivity {
             break;
             case R.id.action_account_delete:{
                 long time=System.currentTimeMillis();
+                if(FtpService.isFTPServiceRunning()){
+                    Snackbar.make(findViewById(R.id.view_account_root),getResources().getString(R.string.attention_ftp_is_running),Snackbar.LENGTH_SHORT).show();
+                    return true;
+                }
                 if(time-first_clicked>1000){
                     Snackbar.make(findViewById(R.id.view_account_root),getResources().getString(R.string.attention_delete_confirm),Snackbar.LENGTH_SHORT).show();
                     first_clicked=time;

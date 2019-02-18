@@ -42,7 +42,6 @@ import com.github.ghmxr.ftpshare.ui.DialogOfFolderSelector;
 import com.github.ghmxr.ftpshare.utils.ValueUtil;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -59,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int REQUEST_CODE_ADD=0;
     public static final int REQUEST_CODE_EDIT =1;
-    private static LinkedList<MainActivity> queue=new LinkedList<>();
+    private static MainActivity last;
 
     //public static final int MESSAGE_FTP_SERVICE_STARTED=0;
     //public static final int MESSAGE_FTP_SERVICE_ERROR=1;
@@ -67,8 +66,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(!queue.contains(this)) queue.add(this);
-        //Log.d("MainActivity",""+queue.size());
+        try{
+            if(last !=null) last.finish();
+        }catch (Exception e){}
+        last =this;
+        //Log.d("MainActivity",""+last.size());
         setContentView(R.layout.activity_main);
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
@@ -116,10 +118,6 @@ public class MainActivity extends AppCompatActivity {
         listview_users.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(FtpService.isFTPServiceRunning()){
-                    showAttentionOfFTPisRunning();
-                    return;
-                }
                 if(isAnonymousMode()) return;
                 Intent intent=new Intent(MainActivity.this,EditAccountActivity.class);
                 intent.putExtra(EditAccountActivity.EXTRA_POSITION,position);
@@ -470,11 +468,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void finish(){
         super.finish();
-        if(queue.contains(this)) queue.remove(this);
-        while (queue.size()>0){
-            queue.getLast().finish();
-        }
         FtpService.setOnFTPServiceStatusChangedListener(null);
+        last=null;
     }
 
     private boolean isAnonymousMode(){

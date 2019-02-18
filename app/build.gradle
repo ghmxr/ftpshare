@@ -6,8 +6,8 @@ android {
         applicationId "com.github.ghmxr.ftpshare"
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 4
-        versionName "Build 4"
+        versionCode 5
+        versionName "Build 5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
