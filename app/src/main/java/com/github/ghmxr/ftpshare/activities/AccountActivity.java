@@ -31,7 +31,7 @@ import com.github.ghmxr.ftpshare.services.FtpService;
 import com.github.ghmxr.ftpshare.ui.DialogOfFolderSelector;
 import com.github.ghmxr.ftpshare.utils.MySQLiteOpenHelper;
 
-public abstract class AccountActivity extends AppCompatActivity {
+public abstract class AccountActivity extends BaseActivity {
     public AccountItem item;
     public TextView tv_account,tv_password,tv_path;
     public CheckBox cb_writable;

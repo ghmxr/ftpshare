@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FtpService extends Service {
-    public static FtpServer server;
+    public static FtpServer server;//this static field is guarded by FtpService.class
     public static PowerManager.WakeLock wakeLock;
     public static FtpService ftpService;
     private static MyHandler handler;
@@ -91,17 +91,15 @@ public class FtpService extends Service {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                synchronized (FtpService.class){
-                    try{
-                        startFTPService();
-                        sendEmptyMessage(MESSAGE_START_FTP_COMPLETE);
-                    }catch (Exception e){
-                        e.printStackTrace();
-                        Message msg=new Message();
-                        msg.what=MESSAGE_START_FTP_ERROR;
-                        msg.obj=e;
-                        sendMessage(msg);
-                    }
+                try{
+                    startFTPService();
+                    sendEmptyMessage(MESSAGE_START_FTP_COMPLETE);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    Message msg=new Message();
+                    msg.what=MESSAGE_START_FTP_ERROR;
+                    msg.obj=e;
+                    sendMessage(msg);
                 }
             }
         }).start();
@@ -181,11 +179,13 @@ public class FtpService extends Service {
                 throw new Exception(getResources().getString(R.string.attention_no_active_network));
             }
         }
-        try{
-            if(server!=null) server.stop();
-        }catch (Exception e){}
-        server=factory.createServer();
-        server.start();
+        synchronized (FtpService.class){
+            try{
+                if(server!=null) server.stop();
+            }catch (Exception e){}
+            server=factory.createServer();
+            server.start();
+        }
     }
 
     private void makeThisForeground(){
@@ -310,12 +310,14 @@ public class FtpService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.d("onDestroy","onDestroy method called");
-        try{
-            if(server!=null){
-                server.stop();
-                server=null;
-            }
-        }catch (Exception e){e.printStackTrace();}
+        synchronized (FtpService.class){//this may cause ANR while transferring files but will ensure the ftp was shutdown after this service killed
+            try{
+                if(server!=null){
+                    server.stop();
+                    server=null;
+                }
+            }catch (Exception e){e.printStackTrace();}
+        }
         try{
             if(wakeLock!=null){
                 wakeLock.release();

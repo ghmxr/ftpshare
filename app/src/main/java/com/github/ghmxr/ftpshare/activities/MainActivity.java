@@ -17,7 +17,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -44,7 +43,7 @@ import com.github.ghmxr.ftpshare.utils.ValueUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private Menu menu;
     private SwitchCompat switchCompat;
@@ -58,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int REQUEST_CODE_ADD=0;
     public static final int REQUEST_CODE_EDIT =1;
-    private static MainActivity last;
+    //private static MainActivity last;
 
     //public static final int MESSAGE_FTP_SERVICE_STARTED=0;
     //public static final int MESSAGE_FTP_SERVICE_ERROR=1;
@@ -66,11 +65,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try{
-            if(last !=null) last.finish();
-        }catch (Exception e){}
-        last =this;
-        //Log.d("MainActivity",""+last.size());
         setContentView(R.layout.activity_main);
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
@@ -469,7 +463,9 @@ public class MainActivity extends AppCompatActivity {
     public void finish(){
         super.finish();
         FtpService.setOnFTPServiceStatusChangedListener(null);
-        last=null;
+        try{
+            while (activityStack!=null&&activityStack.size()>0) activityStack.getLast().finish();
+        }catch (Exception e){e.printStackTrace();}
     }
 
     private boolean isAnonymousMode(){
@@ -505,7 +501,10 @@ public class MainActivity extends AppCompatActivity {
             if(convertView==null){
                 convertView= LayoutInflater.from(MainActivity.this).inflate(R.layout.item_account,parent,false);
             }
-            if(position>=list.size()) convertView.setVisibility(View.INVISIBLE);
+            if(position>=list.size()) {
+                convertView.setVisibility(View.INVISIBLE);
+                return convertView;
+            }
             else convertView.setVisibility(View.VISIBLE);
 
             AccountItem item=null;
