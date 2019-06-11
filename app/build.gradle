@@ -6,8 +6,8 @@ android {
         applicationId "com.github.ghmxr.ftpshare"
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 5
-        versionName "Build 5"
+        versionCode 6
+        versionName "Build 6"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -23,7 +23,15 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation files('libs/core-3.2.1.jar')
+    implementation files('libs/ftplet-api-1.1.1.jar')
+    implementation files('libs/log4j-1.2.17.jar')
+    implementation files('libs/mina-core-2.0.16.jar')
+    implementation files('libs/slf4j-api-1.7.21.jar')
+    implementation files('libs/slf4j-log4j12-1.7.21.jar')
+    implementation files('libs/ftpserver-core-1.1.1-edited.jar')//由于修改并重写了jar包中的几个类，所以删掉了这些class，修改后的类在主路径org对应的包中，用于支持编码修改
+
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'

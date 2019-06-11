@@ -44,6 +44,16 @@ public class Constants {
          */
         public static final String PORT_NUMBER="port_number";
         public static final int PORT_NUMBER_DEFAULT=5656;
+        /**
+         * this stands for a string value
+         */
+        public static final String CHARSET_TYPE ="charset_type";
+        public static final String CHARSET_TYPE_DEFAULT ="UTF-8";
+    }
+
+    public static class Charset{
+        public static final String CHAR_UTF="UTF-8";
+        public static final String CHAR_GBK="GBK";
     }
 
 }

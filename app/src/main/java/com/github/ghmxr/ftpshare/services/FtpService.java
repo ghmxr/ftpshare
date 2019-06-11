@@ -55,7 +55,7 @@ public class FtpService extends Service {
     public static final int MESSAGE_STOP_FTP_COMPLETE=0;
     public static final int MESSAGE_WAKELOCK_ACQUIRE=5;
     public static final int MESSAGE_WAKELOCK_RELEASE=6;
-    public static final int MESSAGE_REFRESH_FOREGROUND_NOTIFICATION=7;
+    //public static final int MESSAGE_REFRESH_FOREGROUND_NOTIFICATION=7;
 
     private BroadcastReceiver receiver=new BroadcastReceiver() {
         @Override
@@ -298,10 +298,10 @@ public class FtpService extends Service {
                     stopSelf();
                 }
                 break;
-                case MESSAGE_REFRESH_FOREGROUND_NOTIFICATION:{
+                /*case MESSAGE_REFRESH_FOREGROUND_NOTIFICATION:{
                     if(isFTPServiceRunning()) makeThisForeground();
                 }
-                break;
+                break;*/
             }
         }catch (Exception e){e.printStackTrace();}
     }
@@ -367,5 +367,13 @@ public class FtpService extends Service {
         void onFTPServiceStarted();
         void onFTPServiceStartError(Exception e);
         void onFTPServiceDestroyed();
+    }
+
+    public static String getCharsetFromSharedPreferences(){
+        Context context=ftpService;
+        return  (context!=null?
+                context.getSharedPreferences(Constants.PreferenceConsts.FILE_NAME, Context.MODE_PRIVATE)
+                        .getString(Constants.PreferenceConsts.CHARSET_TYPE,Constants.PreferenceConsts.CHARSET_TYPE_DEFAULT)
+                :Constants.PreferenceConsts.CHARSET_TYPE_DEFAULT);
     }
 }

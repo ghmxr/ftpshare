@@ -30,6 +30,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,7 +49,7 @@ public class MainActivity extends BaseActivity {
     private Menu menu;
     private SwitchCompat switchCompat;
     private CheckBox cb_wakelock,cb_anonymous_writable;
-    private TextView tv_main_value,tv_port,tv_ftp_address,tv_anonymous_path;
+    private TextView tv_main_value,tv_port,tv_charset,tv_ftp_address,tv_anonymous_path;
     //private ImageView qrcode;
     private ListView listview_users;
 
@@ -91,6 +92,7 @@ public class MainActivity extends BaseActivity {
         cb_anonymous_writable=findViewById(R.id.anonymous_writable_cb);
         tv_main_value=findViewById(R.id.main_att);
         tv_port=findViewById(R.id.port_att);
+        tv_charset=findViewById(R.id.charset_att);
         tv_anonymous_path=findViewById(R.id.mode_anonymous_value);
         listview_users=findViewById(R.id.view_user_list);
 
@@ -103,6 +105,7 @@ public class MainActivity extends BaseActivity {
         switchCompat.setChecked(FtpService.isFTPServiceRunning());
         tv_main_value.setText(FtpService.getFTPStatusDescription(this));
         tv_port.setText(String.valueOf(settings.getInt(Constants.PreferenceConsts.PORT_NUMBER,Constants.PreferenceConsts.PORT_NUMBER_DEFAULT)));
+        tv_charset.setText(getCharsetDisplayValue());
         cb_wakelock.setChecked(settings.getBoolean(Constants.PreferenceConsts.WAKE_LOCK,Constants.PreferenceConsts.WAKE_LOCK_DEFAULT));
         tv_anonymous_path.setText(settings.getString(Constants.PreferenceConsts.ANONYMOUS_MODE_PATH,Constants.PreferenceConsts.ANONYMOUS_MODE_PATH_DEFAULT));
         cb_anonymous_writable.setChecked(settings.getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE_WRITABLE,Constants.PreferenceConsts.ANONYMOUS_MODE_WRITABLE_DEFAULT));
@@ -231,6 +234,43 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+        findViewById(R.id.charset_area).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(FtpService.isFTPServiceRunning()){
+                    showAttentionOfFTPisRunning();
+                    return;
+                }
+                final AlertDialog dialog=new AlertDialog.Builder(MainActivity.this)
+                        .setTitle(getResources().getString(R.string.item_charset))
+                        .setView(R.layout.layout_dialog_charset)
+                        .show();
+                RadioButton ra_utf=dialog.findViewById(R.id.charset_selection_utf);
+                RadioButton ra_gbk=dialog.findViewById(R.id.charset_selection_gbk);
+                String selection=settings.getString(Constants.PreferenceConsts.CHARSET_TYPE,Constants.PreferenceConsts.CHARSET_TYPE_DEFAULT);
+                ra_utf.setChecked(selection.equals(Constants.Charset.CHAR_UTF));
+                ra_gbk.setChecked(selection.equals(Constants.Charset.CHAR_GBK));
+                ra_utf.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editor.putString(Constants.PreferenceConsts.CHARSET_TYPE,Constants.Charset.CHAR_UTF);
+                        editor.apply();
+                        dialog.cancel();
+                        tv_charset.setText(getCharsetDisplayValue());
+                    }
+                });
+                ra_gbk.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editor.putString(Constants.PreferenceConsts.CHARSET_TYPE,Constants.Charset.CHAR_GBK);
+                        editor.apply();
+                        dialog.cancel();
+                        tv_charset.setText(getCharsetDisplayValue());
+                    }
+                });
+            }
+        });
+
         findViewById(R.id.wakelock_area).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -298,7 +338,7 @@ public class MainActivity extends BaseActivity {
         });
 
         setQRCodeArea(FtpService.isFTPServiceRunning(),ValueUtil.getFTPServiceFullAddress(this));
-        FtpService.sendEmptyMessage(FtpService.MESSAGE_REFRESH_FOREGROUND_NOTIFICATION);
+        //FtpService.sendEmptyMessage(FtpService.MESSAGE_REFRESH_FOREGROUND_NOTIFICATION);
     }
 
     private void showSnackBarOfRequestingWritingPermission(){
@@ -313,6 +353,13 @@ public class MainActivity extends BaseActivity {
             }
         });
         snackbar.show();
+    }
+
+    private String getCharsetDisplayValue(){
+        return getResources().getString(
+                getSharedPreferences(Constants.PreferenceConsts.FILE_NAME,Context.MODE_PRIVATE).getString(Constants.PreferenceConsts.CHARSET_TYPE,Constants.PreferenceConsts.CHARSET_TYPE_DEFAULT).equals(Constants.Charset.CHAR_GBK)?
+                        R.string.item_charset_gbk:R.string.item_charset_utf
+                );
     }
 
     private void setQRCodeArea(boolean visible, final String ftp){
