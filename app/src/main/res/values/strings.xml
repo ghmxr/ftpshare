@@ -42,6 +42,7 @@
     <string name="attention_invalid_port_number">请输入有效的数字</string>
     <string name="attention_port_number_out_of_range">请输入1024~65535之间的数字</string>
     <string name="attention_delete_confirm">再点击一次确定删除</string>
+    <string name="attention_changes_confirm">没有保存更改，再点击一次确认退出</string>
     <string name="attention_no_user_account">请添加一个账户或者使用匿名模式来打开FTP服务</string>
     <string name="notification_title">FTP服务正在运行</string>
     <string name="permission_write_external">请为本应用授予存储读写权限</string>

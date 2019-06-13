@@ -2,6 +2,7 @@ package com.github.ghmxr.ftpshare.activities;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.Snackbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -13,17 +14,15 @@ import com.github.ghmxr.ftpshare.services.FtpService;
 import com.github.ghmxr.ftpshare.utils.MySQLiteOpenHelper;
 
 public class EditAccountActivity extends AccountActivity {
-    /**
-     * this stands for a int value
-     */
-    public static final String EXTRA_POSITION="position";
 
-    private long first_clicked=0;
+    public static final String EXTRA_SERIALIZED_ACCOUNT_ITEM="account_item";
+    private long first_clicked_delete =0;
 
     @Override
-    public void initializeAccountData() {
+    public void initializeAccountItem() {
         try{
-            item= new AccountItem(FtpService.getUserAccountList(this).get(getIntent().getIntExtra(EXTRA_POSITION,-1)));
+            //item= new AccountItem(FtpService.getUserAccountList(this).get(getIntent().getIntExtra(EXTRA_POSITION,-1)));
+            item=(AccountItem)getIntent().getSerializableExtra(EXTRA_SERIALIZED_ACCOUNT_ITEM);
         }catch (Exception e){
             e.printStackTrace();
             Toast.makeText(this,e.toString(),Toast.LENGTH_SHORT).show();
@@ -53,12 +52,12 @@ public class EditAccountActivity extends AccountActivity {
             case R.id.action_account_delete:{
                 long time=System.currentTimeMillis();
                 if(FtpService.isFTPServiceRunning()){
-                    Snackbar.make(findViewById(R.id.view_account_root),getResources().getString(R.string.attention_ftp_is_running),Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(android.R.id.content),getResources().getString(R.string.attention_ftp_is_running),Snackbar.LENGTH_SHORT).show();
                     return true;
                 }
-                if(time-first_clicked>1000){
-                    Snackbar.make(findViewById(R.id.view_account_root),getResources().getString(R.string.attention_delete_confirm),Snackbar.LENGTH_SHORT).show();
-                    first_clicked=time;
+                if(time- first_clicked_delete >1000){
+                    Snackbar.make(findViewById(android.R.id.content),getResources().getString(R.string.attention_delete_confirm),Snackbar.LENGTH_SHORT).show();
+                    first_clicked_delete =time;
                     return true;
                 }
                 if(deleteRow(this.item.id)<=0){
@@ -70,6 +69,15 @@ public class EditAccountActivity extends AccountActivity {
             break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+            checkChangesAndExit();
+            return true;
+        }
+        return super.onKeyDown(keyCode,event);
     }
 
     private long deleteRow(long id){

@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.PowerManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -44,15 +45,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FtpService extends Service {
-    public static FtpServer server;//this static field is guarded by FtpService.class
-    public static PowerManager.WakeLock wakeLock;
-    public static FtpService ftpService;
+    private static FtpServer server;//this static field is guarded by FtpService.class
+    private static PowerManager.WakeLock wakeLock;
+    private static FtpService ftpService;
     private static MyHandler handler;
-    public static OnFTPServiceStatusChangedListener listener;
+    private static OnFTPServiceStatusChangedListener listener;
 
     public static final int MESSAGE_START_FTP_COMPLETE=1;
     public static final int MESSAGE_START_FTP_ERROR=-1;
-    public static final int MESSAGE_STOP_FTP_COMPLETE=0;
     public static final int MESSAGE_WAKELOCK_ACQUIRE=5;
     public static final int MESSAGE_WAKELOCK_RELEASE=6;
     //public static final int MESSAGE_REFRESH_FOREGROUND_NOTIFICATION=7;
@@ -65,13 +65,13 @@ public class FtpService extends Service {
                     NetworkInfo info=intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
                     if(info.getState().equals(NetworkInfo.State.DISCONNECTED)&&info.getType()==ConnectivityManager.TYPE_WIFI
                             &&!info.isConnected()&&!APUtil.isAPEnabled(FtpService.this)){
-                        stopService();
+                        stopSelf();
                         Log.d("Network",""+info.getState()+" "+info.getTypeName()+" "+info.isConnected());
                     }
                 }else if(intent.getAction().equals("android.net.wifi.WIFI_AP_STATE_CHANGED")){
                     int state=intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE,0);
                     if(state==11&&!ValueUtil.isWifiConnected(FtpService.this)){
-                        stopService();
+                        stopSelf();
                         Log.d("APState",""+state);
                     }
                 }
@@ -112,15 +112,17 @@ public class FtpService extends Service {
         return null;
     }
 
-    public static void startService(Activity activity){
-        Intent intent=new Intent(activity,FtpService.class);
-        activity.startService(intent);
+    /**
+     * 如果FTP Service 没有实例将创建实例并启动
+     */
+    public static void startService(@NonNull Activity activity){
+        if(ftpService==null) activity.startService(new Intent(activity,FtpService.class));
     }
 
     public static List<AccountItem> getUserAccountList(Context context){
         List<AccountItem> list=new ArrayList<>();
         try{
-            SQLiteDatabase db= new MySQLiteOpenHelper(context).getWritableDatabase();
+            SQLiteDatabase db= new MySQLiteOpenHelper(context).getReadableDatabase();
             Cursor cursor=db.rawQuery("select * from "+Constants.SQLConsts.TABLE_NAME,null);
             while (cursor.moveToNext()){
                 try{
@@ -134,6 +136,7 @@ public class FtpService extends Service {
                 }catch (Exception e){e.printStackTrace();}
             }
             cursor.close();
+            db.close();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -141,45 +144,45 @@ public class FtpService extends Service {
     }
 
     private void startFTPService() throws Exception{
-        FtpServerFactory factory=new FtpServerFactory();
-        SharedPreferences settings = getSharedPreferences(Constants.PreferenceConsts.FILE_NAME,Context.MODE_PRIVATE);
-        List<Authority> authorities_writable = new ArrayList<>();
-        authorities_writable.add(new WritePermission());
-        if(settings.getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE,Constants.PreferenceConsts.ANONYMOUS_MODE_DEFAULT)){
-            BaseUser baseUser = new BaseUser();
-            baseUser.setName(Constants.FTPConsts.NAME_ANONYMOUS);
-            baseUser.setPassword("");
-            baseUser.setHomeDirectory(settings.getString(Constants.PreferenceConsts.ANONYMOUS_MODE_PATH,Constants.PreferenceConsts.ANONYMOUS_MODE_PATH_DEFAULT));
-            if(settings.getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE_WRITABLE,Constants.PreferenceConsts.ANONYMOUS_MODE_WRITABLE_DEFAULT)){
-                baseUser.setAuthorities(authorities_writable);
-            }
-            factory.getUserManager().save(baseUser);
-        }else{
-            List<AccountItem> list=getUserAccountList(this);
-            for(AccountItem item:list){
-                BaseUser baseUser = new BaseUser();
-                baseUser.setName(item.account);
-                baseUser.setPassword(item.password);
-                baseUser.setHomeDirectory(item.path);
-                if(item.writable) baseUser.setAuthorities(authorities_writable);
-                factory.getUserManager().save(baseUser);
-            }
-        }
-
-        ListenerFactory lfactory = new ListenerFactory();
-        lfactory.setPort(settings.getInt(Constants.PreferenceConsts.PORT_NUMBER,Constants.PreferenceConsts.PORT_NUMBER_DEFAULT)); //设置端口号 非ROOT不可使用1024以下的端口
-        factory.addListener("default", lfactory.createListener());
-        ConnectivityManager manager=null;
-        try{
-           manager=(ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        }catch (Exception e){e.printStackTrace();}
-        if(manager!=null){
-            NetworkInfo info=manager.getActiveNetworkInfo();
-            if((info==null||info.getType()!=ConnectivityManager.TYPE_WIFI)&&!APUtil.isAPEnabled(this)) {
-                throw new Exception(getResources().getString(R.string.attention_no_active_network));
-            }
-        }
         synchronized (FtpService.class){
+            FtpServerFactory factory=new FtpServerFactory();
+            SharedPreferences settings = getSharedPreferences(Constants.PreferenceConsts.FILE_NAME,Context.MODE_PRIVATE);
+            List<Authority> authorities_writable = new ArrayList<>();
+            authorities_writable.add(new WritePermission());
+            if(settings.getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE,Constants.PreferenceConsts.ANONYMOUS_MODE_DEFAULT)){
+                BaseUser baseUser = new BaseUser();
+                baseUser.setName(Constants.FTPConsts.NAME_ANONYMOUS);
+                baseUser.setPassword("");
+                baseUser.setHomeDirectory(settings.getString(Constants.PreferenceConsts.ANONYMOUS_MODE_PATH,Constants.PreferenceConsts.ANONYMOUS_MODE_PATH_DEFAULT));
+                if(settings.getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE_WRITABLE,Constants.PreferenceConsts.ANONYMOUS_MODE_WRITABLE_DEFAULT)){
+                    baseUser.setAuthorities(authorities_writable);
+                }
+                factory.getUserManager().save(baseUser);
+            }else{
+                List<AccountItem> list=getUserAccountList(this);
+                for(AccountItem item:list){
+                    BaseUser baseUser = new BaseUser();
+                    baseUser.setName(item.account);
+                    baseUser.setPassword(item.password);
+                    baseUser.setHomeDirectory(item.path);
+                    if(item.writable) baseUser.setAuthorities(authorities_writable);
+                    factory.getUserManager().save(baseUser);
+                }
+            }
+
+            ListenerFactory lfactory = new ListenerFactory();
+            lfactory.setPort(settings.getInt(Constants.PreferenceConsts.PORT_NUMBER,Constants.PreferenceConsts.PORT_NUMBER_DEFAULT)); //设置端口号 非ROOT不可使用1024以下的端口
+            factory.addListener("default", lfactory.createListener());
+            ConnectivityManager manager=null;
+            try{
+                manager=(ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            }catch (Exception e){e.printStackTrace();}
+            if(manager!=null){
+                NetworkInfo info=manager.getActiveNetworkInfo();
+                if((info==null||info.getType()!=ConnectivityManager.TYPE_WIFI)&&!APUtil.isAPEnabled(this)) {
+                    throw new Exception(getResources().getString(R.string.attention_no_active_network));
+                }
+            }
             try{
                 if(server!=null) server.stop();
             }catch (Exception e){}
@@ -196,14 +199,14 @@ public class FtpService extends Service {
                 manager.createNotificationChannel(channel);
             }
             NotificationCompat.Builder builder=new NotificationCompat.Builder(this,"default");
-            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.drawable.ic_ex_24dp);
             builder.setContentTitle(getResources().getString(R.string.notification_title));
-            builder.setContentText(getFTPStatusDescription(this));
+            builder.setContentText(getResources().getString(R.string.ftp_status_running_head)+ValueUtil.getFTPServiceFullAddress(this));
 
-            RemoteViews rv=new RemoteViews(getPackageName(),R.layout.layout_notification);
-            rv.setTextViewText(R.id.notification_title,getResources().getString(R.string.notification_title));
-            rv.setTextViewText(R.id.notification_text,getFTPStatusDescription(this));
-            builder.setCustomContentView(rv);
+            //RemoteViews rv=new RemoteViews(getPackageName(),R.layout.layout_notification);
+            //rv.setTextViewText(R.id.notification_title,getResources().getString(R.string.notification_title));
+            //rv.setTextViewText(R.id.notification_text,getResources().getString(R.string.ftp_status_running_head)+ValueUtil.getFTPServiceFullAddress(this));
+            //builder.setCustomContentView(rv);
 
             builder.setContentIntent(PendingIntent.getActivity(this,0,new Intent(this, MainActivity.class),PendingIntent.FLAG_UPDATE_CURRENT));
 
@@ -211,22 +214,12 @@ public class FtpService extends Service {
         }catch (Exception e){e.printStackTrace();}
     }
 
+    /**
+     *check if have ftp service instance and kill it
+     */
     public static void stopService(){
         try{
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    synchronized (FtpService.class){
-                        try{
-                            if(server!=null){
-                                server.stop();
-                                server=null;
-                            }
-                        }catch (Exception e){e.printStackTrace();}
-                        sendEmptyMessage(MESSAGE_STOP_FTP_COMPLETE);
-                    }
-                }
-            }).start();
+            if(ftpService!=null) ftpService.stopSelf();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -269,7 +262,7 @@ public class FtpService extends Service {
                 }
                 break;
                 case MESSAGE_START_FTP_ERROR:{
-                    stopService();
+                    stopSelf();
                     try{
                         if(listener!=null) listener.onFTPServiceStartError((Exception)msg.obj);
                     }catch (Exception e){e.printStackTrace();}
@@ -294,14 +287,6 @@ public class FtpService extends Service {
                     }catch (Exception e){e.printStackTrace();}
                 }
                 break;
-                case MESSAGE_STOP_FTP_COMPLETE:{
-                    stopSelf();
-                }
-                break;
-                /*case MESSAGE_REFRESH_FOREGROUND_NOTIFICATION:{
-                    if(isFTPServiceRunning()) makeThisForeground();
-                }
-                break;*/
             }
         }catch (Exception e){e.printStackTrace();}
     }
@@ -310,14 +295,19 @@ public class FtpService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.d("onDestroy","onDestroy method called");
-        synchronized (FtpService.class){//this may cause ANR while transferring files but will ensure the ftp was shutdown after this service killed
-            try{
-                if(server!=null){
-                    server.stop();
-                    server=null;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (FtpService.class){
+                    try{
+                        if(server!=null){
+                            server.stop();
+                            server=null;
+                        }
+                    }catch (Exception e){e.printStackTrace();}
                 }
-            }catch (Exception e){e.printStackTrace();}
-        }
+            }
+        }).start();
         try{
             if(wakeLock!=null){
                 wakeLock.release();
@@ -327,11 +317,13 @@ public class FtpService extends Service {
         try{
             unregisterReceiver(receiver);
         }catch (Exception e){e.printStackTrace();}
+
+        handler=null;
+        ftpService=null;
+
         try{
             if(listener!=null) listener.onFTPServiceDestroyed();
         }catch (Exception e){}
-        handler=null;
-        ftpService=null;
     }
 
     private static class MyHandler extends Handler{
@@ -350,7 +342,7 @@ public class FtpService extends Service {
 
     public static boolean isFTPServiceRunning(){
         try{
-            return server!=null&&!server.isStopped();
+            return ftpService!=null&&server!=null&&!server.isStopped();
         }catch (Exception e){e.printStackTrace();}
         return false;
     }

@@ -10,7 +10,7 @@ import com.github.ghmxr.ftpshare.services.FtpService;
 public class AddAccountActivity extends AccountActivity {
 
     @Override
-    public void initializeAccountData() {
+    public void initializeAccountItem() {
         item=new AccountItem();
         item.account="user"+ (FtpService.getUserAccountList(this).size()+1);
     }

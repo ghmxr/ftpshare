@@ -117,7 +117,8 @@ public class MainActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(isAnonymousMode()) return;
                 Intent intent=new Intent(MainActivity.this,EditAccountActivity.class);
-                intent.putExtra(EditAccountActivity.EXTRA_POSITION,position);
+                //intent.putExtra(EditAccountActivity.EXTRA_POSITION,position);
+                intent.putExtra(EditAccountActivity.EXTRA_SERIALIZED_ACCOUNT_ITEM,FtpService.getUserAccountList(MainActivity.this).get(position));
                 startActivityForResult(intent, REQUEST_CODE_EDIT);
             }
         });
@@ -129,7 +130,7 @@ public class MainActivity extends BaseActivity {
             public void onFTPServiceStarted() {
                 switchCompat.setEnabled(true);
                 switchCompat.setChecked(true);
-                tv_main_value.setText(FtpService.getFTPStatusDescription(MainActivity.this));
+                tv_main_value.setText(getResources().getString(R.string.ftp_status_running_head)+ValueUtil.getFTPServiceFullAddress(MainActivity.this));
                 findViewById(R.id.main_area).setClickable(true);
                 setQRCodeArea(true,ValueUtil.getFTPServiceFullAddress(MainActivity.this));
             }
@@ -138,9 +139,9 @@ public class MainActivity extends BaseActivity {
             public void onFTPServiceStartError(Exception e) {
                 switchCompat.setEnabled(true);
                 switchCompat.setChecked(false);
-                tv_main_value.setText(FtpService.getFTPStatusDescription(MainActivity.this));
+                tv_main_value.setText(getResources().getString(R.string.ftp_status_not_running));
                 //Toast.makeText(MainActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
-                Snackbar.make(findViewById(R.id.container),e.toString(),Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(android.R.id.content),e.toString(),Snackbar.LENGTH_SHORT).show();
                 findViewById(R.id.main_area).setClickable(true);
                 setQRCodeArea(false,"invalid");
             }
@@ -149,7 +150,7 @@ public class MainActivity extends BaseActivity {
             public void onFTPServiceDestroyed() {
                 switchCompat.setChecked(false);
                 switchCompat.setEnabled(true);
-                tv_main_value.setText(FtpService.getFTPStatusDescription(MainActivity.this));
+                tv_main_value.setText(getResources().getString(R.string.ftp_status_not_running));
                 findViewById(R.id.main_area).setClickable(true);
                 setQRCodeArea(false,"invalid");
             }
@@ -165,7 +166,7 @@ public class MainActivity extends BaseActivity {
                         return;
                     }
                     if(!isAnonymousMode()&&FtpService.getUserAccountList(MainActivity.this).size()==0){
-                        Snackbar.make(findViewById(R.id.container),getResources().getString(R.string.attention_no_user_account),Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(android.R.id.content),getResources().getString(R.string.attention_no_user_account),Snackbar.LENGTH_SHORT).show();
                         return;
                     }
                     findViewById(R.id.main_area).setClickable(false);
@@ -174,6 +175,7 @@ public class MainActivity extends BaseActivity {
                     tv_main_value.setText(getResources().getString(R.string.attention_opening_ftp));
                     FtpService.startService(MainActivity.this);
                 }else{
+                    findViewById(R.id.main_area).setClickable(false);
                     switchCompat.setChecked(false);
                     switchCompat.setEnabled(false);
                     tv_main_value.setText(getResources().getString(R.string.attention_closing_ftp));
@@ -342,7 +344,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void showSnackBarOfRequestingWritingPermission(){
-        Snackbar snackbar=Snackbar.make(findViewById(R.id.container),getResources().getString(R.string.permission_write_external),Snackbar.LENGTH_SHORT);
+        Snackbar snackbar=Snackbar.make(findViewById(android.R.id.content),getResources().getString(R.string.permission_write_external),Snackbar.LENGTH_SHORT);
         snackbar.setAction(getResources().getString(R.string.snackbar_action_goto), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -374,7 +376,7 @@ public class MainActivity extends BaseActivity {
                     try{
                         ClipboardManager manager=(ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
                         manager.setPrimaryClip(ClipData.newPlainText("FTP Address",ftp));
-                        Snackbar.make(findViewById(R.id.container),getResources().getString(R.string.attention_clipboard),Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(android.R.id.content),getResources().getString(R.string.attention_clipboard),Snackbar.LENGTH_SHORT).show();
                     }
                     catch (Exception e){
                         e.printStackTrace();
@@ -413,7 +415,7 @@ public class MainActivity extends BaseActivity {
 
     private void showAttentionOfFTPisRunning(){
         try{
-            Snackbar.make(findViewById(R.id.container),getResources().getString(R.string.attention_ftp_is_running),Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(android.R.id.content),getResources().getString(R.string.attention_ftp_is_running),Snackbar.LENGTH_SHORT).show();
         }catch (Exception e){e.printStackTrace();}
     }
 
@@ -509,10 +511,15 @@ public class MainActivity extends BaseActivity {
     @Override
     public void finish(){
         super.finish();
-        FtpService.setOnFTPServiceStatusChangedListener(null);
         try{
             while (activityStack!=null&&activityStack.size()>0) activityStack.getLast().finish();
         }catch (Exception e){e.printStackTrace();}
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        FtpService.setOnFTPServiceStatusChangedListener(null);
     }
 
     private boolean isAnonymousMode(){
@@ -530,7 +537,7 @@ public class MainActivity extends BaseActivity {
         }
         @Override
         public int getCount() {
-            return list.size()+3;
+            return list.size();
         }
 
         @Override
