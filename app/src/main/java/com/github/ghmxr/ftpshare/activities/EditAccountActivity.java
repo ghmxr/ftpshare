@@ -82,8 +82,7 @@ public class EditAccountActivity extends AccountActivity {
 
     private long deleteRow(long id){
         try{
-            SQLiteDatabase database=new MySQLiteOpenHelper(this).getWritableDatabase();
-            return database.delete(Constants.SQLConsts.TABLE_NAME,Constants.SQLConsts.COLUMN_ID+"="+id,null);
+            return MySQLiteOpenHelper.deleteRow(this,id);
         }catch (Exception e){
             e.printStackTrace();
         }

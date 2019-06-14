@@ -230,14 +230,7 @@ public abstract class AccountActivity extends BaseActivity {
             }
         }
         try{
-            SQLiteDatabase db=new MySQLiteOpenHelper(this).getWritableDatabase();
-            ContentValues contentValues=new ContentValues();
-            contentValues.put(Constants.SQLConsts.COLUMN_ACCOUNT_NAME,this.item.account);
-            contentValues.put(Constants.SQLConsts.COLUMN_PASSWORD,this.item.password);
-            contentValues.put(Constants.SQLConsts.COLUMN_PATH,this.item.path);
-            contentValues.put(Constants.SQLConsts.COLUMN_WRITABLE,this.item.writable?1:0);
-            if(id_update==null) return db.insert(Constants.SQLConsts.TABLE_NAME,null,contentValues);
-            else return db.update(Constants.SQLConsts.TABLE_NAME, contentValues,Constants.SQLConsts.COLUMN_ID+"="+id_update,null);
+            return MySQLiteOpenHelper.saveOrUpdateAccountItem2DB(this,item,id_update);
         }catch (Exception e){
             e.printStackTrace();
             Toast.makeText(this,e.toString(),Toast.LENGTH_SHORT).show();
