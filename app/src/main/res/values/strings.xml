@@ -13,7 +13,7 @@
     <string name="item_charset_utf">UTF-8(默认)</string>
     <string name="item_charset_gbk">GBK(简体中文)</string>
     <string name="item_wakelock">保持唤醒</string>
-    <string name="item_wakelock_att">FTP服务运行期间保持设备唤醒，可能会增大耗电量</string>
+    <string name="item_wakelock_att">FTP服务运行期间保持CPU唤醒，可能会增大耗电量</string>
     <string name="item_writable">可写入</string>
     <string name="account_anonymous">匿名模式</string>
     <string name="account_anonymous_att">以匿名模式登录FTP服务</string>
