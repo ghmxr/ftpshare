@@ -14,6 +14,7 @@ import android.support.v4.content.PermissionChecker;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
+import com.github.ghmxr.ftpshare.Constants;
 import com.github.ghmxr.ftpshare.R;
 import com.github.ghmxr.ftpshare.activities.MainActivity;
 import com.github.ghmxr.ftpshare.services.FtpService;
@@ -68,6 +69,12 @@ public class FtpWidget extends AppWidgetProvider {
         public void onReceive(Context context, Intent intent) {
             if(PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
                 Toast.makeText(context,context.getResources().getString(R.string.permission_write_external),Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(!context.getSharedPreferences(Constants.PreferenceConsts.FILE_NAME,Context.MODE_PRIVATE)
+                    .getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE,Constants.PreferenceConsts.ANONYMOUS_MODE_DEFAULT)
+                &&FtpService.getUserAccountList(context).size()==0){
+                Toast.makeText(context,context.getResources().getString(R.string.attention_no_user_account),Toast.LENGTH_SHORT).show();
                 return;
             }
             boolean b=FtpService.isFTPServiceRunning();
