@@ -24,7 +24,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.RemoteViews;
 
 import com.github.ghmxr.ftpshare.Constants;
 import com.github.ghmxr.ftpshare.R;
@@ -33,6 +32,7 @@ import com.github.ghmxr.ftpshare.data.AccountItem;
 import com.github.ghmxr.ftpshare.utils.APUtil;
 import com.github.ghmxr.ftpshare.utils.MySQLiteOpenHelper;
 import com.github.ghmxr.ftpshare.utils.ValueUtil;
+import com.github.ghmxr.ftpshare.widgets.FtpWidget;
 
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
@@ -88,6 +88,7 @@ public class FtpService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        makeThisForeground(getResources().getString(R.string.app_name),getResources().getString(R.string.attention_opening_ftp));
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -115,8 +116,11 @@ public class FtpService extends Service {
     /**
      * 如果FTP Service 没有实例将创建实例并启动
      */
-    public static void startService(@NonNull Activity activity){
-        if(ftpService==null) activity.startService(new Intent(activity,FtpService.class));
+    public static void startService(@NonNull Context context){
+        if(ftpService==null) {
+            if(Build.VERSION.SDK_INT>=26)context.startForegroundService(new Intent(context,FtpService.class));
+            else context.startService(new Intent(context,FtpService.class));
+        }
     }
 
     public static List<AccountItem> getUserAccountList(Context context){
@@ -191,7 +195,7 @@ public class FtpService extends Service {
         }
     }
 
-    private void makeThisForeground(){
+    private void makeThisForeground(String title,String content){
         try{
             NotificationManager manager=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
             if(Build.VERSION.SDK_INT>=26){
@@ -200,8 +204,10 @@ public class FtpService extends Service {
             }
             NotificationCompat.Builder builder=new NotificationCompat.Builder(this,"default");
             builder.setSmallIcon(R.drawable.ic_ex_24dp);
-            builder.setContentTitle(getResources().getString(R.string.notification_title));
-            builder.setContentText(getResources().getString(R.string.ftp_status_running_head)+ValueUtil.getFTPServiceFullAddress(this));
+            //builder.setContentTitle(getResources().getString(R.string.notification_title));
+            //builder.setContentText(getResources().getString(R.string.ftp_status_running_head)+ValueUtil.getFTPServiceFullAddress(this));
+            builder.setContentTitle(title);
+            builder.setContentText(content);
 
             //RemoteViews rv=new RemoteViews(getPackageName(),R.layout.layout_notification);
             //rv.setTextViewText(R.id.notification_title,getResources().getString(R.string.notification_title));
@@ -258,13 +264,18 @@ public class FtpService extends Service {
                     try{
                         if(listener!=null) listener.onFTPServiceStarted();
                     }catch (Exception e){e.printStackTrace();}
-                    makeThisForeground();
+                    makeThisForeground(getResources().getString(R.string.notification_title),
+                            getResources().getString(R.string.ftp_status_running_head)+ValueUtil.getFTPServiceFullAddress(this));
+                    FtpWidget.sendUpdateWidgetBroadcast(this,null);
                 }
                 break;
                 case MESSAGE_START_FTP_ERROR:{
                     stopSelf();
                     try{
                         if(listener!=null) listener.onFTPServiceStartError((Exception)msg.obj);
+                    }catch (Exception e){e.printStackTrace();}
+                    try{
+                        if(listener==null)FtpWidget.sendUpdateWidgetBroadcast(this,String.valueOf(msg.obj));
                     }catch (Exception e){e.printStackTrace();}
                 }
                 break;
@@ -324,6 +335,7 @@ public class FtpService extends Service {
         try{
             if(listener!=null) listener.onFTPServiceDestroyed();
         }catch (Exception e){}
+        FtpWidget.sendUpdateWidgetBroadcast(this,null);
     }
 
     private static class MyHandler extends Handler{

@@ -11,6 +11,8 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
@@ -341,6 +343,32 @@ public class MainActivity extends BaseActivity {
 
         setQRCodeArea(FtpService.isFTPServiceRunning(),ValueUtil.getFTPServiceFullAddress(this));
         //FtpService.sendEmptyMessage(FtpService.MESSAGE_REFRESH_FOREGROUND_NOTIFICATION);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshIgnoreBatteryStatus();
+    }
+
+    private void refreshIgnoreBatteryStatus(){
+        try{
+            if(Build.VERSION.SDK_INT>=23){
+                ViewGroup ignore_battery=findViewById(R.id.battery_area);
+                PowerManager powerManager=(PowerManager)getSystemService(Context.POWER_SERVICE);
+                if(!powerManager.isIgnoringBatteryOptimizations(getPackageName())){
+                    ignore_battery.setVisibility(View.VISIBLE);
+                    ignore_battery.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                            intent.setData(Uri.parse("package:"+getPackageName()));
+                            startActivity(intent);
+                        }
+                    });
+                }else ignore_battery.setVisibility(View.GONE);
+            }
+        }catch (Exception e){e.printStackTrace();}
     }
 
     private void showSnackBarOfRequestingWritingPermission(){

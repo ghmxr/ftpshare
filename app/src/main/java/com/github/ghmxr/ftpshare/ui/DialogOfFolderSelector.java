@@ -2,6 +2,7 @@ package com.github.ghmxr.ftpshare.ui;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -45,7 +46,12 @@ public class DialogOfFolderSelector extends AlertDialog {
             file=new File(Storage.getMainStoragePath());
         }
         try{
-            List<String> storages=Storage.getAvailableStoragePaths();
+            List<String> storages;
+            if(Build.VERSION.SDK_INT>=19){
+                storages=Storage.getAvailableStoragePaths(context);
+            }else{
+                storages=Storage.getAvailableStoragePaths();
+            }
             spinner.setAdapter(new ArrayAdapter<>(context,R.layout.item_spinner_storage,R.id.item_storage_text,storages));
             for(int i=0;i<storages.size();i++){
                 if(ValueUtil.isChildPathOfCertainPath(file, new File(storages.get(i)))) {

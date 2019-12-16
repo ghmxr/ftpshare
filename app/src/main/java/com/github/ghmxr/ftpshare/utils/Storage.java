@@ -1,8 +1,12 @@
 package com.github.ghmxr.ftpshare.utils;
 
+import android.annotation.TargetApi;
+import android.content.Context;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,5 +58,27 @@ public class Storage {
             return paths;
         }catch(Exception e){e.printStackTrace();}
         return new ArrayList<>();
+    }
+
+    @TargetApi(19)
+    public static List<String>getAvailableStoragePaths(@NonNull Context context){
+        final ArrayList<String>arrayList=new ArrayList<>();
+        try {
+            File[] exFiles=context.getExternalFilesDirs(null);
+            if(exFiles!=null){
+                for(File file:exFiles){
+                    try {
+                        String path=file.getAbsolutePath().toLowerCase();
+                        path=path.substring(0,path.indexOf("/android/data"));
+                        arrayList.add(path);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return arrayList;
     }
 }
