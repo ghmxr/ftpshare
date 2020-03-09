@@ -1,5 +1,6 @@
 package com.github.ghmxr.ftpshare.services;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -14,6 +15,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Handler;
@@ -22,17 +24,19 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
+import android.support.v4.content.PermissionChecker;
+import android.view.View;
+import android.widget.Toast;
 
 import com.github.ghmxr.ftpshare.Constants;
 import com.github.ghmxr.ftpshare.R;
 import com.github.ghmxr.ftpshare.activities.MainActivity;
 import com.github.ghmxr.ftpshare.data.AccountItem;
 import com.github.ghmxr.ftpshare.utils.APUtil;
+import com.github.ghmxr.ftpshare.utils.CommonUtils;
 import com.github.ghmxr.ftpshare.utils.MySQLiteOpenHelper;
-import com.github.ghmxr.ftpshare.utils.ValueUtil;
-import com.github.ghmxr.ftpshare.widgets.FtpWidget;
 
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
@@ -42,6 +46,7 @@ import org.apache.ftpserver.usermanager.impl.BaseUser;
 import org.apache.ftpserver.usermanager.impl.WritePermission;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class FtpService extends Service {
@@ -49,7 +54,7 @@ public class FtpService extends Service {
     private static PowerManager.WakeLock wakeLock;
     private static FtpService ftpService;
     private static MyHandler handler;
-    private static OnFTPServiceStatusChangedListener listener;
+    private static final LinkedList<OnFTPServiceStatusChangedListener> listeners=new LinkedList<>();
 
     public static final int MESSAGE_START_FTP_COMPLETE=1;
     public static final int MESSAGE_START_FTP_ERROR=-1;
@@ -66,13 +71,13 @@ public class FtpService extends Service {
                     if(info.getState().equals(NetworkInfo.State.DISCONNECTED)&&info.getType()==ConnectivityManager.TYPE_WIFI
                             &&!info.isConnected()&&!APUtil.isAPEnabled(FtpService.this)){
                         stopSelf();
-                        Log.d("Network",""+info.getState()+" "+info.getTypeName()+" "+info.isConnected());
+                        //Log.d("Network",""+info.getState()+" "+info.getTypeName()+" "+info.isConnected());
                     }
                 }else if(intent.getAction().equals("android.net.wifi.WIFI_AP_STATE_CHANGED")){
                     int state=intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE,0);
-                    if(state==11&&!ValueUtil.isWifiConnected(FtpService.this)){
+                    if(state==11&&!CommonUtils.isWifiConnected(FtpService.this)){
                         stopSelf();
-                        Log.d("APState",""+state);
+                        //Log.d("APState",""+state);
                     }
                 }
             }catch (Exception e){e.printStackTrace();}
@@ -115,12 +120,46 @@ public class FtpService extends Service {
 
     /**
      * 如果FTP Service 没有实例将创建实例并启动
+     * @return true 启动成功
      */
-    public static void startService(@NonNull Context context){
+    public static boolean startService(@NonNull Context context){
+        if(Build.VERSION.SDK_INT>=23&& PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
+            if(context instanceof Activity){
+                final Activity activity=(Activity)context;
+                Snackbar snackbar=Snackbar.make(activity.findViewById(android.R.id.content),activity.getResources().getString(R.string.permission_write_external),Snackbar.LENGTH_SHORT);
+                snackbar.setAction(activity.getResources().getString(R.string.snackbar_action_goto), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent appdetail = new Intent();
+                        appdetail.setAction(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        appdetail.setData(Uri.fromParts("package", activity.getApplication().getPackageName(), null));
+                        activity.startActivity(appdetail);
+                    }
+                });
+                snackbar.show();
+                activity.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
+            }else{
+                Toast.makeText(context,context.getResources().getString(R.string.permission_write_external),Toast.LENGTH_SHORT).show();
+            }
+            return false;
+        }
+        if(!context.getSharedPreferences(Constants.PreferenceConsts.FILE_NAME,Context.MODE_PRIVATE)
+                .getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE,Constants.PreferenceConsts.ANONYMOUS_MODE_DEFAULT)
+                &&FtpService.getUserAccountList(context).size()==0){
+            if(context instanceof Activity){
+                final Activity activity=(Activity)context;
+                Snackbar.make(activity.findViewById(android.R.id.content),activity.getResources().getString(R.string.attention_no_user_account),Snackbar.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(context,context.getResources().getString(R.string.attention_no_user_account),Toast.LENGTH_SHORT).show();
+            }
+            return false;
+        }
+
         if(ftpService==null) {
             if(Build.VERSION.SDK_INT>=26)context.startForegroundService(new Intent(context,FtpService.class));
             else context.startService(new Intent(context,FtpService.class));
         }
+        return true;
     }
 
     public static List<AccountItem> getUserAccountList(Context context){
@@ -199,7 +238,9 @@ public class FtpService extends Service {
         try{
             NotificationManager manager=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
             if(Build.VERSION.SDK_INT>=26){
-                NotificationChannel channel=new NotificationChannel("default","default",NotificationManager.IMPORTANCE_DEFAULT);
+                NotificationChannel channel=new NotificationChannel("default"
+                        ,getResources().getString(R.string.notification_channel_foreground_service)
+                        ,NotificationManager.IMPORTANCE_DEFAULT);
                 manager.createNotificationChannel(channel);
             }
             NotificationCompat.Builder builder=new NotificationCompat.Builder(this,"default");
@@ -260,23 +301,21 @@ public class FtpService extends Service {
                     }else {
                         sendEmptyMessage(MESSAGE_WAKELOCK_RELEASE);
                     }
-                    Log.d("FTP",""+FtpService.isFTPServiceRunning());
-                    try{
-                        if(listener!=null) listener.onFTPServiceStarted();
-                    }catch (Exception e){e.printStackTrace();}
+                    //Log.d("FTP",""+FtpService.isFTPServiceRunning());
+                    for(OnFTPServiceStatusChangedListener listener:listeners){
+                        listener.onFTPServiceStarted();
+                    }
                     makeThisForeground(getResources().getString(R.string.notification_title),
-                            getResources().getString(R.string.ftp_status_running_head)+ValueUtil.getFTPServiceFullAddress(this));
-                    FtpWidget.sendUpdateWidgetBroadcast(this,null);
+                            getResources().getString(R.string.ftp_status_running_head)+ CommonUtils.getFTPServiceFullAddress(this));
+                    //FtpWidget.sendUpdateWidgetBroadcast(this,null);
+                    //MyTileService.requestRefreshTile(this);
                 }
                 break;
                 case MESSAGE_START_FTP_ERROR:{
+                    for(OnFTPServiceStatusChangedListener listener:listeners){
+                        listener.onFTPServiceStartError((Exception)msg.obj);
+                    }
                     stopSelf();
-                    try{
-                        if(listener!=null) listener.onFTPServiceStartError((Exception)msg.obj);
-                    }catch (Exception e){e.printStackTrace();}
-                    try{
-                        if(listener==null)FtpWidget.sendUpdateWidgetBroadcast(this,String.valueOf(msg.obj));
-                    }catch (Exception e){e.printStackTrace();}
                 }
                 break;
                 case MESSAGE_WAKELOCK_ACQUIRE:{
@@ -285,7 +324,7 @@ public class FtpService extends Service {
                             if(wakeLock!=null) wakeLock.release();
                         }catch (Exception e){}
                         PowerManager powerManager=(PowerManager)getSystemService(Context.POWER_SERVICE);
-                        wakeLock=powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"ftp_wake_lock");
+                        wakeLock=powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"FTP Share:ftp_wake_lock");
                         wakeLock.acquire();
                     }catch (Exception e){e.printStackTrace();}
 
@@ -305,7 +344,7 @@ public class FtpService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("onDestroy","onDestroy method called");
+        //Log.d("onDestroy","onDestroy method called");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -332,10 +371,11 @@ public class FtpService extends Service {
         handler=null;
         ftpService=null;
 
-        try{
-            if(listener!=null) listener.onFTPServiceDestroyed();
-        }catch (Exception e){}
-        FtpWidget.sendUpdateWidgetBroadcast(this,null);
+        for(OnFTPServiceStatusChangedListener listener:listeners){
+            listener.onFTPServiceDestroyed();
+        }
+        //FtpWidget.sendUpdateWidgetBroadcast(this,null);
+        //MyTileService.requestRefreshTile(this);
     }
 
     private static class MyHandler extends Handler{
@@ -348,8 +388,15 @@ public class FtpService extends Service {
         }
     }
 
-    public static void setOnFTPServiceStatusChangedListener(OnFTPServiceStatusChangedListener ls){
-        listener=ls;
+
+    public static synchronized void addOnFtpServiceStatusChangedListener(OnFTPServiceStatusChangedListener listener){
+        if(!listeners.contains(listener)){
+            listeners.add(listener);
+        }
+    }
+
+    public static synchronized void removeOnFtpServiceStatusChangedListener(OnFTPServiceStatusChangedListener listener){
+        listeners.remove(listener);
     }
 
     public static boolean isFTPServiceRunning(){
@@ -362,7 +409,7 @@ public class FtpService extends Service {
     public static String getFTPStatusDescription(Context context){
         try{
             if(!isFTPServiceRunning()) return context.getResources().getString(R.string.ftp_status_not_running);
-            return context.getResources().getString(R.string.ftp_status_running_head)+ValueUtil.getFTPServiceFullAddress(context);
+            return context.getResources().getString(R.string.ftp_status_running_head)+ CommonUtils.getFTPServiceFullAddress(context);
         }catch (Exception e){e.printStackTrace();}
         return "";
     }

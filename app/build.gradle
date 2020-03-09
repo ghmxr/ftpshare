@@ -28,7 +28,7 @@ android {
 
 dependencies {
     //implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation files('libs/core-3.2.1.jar')
+    //implementation files('libs/core-3.2.1.jar')
     implementation files('libs/ftplet-api-1.1.1.jar')
     implementation files('libs/log4j-1.2.17.jar')
     implementation files('libs/mina-core-2.0.16.jar')

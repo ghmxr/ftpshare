@@ -25,6 +25,7 @@
             android:id="@+id/widget_description"
             android:textSize="12sp"
             android:singleLine="true"
+            android:textAppearance="?attr/editTextStyle"
             tools:text="FTP服务运行于ftp://192.168.1.101:5656"/>
     </LinearLayout>
     <RelativeLayout

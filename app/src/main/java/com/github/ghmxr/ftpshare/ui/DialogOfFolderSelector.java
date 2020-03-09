@@ -3,6 +3,9 @@ package com.github.ghmxr.ftpshare.ui;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -16,21 +19,26 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.github.ghmxr.ftpshare.R;
+import com.github.ghmxr.ftpshare.utils.CommonUtils;
 import com.github.ghmxr.ftpshare.utils.Storage;
-import com.github.ghmxr.ftpshare.utils.ValueUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DialogOfFolderSelector extends AlertDialog {
     private View dialogView;
     private Context context;
     private File file;
-    private List<File> list=new ArrayList<>();
+    private final List<File> list=new ArrayList<>();
     private Spinner spinner;
+    private ListView listView;
     private FileListAdapter adapter;
     private OnFolderSelectorDialogConfirmed listener_confirmed;
+    private final Handler handler=new Handler(Looper.getMainLooper());
+
+    private final Bundle positionRecords=new Bundle();
 
     public DialogOfFolderSelector(@NonNull Context context,@NonNull String path) {
         super(context);
@@ -39,6 +47,7 @@ public class DialogOfFolderSelector extends AlertDialog {
         setView(dialogView);
         setTitle(context.getResources().getString(R.string.account_path_dialog_title));
         spinner=dialogView.findViewById(R.id.folder_storage);
+        listView=dialogView.findViewById(R.id.folder_list);
         try{
             file=new File(path);
         }catch (Exception e){
@@ -54,7 +63,7 @@ public class DialogOfFolderSelector extends AlertDialog {
             }
             spinner.setAdapter(new ArrayAdapter<>(context,R.layout.item_spinner_storage,R.id.item_storage_text,storages));
             for(int i=0;i<storages.size();i++){
-                if(ValueUtil.isChildPathOfCertainPath(file, new File(storages.get(i)))) {
+                if(CommonUtils.isChildPathOfCertainPath(file, new File(storages.get(i)))) {
                     spinner.setSelection(i);
                     break;
                 }
@@ -62,7 +71,7 @@ public class DialogOfFolderSelector extends AlertDialog {
         }catch (Exception e){e.printStackTrace();}
 
         adapter=new FileListAdapter();
-        ((ListView)dialogView.findViewById(R.id.folder_list)).setAdapter(adapter);
+        listView.setAdapter(adapter);
         setButton(AlertDialog.BUTTON_POSITIVE, context.getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -95,9 +104,10 @@ public class DialogOfFolderSelector extends AlertDialog {
     public void show(){
         super.show();
         refreshPath(file);
-        ((ListView)dialogView.findViewById(R.id.folder_list)).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(file!=null)positionRecords.putInt(file.getAbsolutePath().toLowerCase(),listView.getFirstVisiblePosition());
                 if(position==0){
                     try{
                         File parent_file=file.getParentFile();
@@ -113,7 +123,7 @@ public class DialogOfFolderSelector extends AlertDialog {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selected=(String)spinner.getSelectedItem();
-                if(!ValueUtil.isChildPathOfCertainPath(file,new File(selected))){
+                if(!CommonUtils.isChildPathOfCertainPath(file,new File(selected))){
                     refreshPath(new File(selected));
                 }
             }
@@ -125,19 +135,42 @@ public class DialogOfFolderSelector extends AlertDialog {
         });
     }
 
-    private void refreshPath(File file){
+    private void refreshPath(final File file){
         this.file=file;
         list.clear();
-        try{
-            File[] files=this.file.listFiles();
-            for(File currentFile:files){
-                if(currentFile.isDirectory()) list.add(currentFile);
-            }
-        }catch (Exception e){e.printStackTrace();}
         adapter.notifyDataSetChanged();
-        String display_path=this.file.getAbsolutePath();
-        if(display_path.length()>70) display_path="..."+display_path.substring(display_path.length()-70,display_path.length());
-        ((TextView)dialogView.findViewById(R.id.folder_path)).setText(display_path);
+        dialogView.findViewById(R.id.folder_load).setVisibility(View.VISIBLE);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (DialogOfFolderSelector.this){
+                    final ArrayList<File>fileArrayList=new ArrayList<>();
+                    try{
+                        File[] files=file.listFiles();
+                        for(File currentFile:files){
+                            if(currentFile.isDirectory()) fileArrayList.add(currentFile);
+                        }
+                        Collections.sort(fileArrayList);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }finally {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                list.clear();
+                                list.addAll(fileArrayList);
+                                listView.setAdapter(new FileListAdapter());
+                                ((TextView)dialogView.findViewById(R.id.folder_path)).setText(DialogOfFolderSelector.this.file.getAbsolutePath());
+                                dialogView.findViewById(R.id.folder_load).setVisibility(View.GONE);
+                                if(DialogOfFolderSelector.this.file!=null){
+                                    listView.setSelection(positionRecords.getInt(DialogOfFolderSelector.this.file.getAbsolutePath().toLowerCase()));
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        }).start();
     }
 
     public void setOnFolderSelectorDialogConfirmedListener(OnFolderSelectorDialogConfirmed listener){
@@ -163,10 +196,10 @@ public class DialogOfFolderSelector extends AlertDialog {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if(convertView==null){
-                convertView= LayoutInflater.from(context).inflate(R.layout.item_folder,null);
+                convertView= LayoutInflater.from(context).inflate(R.layout.item_folder,parent,false);
             }
             if(position==0) {
-                ((TextView)convertView.findViewById(R.id.item_folder_name)).setText("...");
+                ((TextView)convertView.findViewById(R.id.item_folder_name)).setText("..");
                 return convertView;
             }
             ((TextView)convertView.findViewById(R.id.item_folder_name)).setText(list.get(position-1).getName());

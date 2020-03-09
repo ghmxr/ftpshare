@@ -24,6 +24,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES"/>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -34,6 +35,13 @@
             android:label="@string/activity_title_edit"
             android:screenOrientation="portrait"/>
         <service android:name=".services.FtpService"/>
+        <service android:name=".services.MyTileService"
+            android:icon="@drawable/ic_ex_24dp"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
         <receiver android:name=".widgets.FtpWidget">
             <meta-data
                 android:name="android.appwidget.provider"

@@ -1,39 +1,30 @@
 package com.github.ghmxr.ftpshare.utils;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
+import android.support.annotation.NonNull;
 import android.text.format.Formatter;
 
 import com.github.ghmxr.ftpshare.Constants;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.io.File;
-import java.util.Hashtable;
-import java.util.Locale;
 
-public class ValueUtil {
+public class CommonUtils {
     /**
      * judge if it is a child path of parent
      */
     public static boolean isChildPathOfCertainPath(File child,File parent){
         try {
-            if(child.getAbsolutePath().trim().toLowerCase(Locale.getDefault()).equals(parent.getAbsolutePath().trim().toLowerCase(Locale.getDefault()))) return true;
-            else{
-                while((child=child.getParentFile())!=null){
-                    if(child.getAbsolutePath().trim().toLowerCase(Locale.getDefault()).equals(parent.getAbsolutePath().trim().toLowerCase(Locale.getDefault()))) return true;
-                }
-            }
+            return child.getAbsolutePath().toLowerCase().startsWith(parent.getAbsolutePath().toLowerCase());
         }catch (Exception e){e.printStackTrace();}
         return false;
     }
 
-    public static String getIPAddressForFTPService(Context context){
+    private static String getIPAddressForFTPService(Context context){
         try{
             ConnectivityManager manager=(ConnectivityManager)context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo=manager.getActiveNetworkInfo();
@@ -51,9 +42,9 @@ public class ValueUtil {
     }
 
     public static String getFTPServiceFullAddress(Context context){
-        return "ftp://"+ValueUtil.getIPAddressForFTPService(context)+":"+context.getSharedPreferences(Constants.PreferenceConsts.FILE_NAME,Context.MODE_PRIVATE).getInt(Constants.PreferenceConsts.PORT_NUMBER,Constants.PreferenceConsts.PORT_NUMBER_DEFAULT);
+        return "ftp://"+ CommonUtils.getIPAddressForFTPService(context)+":"+context.getSharedPreferences(Constants.PreferenceConsts.FILE_NAME,Context.MODE_PRIVATE).getInt(Constants.PreferenceConsts.PORT_NUMBER,Constants.PreferenceConsts.PORT_NUMBER_DEFAULT);
     }
-    public static Bitmap getQrCodeBitmapOfString(String content,int w,int h){
+    /*public static Bitmap getQrCodeBitmapOfString(String content,int w,int h){
         try{
             Hashtable<EncodeHintType,String> hints=new Hashtable<>();
             hints.put(EncodeHintType.CHARACTER_SET,"utf-8");
@@ -76,7 +67,7 @@ public class ValueUtil {
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
 
     public static int dip2px(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
@@ -92,7 +83,7 @@ public class ValueUtil {
         return false;
     }
 
-    public static boolean isCellularNetworkConnected(Context context){
+    private static boolean isCellularNetworkConnected(Context context){
         try{
             ConnectivityManager connectivityManager=(ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo=connectivityManager.getActiveNetworkInfo();
@@ -108,5 +99,29 @@ public class ValueUtil {
             e.printStackTrace();
         }
         return false;
+    }
+
+    /**
+     * 获取本应用名称
+     */
+    public static @NonNull
+    String getAppName(@NonNull Context context){
+        try{
+            PackageManager packageManager=context.getPackageManager();
+            ApplicationInfo applicationInfo=packageManager.getApplicationInfo(context.getPackageName(),0);
+            return String.valueOf(packageManager.getApplicationLabel(applicationInfo));
+        }catch (Exception e){e.printStackTrace();}
+        return "";
+    }
+
+    /**
+     * 获取本应用版本名
+     */
+    public static @NonNull String getAppVersionName(@NonNull Context context){
+        try{
+            PackageManager packageManager=context.getPackageManager();
+            return String.valueOf(packageManager.getPackageInfo(context.getPackageName(),0).versionName);
+        }catch (Exception e){e.printStackTrace();}
+        return "";
     }
 }

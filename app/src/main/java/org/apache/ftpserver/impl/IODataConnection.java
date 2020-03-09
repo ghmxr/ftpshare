@@ -1,8 +1,14 @@
 package org.apache.ftpserver.impl;
 
-import android.util.Log;
-
 import com.github.ghmxr.ftpshare.services.FtpService;
+
+import org.apache.ftpserver.ftplet.DataConnection;
+import org.apache.ftpserver.ftplet.DataType;
+import org.apache.ftpserver.ftplet.FtpSession;
+import org.apache.ftpserver.usermanager.impl.TransferRateRequest;
+import org.apache.ftpserver.util.IoUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -13,13 +19,6 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
-import org.apache.ftpserver.ftplet.DataConnection;
-import org.apache.ftpserver.ftplet.DataType;
-import org.apache.ftpserver.ftplet.FtpSession;
-import org.apache.ftpserver.usermanager.impl.TransferRateRequest;
-import org.apache.ftpserver.util.IoUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class IODataConnection implements DataConnection {
     private final Logger LOG = LoggerFactory.getLogger(IODataConnection.class);
@@ -118,7 +117,7 @@ public class IODataConnection implements DataConnection {
 
         try {
             writer = new OutputStreamWriter(out, FtpService.getCharsetFromSharedPreferences());
-            Log.d(getClass().getName(),"the charset is "+FtpService.getCharsetFromSharedPreferences());
+            //Log.d(getClass().getName(),"the charset is "+FtpService.getCharsetFromSharedPreferences());
             writer.write(str);
             if (session instanceof DefaultFtpSession) {
                 ((DefaultFtpSession)session).increaseWrittenDataBytes(str.getBytes(FtpService.getCharsetFromSharedPreferences()).length);

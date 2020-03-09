@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    xmlns:tools="http://schemas.android.com/tools">
     <ImageView
         android:id="@+id/item_folder_icon"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_margin="10dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
@@ -15,7 +17,11 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/item_folder_icon"
         android:layout_centerVertical="true"
-        android:textSize="14sp"/>
+        android:layout_marginRight="20dp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textSize="13sp"
+        tools:text="FolderName"/>
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="1px"

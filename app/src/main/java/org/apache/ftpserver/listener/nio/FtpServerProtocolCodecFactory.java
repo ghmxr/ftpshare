@@ -1,16 +1,14 @@
 package org.apache.ftpserver.listener.nio;
 
-import android.util.Log;
-
 import com.github.ghmxr.ftpshare.services.FtpService;
-
-import java.nio.charset.Charset;
 
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 import org.apache.mina.filter.codec.ProtocolDecoder;
 import org.apache.mina.filter.codec.ProtocolEncoder;
 import org.apache.mina.filter.codec.textline.TextLineDecoder;
+
+import java.nio.charset.Charset;
 
 public class FtpServerProtocolCodecFactory implements ProtocolCodecFactory {
     private final ProtocolDecoder decoder ;
@@ -19,7 +17,7 @@ public class FtpServerProtocolCodecFactory implements ProtocolCodecFactory {
     public FtpServerProtocolCodecFactory() {
         String charset=FtpService.getCharsetFromSharedPreferences();
         decoder= new TextLineDecoder(Charset.forName(charset));
-        Log.d(getClass().getName(),"the charset is "+charset);
+        //Log.d(getClass().getName(),"the charset is "+charset);
     }
 
     public ProtocolDecoder getDecoder(IoSession session) throws Exception {

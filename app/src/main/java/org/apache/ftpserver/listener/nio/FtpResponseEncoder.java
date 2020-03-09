@@ -1,22 +1,20 @@
 package org.apache.ftpserver.listener.nio;
 
-import android.util.Log;
-
 import com.github.ghmxr.ftpshare.services.FtpService;
-
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
 
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolEncoderAdapter;
 import org.apache.mina.filter.codec.ProtocolEncoderOutput;
 
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+
 public class FtpResponseEncoder extends ProtocolEncoderAdapter {
     private final CharsetEncoder ENCODER = Charset.forName(FtpService.getCharsetFromSharedPreferences()).newEncoder();
 
     public FtpResponseEncoder() {
-        Log.d(getClass().getName(),"the charset is "+FtpService.getCharsetFromSharedPreferences());
+        //Log.d(getClass().getName(),"the charset is "+FtpService.getCharsetFromSharedPreferences());
     }
 
     public void encode(IoSession session, Object message, ProtocolEncoderOutput out) throws Exception {

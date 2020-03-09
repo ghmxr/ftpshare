@@ -1,6 +1,5 @@
 package com.github.ghmxr.ftpshare.widgets;
 
-import android.Manifest;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -8,45 +7,46 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.PermissionChecker;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import com.github.ghmxr.ftpshare.Constants;
 import com.github.ghmxr.ftpshare.R;
 import com.github.ghmxr.ftpshare.activities.MainActivity;
 import com.github.ghmxr.ftpshare.services.FtpService;
 
-public class FtpWidget extends AppWidgetProvider {
-    public static final String INTENT_ACTION_UPDATE_WIDGET="com.github.ghmxr.ftpshare.UPDATE_WIDGET";
-    public static final String EXTRA_ERROR_MESSAGE="error_message";
+public class FtpWidget extends AppWidgetProvider implements FtpService.OnFTPServiceStatusChangedListener {
 
-    public FtpWidget() {
-        super();
-    }
+    private Context context;
 
     @Override
-    public void onReceive(Context context, Intent intent) {
-        super.onReceive(context, intent);
-        if(intent!=null&&String.valueOf(intent.getAction()).equals(INTENT_ACTION_UPDATE_WIDGET)){
-            try {
-                AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context,FtpWidget.class),getCurrentRemoteView(context));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            String error_message=intent.getStringExtra(EXTRA_ERROR_MESSAGE);
-            if(error_message!=null){
-                Toast.makeText(context,error_message,Toast.LENGTH_SHORT).show();
-            }
-        }
+    public void onEnabled(Context context) {
+        super.onEnabled(context);
+        this.context=context;
+        FtpService.addOnFtpServiceStatusChangedListener(this);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
         appWidgetManager.updateAppWidget(new ComponentName(context,FtpWidget.class),getCurrentRemoteView(context));
+    }
+
+    @Override
+    public void onFTPServiceStarted() {
+        if(context==null)return;
+        AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context,FtpWidget.class),getCurrentRemoteView(context));
+    }
+
+    @Override
+    public void onFTPServiceStartError(Exception e) {
+        if(context==null)return;
+        Toast.makeText(context,String.valueOf(e),Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onFTPServiceDestroyed() {
+        if(context==null)return;
+        AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context,FtpWidget.class),getCurrentRemoteView(context));
     }
 
     private RemoteViews getCurrentRemoteView(Context context){
@@ -64,29 +64,19 @@ public class FtpWidget extends AppWidgetProvider {
         return remoteViews;
     }
 
+    @Override
+    public void onDisabled(Context context) {
+        super.onDisabled(context);
+        FtpService.removeOnFtpServiceStatusChangedListener(this);
+    }
+
     public static class FtpWidgetReceiver extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
-                Toast.makeText(context,context.getResources().getString(R.string.permission_write_external),Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if(!context.getSharedPreferences(Constants.PreferenceConsts.FILE_NAME,Context.MODE_PRIVATE)
-                    .getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE,Constants.PreferenceConsts.ANONYMOUS_MODE_DEFAULT)
-                &&FtpService.getUserAccountList(context).size()==0){
-                Toast.makeText(context,context.getResources().getString(R.string.attention_no_user_account),Toast.LENGTH_SHORT).show();
-                return;
-            }
             boolean b=FtpService.isFTPServiceRunning();
             if(b)FtpService.stopService();
             else FtpService.startService(context);
         }
     }
 
-    public static void sendUpdateWidgetBroadcast(@NonNull Context context, @Nullable String error_message){
-        Intent intent=new Intent(INTENT_ACTION_UPDATE_WIDGET);
-        intent.setComponent(new ComponentName(context,FtpWidget.class));
-        if(error_message!=null)intent.putExtra(EXTRA_ERROR_MESSAGE,error_message);
-        context.sendBroadcast(intent);
-    }
 }
