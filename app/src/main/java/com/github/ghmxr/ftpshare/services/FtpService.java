@@ -6,7 +6,6 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -14,7 +13,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.net.Network;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -31,12 +30,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.github.ghmxr.ftpshare.Constants;
+import com.github.ghmxr.ftpshare.MyApplication;
 import com.github.ghmxr.ftpshare.R;
 import com.github.ghmxr.ftpshare.activities.MainActivity;
 import com.github.ghmxr.ftpshare.data.AccountItem;
-import com.github.ghmxr.ftpshare.utils.APUtil;
 import com.github.ghmxr.ftpshare.utils.CommonUtils;
 import com.github.ghmxr.ftpshare.utils.MySQLiteOpenHelper;
+import com.github.ghmxr.ftpshare.utils.NetworkStatusMonitor;
 
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
@@ -49,7 +49,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FtpService extends Service {
+public class FtpService extends Service implements NetworkStatusMonitor.NetworkStatusCallback {
     private static FtpServer server;//this static field is guarded by FtpService.class
     private static PowerManager.WakeLock wakeLock;
     private static FtpService ftpService;
@@ -60,9 +60,12 @@ public class FtpService extends Service {
     public static final int MESSAGE_START_FTP_ERROR=-1;
     public static final int MESSAGE_WAKELOCK_ACQUIRE=5;
     public static final int MESSAGE_WAKELOCK_RELEASE=6;
+
+    private boolean isIgnoreAutoDisconnect=false;
+
     //public static final int MESSAGE_REFRESH_FOREGROUND_NOTIFICATION=7;
 
-    private BroadcastReceiver receiver=new BroadcastReceiver() {
+    /*private BroadcastReceiver receiver=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             try{
@@ -82,23 +85,31 @@ public class FtpService extends Service {
                 }
             }catch (Exception e){e.printStackTrace();}
         }
-    };
+    };*/
 
     @Override
     public void onCreate() {
         super.onCreate();
         ftpService=this;
         handler=new MyHandler();
+        NetworkStatusMonitor.addNetworkStatusCallback(this);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         makeThisForeground(getResources().getString(R.string.app_name),getResources().getString(R.string.attention_opening_ftp));
+        if(!beforeStartCheck(this)){
+            stopSelf();
+            return super.onStartCommand(intent,flags,startId);
+        }
+        final boolean isAnonymousMode=CommonUtils.getSettingSharedPreferences()
+                .getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE,Constants.PreferenceConsts.ANONYMOUS_MODE_DEFAULT);
+        final List<AccountItem>accountItems=getUserAccountList(this);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try{
-                    startFTPService();
+                    startFTPService(isAnonymousMode,accountItems);
                     sendEmptyMessage(MESSAGE_START_FTP_COMPLETE);
                 }catch (Exception e){
                     e.printStackTrace();
@@ -118,11 +129,55 @@ public class FtpService extends Service {
         return null;
     }
 
+    @Override
+    public void onNetworkStatusRefreshed() {}
+
+    @Override
+    public void onNetworkConnected(NetworkStatusMonitor.NetworkType networkType) {}
+
+    @Override
+    public void onNetworkDisconnected(NetworkStatusMonitor.NetworkType networkType) {
+        if(isIgnoreAutoDisconnect) return;
+        int config=CommonUtils.getSettingSharedPreferences().getInt(Constants.PreferenceConsts.AUTO_STOP,Constants.PreferenceConsts.AUTO_STOP_DEFAULT);
+        switch (config){
+            default:case Constants.PreferenceConsts.AUTO_STOP_NONE:return;
+            case Constants.PreferenceConsts.AUTO_STOP_WIFI_DISCONNECTED:{
+                if(networkType== NetworkStatusMonitor.NetworkType.WIFI){
+                    stopSelf();
+                }
+            }
+            break;
+            case Constants.PreferenceConsts.AUTO_STOP_AP_DISCONNECTED:{
+                if(networkType== NetworkStatusMonitor.NetworkType.AP){
+                    stopSelf();
+                }
+            }
+            break;
+        }
+    }
+
     /**
      * 如果FTP Service 没有实例将创建实例并启动
      * @return true 启动成功
      */
     public static boolean startService(@NonNull Context context){
+        if(!beforeStartCheck(context)){
+            return false;
+        }
+        if(ftpService==null) {
+            if(Build.VERSION.SDK_INT>=26)context.startForegroundService(new Intent(context,FtpService.class));
+            else context.startService(new Intent(context,FtpService.class));
+        }
+        return true;
+    }
+
+    /**
+     * 启动前检查读写权限以及用户模式下是否正确设置账户，如果上下文为Activity将会向Activity发送SnackBar，否则会通过
+     * 上下文发送Toast
+     * @param context 启动服务的上下文
+     * @return true - 检查正常  -false 账户错误或者没有权限
+     */
+    private static boolean beforeStartCheck(@NonNull Context context){
         if(Build.VERSION.SDK_INT>=23&& PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
             if(context instanceof Activity){
                 final Activity activity=(Activity)context;
@@ -154,15 +209,10 @@ public class FtpService extends Service {
             }
             return false;
         }
-
-        if(ftpService==null) {
-            if(Build.VERSION.SDK_INT>=26)context.startForegroundService(new Intent(context,FtpService.class));
-            else context.startService(new Intent(context,FtpService.class));
-        }
         return true;
     }
 
-    public static List<AccountItem> getUserAccountList(Context context){
+    public static List<AccountItem> getUserAccountList(@NonNull Context context){
         List<AccountItem> list=new ArrayList<>();
         try{
             SQLiteDatabase db= new MySQLiteOpenHelper(context).getReadableDatabase();
@@ -186,38 +236,36 @@ public class FtpService extends Service {
         return list;
     }
 
-    private void startFTPService() throws Exception{
-        synchronized (FtpService.class){
-            FtpServerFactory factory=new FtpServerFactory();
-            SharedPreferences settings = getSharedPreferences(Constants.PreferenceConsts.FILE_NAME,Context.MODE_PRIVATE);
-            List<Authority> authorities_writable = new ArrayList<>();
-            authorities_writable.add(new WritePermission());
-            if(settings.getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE,Constants.PreferenceConsts.ANONYMOUS_MODE_DEFAULT)){
-                BaseUser baseUser = new BaseUser();
-                baseUser.setName(Constants.FTPConsts.NAME_ANONYMOUS);
-                baseUser.setPassword("");
-                baseUser.setHomeDirectory(settings.getString(Constants.PreferenceConsts.ANONYMOUS_MODE_PATH,Constants.PreferenceConsts.ANONYMOUS_MODE_PATH_DEFAULT));
-                if(settings.getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE_WRITABLE,Constants.PreferenceConsts.ANONYMOUS_MODE_WRITABLE_DEFAULT)){
-                    baseUser.setAuthorities(authorities_writable);
-                }
-                factory.getUserManager().save(baseUser);
-            }else{
-                List<AccountItem> list=getUserAccountList(this);
-                for(AccountItem item:list){
-                    BaseUser baseUser = new BaseUser();
-                    baseUser.setName(item.account);
-                    baseUser.setPassword(item.password);
-                    baseUser.setHomeDirectory(item.path);
-                    if(item.writable) baseUser.setAuthorities(authorities_writable);
-                    factory.getUserManager().save(baseUser);
-                }
+    private void startFTPService(boolean isAnonymousMode,List<AccountItem>list) throws Exception{
+        FtpServerFactory factory=new FtpServerFactory();
+        SharedPreferences settings = getSharedPreferences(Constants.PreferenceConsts.FILE_NAME,Context.MODE_PRIVATE);
+        List<Authority> authorities_writable = new ArrayList<>();
+        authorities_writable.add(new WritePermission());
+        if(isAnonymousMode){
+            BaseUser baseUser = new BaseUser();
+            baseUser.setName(Constants.FTPConsts.NAME_ANONYMOUS);
+            baseUser.setPassword("");
+            baseUser.setHomeDirectory(settings.getString(Constants.PreferenceConsts.ANONYMOUS_MODE_PATH,Constants.PreferenceConsts.ANONYMOUS_MODE_PATH_DEFAULT));
+            if(settings.getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE_WRITABLE,Constants.PreferenceConsts.ANONYMOUS_MODE_WRITABLE_DEFAULT)){
+                baseUser.setAuthorities(authorities_writable);
             }
+            factory.getUserManager().save(baseUser);
+        }else{
+            for(AccountItem item:list){
+                BaseUser baseUser = new BaseUser();
+                baseUser.setName(item.account);
+                baseUser.setPassword(item.password);
+                baseUser.setHomeDirectory(item.path);
+                if(item.writable) baseUser.setAuthorities(authorities_writable);
+                factory.getUserManager().save(baseUser);
+            }
+        }
 
-            ListenerFactory lfactory = new ListenerFactory();
-            lfactory.setPort(settings.getInt(Constants.PreferenceConsts.PORT_NUMBER,Constants.PreferenceConsts.PORT_NUMBER_DEFAULT)); //设置端口号 非ROOT不可使用1024以下的端口
-            factory.addListener("default", lfactory.createListener());
-            ConnectivityManager manager=null;
-            try{
+        ListenerFactory lfactory = new ListenerFactory();
+        lfactory.setPort(settings.getInt(Constants.PreferenceConsts.PORT_NUMBER,Constants.PreferenceConsts.PORT_NUMBER_DEFAULT)); //设置端口号 非ROOT不可使用1024以下的端口
+        factory.addListener("default", lfactory.createListener());
+        ConnectivityManager manager=null;
+            /*try{
                 manager=(ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
             }catch (Exception e){e.printStackTrace();}
             if(manager!=null){
@@ -225,7 +273,8 @@ public class FtpService extends Service {
                 if((info==null||info.getType()!=ConnectivityManager.TYPE_WIFI)&&!APUtil.isAPEnabled(this)) {
                     throw new Exception(getResources().getString(R.string.attention_no_active_network));
                 }
-            }
+            }*/
+        synchronized (FtpService.class) {
             try{
                 if(server!=null) server.stop();
             }catch (Exception e){}
@@ -293,7 +342,7 @@ public class FtpService extends Service {
                         IntentFilter filter=new IntentFilter();
                         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
                         filter.addAction("android.net.wifi.WIFI_AP_STATE_CHANGED");
-                        registerReceiver(receiver,filter);
+                        //registerReceiver(receiver,filter);
                     }catch (Exception e){e.printStackTrace();}
 
                     if(getSharedPreferences(Constants.PreferenceConsts.FILE_NAME,Context.MODE_PRIVATE).getBoolean(Constants.PreferenceConsts.WAKE_LOCK,Constants.PreferenceConsts.WAKE_LOCK_DEFAULT)){
@@ -305,8 +354,15 @@ public class FtpService extends Service {
                     for(OnFTPServiceStatusChangedListener listener:listeners){
                         listener.onFTPServiceStarted();
                     }
+
+                    if(getSharedPreferences(Constants.PreferenceConsts.FILE_NAME,Context.MODE_PRIVATE)
+                            .getInt(Constants.PreferenceConsts.AUTO_STOP,Constants.PreferenceConsts.AUTO_STOP_DEFAULT)
+                    ==Constants.PreferenceConsts.AUTO_STOP_TIME_COUNT){
+                        setCountSecondsAndStart(getSharedPreferences(Constants.PreferenceConsts.FILE_NAME,Context.MODE_PRIVATE)
+                                .getInt(Constants.PreferenceConsts.AUTO_STOP_VALUE,Constants.PreferenceConsts.AUTO_STOP_VALUE_DEFAULT));
+                    }
                     makeThisForeground(getResources().getString(R.string.notification_title),
-                            getResources().getString(R.string.ftp_status_running_head)+ CommonUtils.getFTPServiceFullAddress(this));
+                            getResources().getString(R.string.ftp_status_running_head)+ CommonUtils.getFTPServiceDisplayAddress(this));
                     //FtpWidget.sendUpdateWidgetBroadcast(this,null);
                     //MyTileService.requestRefreshTile(this);
                 }
@@ -345,6 +401,7 @@ public class FtpService extends Service {
     public void onDestroy() {
         super.onDestroy();
         //Log.d("onDestroy","onDestroy method called");
+        NetworkStatusMonitor.removeNetworkStatusCallback(this);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -364,10 +421,10 @@ public class FtpService extends Service {
                 wakeLock=null;
             }
         }catch (Exception e){e.printStackTrace();}
-        try{
+       /* try{
             unregisterReceiver(receiver);
-        }catch (Exception e){e.printStackTrace();}
-
+        }catch (Exception e){e.printStackTrace();}*/
+        countHandler.removeCallbacks(stopExecutor);
         handler=null;
         ftpService=null;
 
@@ -400,16 +457,13 @@ public class FtpService extends Service {
     }
 
     public static boolean isFTPServiceRunning(){
-        try{
-            return ftpService!=null&&server!=null&&!server.isStopped();
-        }catch (Exception e){e.printStackTrace();}
-        return false;
+        return ftpService!=null&&server!=null&&!server.isStopped();
     }
 
     public static String getFTPStatusDescription(Context context){
         try{
             if(!isFTPServiceRunning()) return context.getResources().getString(R.string.ftp_status_not_running);
-            return context.getResources().getString(R.string.ftp_status_running_head)+ CommonUtils.getFTPServiceFullAddress(context);
+            return context.getResources().getString(R.string.ftp_status_running_head)+ CommonUtils.getFTPServiceDisplayAddress(context);
         }catch (Exception e){e.printStackTrace();}
         return "";
     }
@@ -417,14 +471,86 @@ public class FtpService extends Service {
     public interface OnFTPServiceStatusChangedListener {
         void onFTPServiceStarted();
         void onFTPServiceStartError(Exception e);
+        void onRemainingSeconds(int seconds);
         void onFTPServiceDestroyed();
     }
 
     public static String getCharsetFromSharedPreferences(){
-        Context context=ftpService;
-        return  (context!=null?
-                context.getSharedPreferences(Constants.PreferenceConsts.FILE_NAME, Context.MODE_PRIVATE)
-                        .getString(Constants.PreferenceConsts.CHARSET_TYPE,Constants.PreferenceConsts.CHARSET_TYPE_DEFAULT)
-                :Constants.PreferenceConsts.CHARSET_TYPE_DEFAULT);
+        return MyApplication.getGlobalBaseContext().getSharedPreferences(Constants.PreferenceConsts.FILE_NAME, Context.MODE_PRIVATE)
+                .getString(Constants.PreferenceConsts.CHARSET_TYPE,Constants.PreferenceConsts.CHARSET_TYPE_DEFAULT);
+    }
+
+    private int countSeconds=0;
+    private final Handler countHandler=new Handler();
+    private final Runnable stopExecutor=new Runnable() {
+        @Override
+        public void run() {
+            if(countSeconds<=0){
+                stopSelf();
+            }else{
+                countSeconds--;
+                for(OnFTPServiceStatusChangedListener listener:listeners){
+                    listener.onRemainingSeconds(countSeconds);
+                }
+                countHandler.postDelayed(this,1000L);
+            }
+        }
+    };
+
+    private void setCountSecondsAndStart(int seconds){
+        if(seconds<0)return;
+        countHandler.removeCallbacks(stopExecutor);
+        this.countSeconds=seconds;
+        if(seconds==0||isIgnoreAutoDisconnect)return;
+        for(OnFTPServiceStatusChangedListener listener:listeners){
+            listener.onRemainingSeconds(countSeconds);
+        }
+        countHandler.postDelayed(stopExecutor,1000L);
+    }
+
+    /**
+     * 执行此方法后，在指定秒数后会自动停止Ftp服务（有实例在运行的情况下）
+     * @param seconds 倒计时秒数
+     */
+    public static void setTimeCounts(int seconds){
+        if(ftpService==null)return;
+        ftpService.setCountSecondsAndStart(seconds);
+    }
+
+    /**
+     * 获得当前ftp服务的倒计时秒数
+     */
+    public static int getTimeCounts(){
+        if(ftpService==null) return -1;
+        return ftpService.countSeconds;
+    }
+
+    /**
+     * 取消本此倒计时断开计时器
+     */
+    public static void cancelTimeCounts(){
+        if(ftpService==null)return;
+        ftpService.setCountSecondsAndStart(0);
+    }
+
+    /**
+     * 取消本次FTP服务的自动断开触发机制
+     */
+    public static void disableAutoDisconnectThisTime(){
+        if(ftpService==null)return;
+        ftpService.isIgnoreAutoDisconnect=true;
+        cancelTimeCounts();
+    }
+
+    /**
+     * 打开本此FTP服务的自动断开机制(如果SP已设置)
+     */
+    public static void enableAutoDisconnectThisTime(){
+        if(ftpService==null)return;
+        ftpService.isIgnoreAutoDisconnect=false;
+    }
+
+    public static boolean getIsIgnoreAutoCancelThisTime(){
+        return ftpService!=null&&ftpService.isIgnoreAutoDisconnect;
     }
 }

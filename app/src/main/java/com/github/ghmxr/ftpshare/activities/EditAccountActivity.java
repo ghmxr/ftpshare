@@ -1,13 +1,11 @@
 package com.github.ghmxr.ftpshare.activities;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.Snackbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.github.ghmxr.ftpshare.Constants;
 import com.github.ghmxr.ftpshare.R;
 import com.github.ghmxr.ftpshare.data.AccountItem;
 import com.github.ghmxr.ftpshare.services.FtpService;

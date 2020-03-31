@@ -1,172 +1,168 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.SettingActivity">
     <LinearLayout
-        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
         <RelativeLayout
+            android:id="@+id/setting_auto_start"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/account_user"
+            android:layout_height="65dp"
             android:clickable="true"
+            android:focusable="true"
             android:background="?attr/selectableItemBackground"
-            android:focusable="false">
+            android:onClick="onClick">
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:orientation="vertical"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:layout_marginRight="50dp">
+                android:layout_marginLeft="15dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
+                    android:textSize="16sp"
                     android:textColor="@color/color_text_dark"
-                    android:text="@string/account_user"/>
-                <TextView
-                    android:id="@+id/account_user_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:text="user"/>
-            </LinearLayout>
-            <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="20dp"
-                android:src="@drawable/arrow_right"/>
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_alignParentBottom="true"
-                android:background="@color/color_dividing_line"/>
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/account_password"
-            android:clickable="true"
-            android:background="?attr/selectableItemBackground"
-            android:focusable="false">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
-                android:layout_margin="20dp">
+                    android:text="@string/setting_auto_start"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/color_text_dark"
-                    android:text="@string/account_password"/>
-                <TextView
-                    android:id="@+id/account_password_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"/>
-            </LinearLayout>
-            <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
-                android:src="@drawable/arrow_right"/>
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_alignParentBottom="true"
-                android:background="@color/color_dividing_line"/>
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/account_path"
-            android:clickable="true"
-            android:background="?attr/selectableItemBackground"
-            android:focusable="false">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
-                android:layout_margin="20dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/color_text_dark"
-                    android:text="@string/account_path"/>
-                <TextView
-                    android:id="@+id/account_path_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:text="/storage/emulated/0"/>
-            </LinearLayout>
-            <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
-                android:src="@drawable/arrow_right"/>
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_alignParentBottom="true"
-                android:background="@color/color_dividing_line"/>
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/account_writable"
-            android:clickable="true"
-            android:background="?attr/selectableItemBackground"
-            android:focusable="false">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
-                android:layout_margin="20dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/color_text_dark"
-                    android:text="@string/account_writable"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:text="@string/account_writable_att"/>
+                    android:text="@string/setting_auto_start_att"
+                    android:textSize="12sp"/>
             </LinearLayout>
             <CheckBox
-                android:id="@+id/account_writable_cb"
+                android:id="@+id/setting_auto_start_cb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
-                android:focusable="false"
-                android:clickable="false"/>
-            <ImageView
+                android:layout_marginRight="10dp"
+                android:clickable="false"
+                android:focusable="false"/>
+            <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_alignParentBottom="true"
                 android:background="@color/color_dividing_line"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/setting_disconnect"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:onClick="onClick">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:orientation="vertical"
+                android:layout_marginLeft="15dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="@color/color_text_dark"
+                    android:text="@string/setting_disconnect"/>
+                <TextView
+                    android:id="@+id/setting_disconnect_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@string/setting_disconnect_wifi_disconnected"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:src="@drawable/arrow_right"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:background="@color/color_dividing_line"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/setting_night_mode"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:onClick="onClick">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:orientation="vertical"
+                android:layout_marginLeft="15dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="@color/color_text_dark"
+                    android:text="@string/setting_night_mode"/>
+                <TextView
+                    android:id="@+id/setting_night_mode_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@string/setting_night_mode_auto"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:src="@drawable/arrow_right"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:background="@color/color_dividing_line"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/setting_language"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:onClick="onClick">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:orientation="vertical"
+                android:layout_marginLeft="15dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="@color/color_text_dark"
+                    android:text="@string/setting_language"/>
+                <TextView
+                    android:id="@+id/setting_language_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@string/setting_language_follow_system"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:src="@drawable/arrow_right"/>
         </RelativeLayout>
     </LinearLayout>
 </ScrollView>

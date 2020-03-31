@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:name=".MyApplication"
@@ -20,7 +21,7 @@
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW"/>
@@ -29,12 +30,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.AddAccountActivity"
-            android:label="@string/activity_title_add"
-            android:screenOrientation="portrait"/>
+            android:label="@string/activity_title_add"/>
         <activity android:name=".activities.EditAccountActivity"
-            android:label="@string/activity_title_edit"
-            android:screenOrientation="portrait"/>
-        <service android:name=".services.FtpService"/>
+            android:label="@string/activity_title_edit"/>
+        <activity android:name=".activities.SettingActivity"
+            android:label="@string/item_more_settings"/>
+
+        <service android:name=".services.FtpService"
+            android:exported="true"/>
         <service android:name=".services.MyTileService"
             android:icon="@drawable/ic_ex_24dp"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
@@ -52,6 +55,11 @@
             </intent-filter>
         </receiver>
         <receiver android:name=".widgets.FtpWidget$FtpWidgetReceiver"/>
+        <receiver android:name=".receivers.BootCompletedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

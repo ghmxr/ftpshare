@@ -1,6 +1,8 @@
 package com.github.ghmxr.ftpshare.data;
 
-import com.github.ghmxr.ftpshare.utils.Storage;
+import android.support.annotation.NonNull;
+
+import com.github.ghmxr.ftpshare.utils.StorageUtil;
 
 import java.io.Serializable;
 
@@ -8,10 +10,11 @@ public class AccountItem implements Serializable{
     public long id=-1;
     public String account="";
     public String password="";
-    public String path= Storage.getMainStoragePath();
+    public String path= StorageUtil.getMainStoragePath();
     public boolean writable=false;
 
     @Override
+    @NonNull
     public String toString() {
         return "AccountItem{" +
                 "id=" + id +

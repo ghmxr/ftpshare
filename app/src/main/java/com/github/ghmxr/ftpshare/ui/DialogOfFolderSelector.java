@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.github.ghmxr.ftpshare.R;
 import com.github.ghmxr.ftpshare.utils.CommonUtils;
-import com.github.ghmxr.ftpshare.utils.Storage;
+import com.github.ghmxr.ftpshare.utils.StorageUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,14 +52,14 @@ public class DialogOfFolderSelector extends AlertDialog {
             file=new File(path);
         }catch (Exception e){
             e.printStackTrace();
-            file=new File(Storage.getMainStoragePath());
+            file=new File(StorageUtil.getMainStoragePath());
         }
         try{
             List<String> storages;
             if(Build.VERSION.SDK_INT>=19){
-                storages=Storage.getAvailableStoragePaths(context);
+                storages= StorageUtil.getAvailableStoragePaths(context);
             }else{
-                storages=Storage.getAvailableStoragePaths();
+                storages= StorageUtil.getAvailableStoragePaths();
             }
             spinner.setAdapter(new ArrayAdapter<>(context,R.layout.item_spinner_storage,R.id.item_storage_text,storages));
             for(int i=0;i<storages.size();i++){
@@ -87,7 +87,7 @@ public class DialogOfFolderSelector extends AlertDialog {
         setButton(AlertDialog.BUTTON_NEUTRAL,context.getResources().getString(R.string.dialog_button_default),new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                file=new File(Storage.getMainStoragePath());
+                file=new File(StorageUtil.getMainStoragePath());
                 onDialogConfirmed();
             }
         });

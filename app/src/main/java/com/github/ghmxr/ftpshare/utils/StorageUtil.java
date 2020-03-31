@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class Storage {
+public class StorageUtil {
     public static String getMainStoragePath(){
         try{
             return Environment.getExternalStorageDirectory().getAbsolutePath();

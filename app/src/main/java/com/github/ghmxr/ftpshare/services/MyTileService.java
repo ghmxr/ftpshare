@@ -72,6 +72,9 @@ public class MyTileService extends TileService implements FtpService.OnFTPServic
     }
 
     @Override
+    public void onRemainingSeconds(int seconds) {}
+
+    @Override
     public void onFTPServiceDestroyed() {
         Tile tile=getQsTile();
         tile.setState(Tile.STATE_INACTIVE);

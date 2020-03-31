@@ -1,6 +1,8 @@
 package com.github.ghmxr.ftpshare;
 
-import com.github.ghmxr.ftpshare.utils.Storage;
+import android.support.v7.app.AppCompatDelegate;
+
+import com.github.ghmxr.ftpshare.utils.StorageUtil;
 
 public class Constants {
     public static class SQLConsts{
@@ -27,7 +29,7 @@ public class Constants {
          * this stands for a string value
          */
         public static final String ANONYMOUS_MODE_PATH="anonymous_mode_path";
-        public static final String ANONYMOUS_MODE_PATH_DEFAULT=Storage.getMainStoragePath();
+        public static final String ANONYMOUS_MODE_PATH_DEFAULT= StorageUtil.getMainStoragePath();
         /**
          * this stands for a boolean value
          */
@@ -49,6 +51,38 @@ public class Constants {
          */
         public static final String CHARSET_TYPE ="charset_type";
         public static final String CHARSET_TYPE_DEFAULT ="UTF-8";
+        /**
+         * int value
+         */
+        public static final String NIGHT_MODE="night_mode";
+        public static final int NIGHT_MODE_DEFAULT= AppCompatDelegate.MODE_NIGHT_NO;
+        /**
+         * int value
+         */
+        public static final String LANGUAGE_SETTING="language_setting";
+        public static final int LANGUAGE_FOLLOW_SYSTEM=0;
+        public static final int LANGUAGE_SIMPLIFIED_CHINESE=1;
+        public static final int LANGUAGE_ENGLISH=2;
+        public static final int LANGUAGE_SETTING_DEFAULT=LANGUAGE_FOLLOW_SYSTEM;
+        /**
+         * int value
+         */
+        public static final String AUTO_STOP="auto_stop";
+        public static final int AUTO_STOP_NONE=-1;
+        public static final int AUTO_STOP_WIFI_DISCONNECTED=0;
+        public static final int AUTO_STOP_AP_DISCONNECTED=1;
+        public static final int AUTO_STOP_TIME_COUNT=2;
+        public static final int AUTO_STOP_DEFAULT=AUTO_STOP_NONE;
+        /**
+         * int value
+         */
+        public static final String AUTO_STOP_VALUE="auto_stop_value";
+        public static final int AUTO_STOP_VALUE_DEFAULT=600;
+        /**
+         * boolean value
+         */
+        public static final String START_AFTER_BOOT="start_after_boot";
+        public static final boolean START_AFTER_BOOT_DEFAULT=false;
     }
 
     public static class Charset{

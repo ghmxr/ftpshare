@@ -44,6 +44,9 @@ public class FtpWidget extends AppWidgetProvider implements FtpService.OnFTPServ
     }
 
     @Override
+    public void onRemainingSeconds(int seconds) {}
+
+    @Override
     public void onFTPServiceDestroyed() {
         if(context==null)return;
         AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context,FtpWidget.class),getCurrentRemoteView(context));
