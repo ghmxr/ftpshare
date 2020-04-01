@@ -25,6 +25,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.PermissionChecker;
 import android.view.View;
 import android.widget.Toast;
@@ -102,7 +103,7 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
             stopSelf();
             return super.onStartCommand(intent,flags,startId);
         }
-        final boolean isAnonymousMode=CommonUtils.getSettingSharedPreferences()
+        final boolean isAnonymousMode=CommonUtils.getSettingSharedPreferences(this)
                 .getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE,Constants.PreferenceConsts.ANONYMOUS_MODE_DEFAULT);
         final List<AccountItem>accountItems=getUserAccountList(this);
         new Thread(new Runnable() {
@@ -130,7 +131,10 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
     }
 
     @Override
-    public void onNetworkStatusRefreshed() {}
+    public void onNetworkStatusRefreshed() {
+        makeThisForeground(getResources().getString(R.string.notification_title),
+                getResources().getString(R.string.ftp_status_running_head)+ CommonUtils.getFTPServiceDisplayAddress(this));
+    }
 
     @Override
     public void onNetworkConnected(NetworkStatusMonitor.NetworkType networkType) {}
@@ -138,7 +142,7 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
     @Override
     public void onNetworkDisconnected(NetworkStatusMonitor.NetworkType networkType) {
         if(isIgnoreAutoDisconnect) return;
-        int config=CommonUtils.getSettingSharedPreferences().getInt(Constants.PreferenceConsts.AUTO_STOP,Constants.PreferenceConsts.AUTO_STOP_DEFAULT);
+        int config=CommonUtils.getSettingSharedPreferences(this).getInt(Constants.PreferenceConsts.AUTO_STOP,Constants.PreferenceConsts.AUTO_STOP_DEFAULT);
         switch (config){
             default:case Constants.PreferenceConsts.AUTO_STOP_NONE:return;
             case Constants.PreferenceConsts.AUTO_STOP_WIFI_DISCONNECTED:{
@@ -289,23 +293,14 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
             if(Build.VERSION.SDK_INT>=26){
                 NotificationChannel channel=new NotificationChannel("default"
                         ,getResources().getString(R.string.notification_channel_foreground_service)
-                        ,NotificationManager.IMPORTANCE_DEFAULT);
+                        ,NotificationManager.IMPORTANCE_NONE);
                 manager.createNotificationChannel(channel);
             }
             NotificationCompat.Builder builder=new NotificationCompat.Builder(this,"default");
             builder.setSmallIcon(R.drawable.ic_ex_24dp);
-            //builder.setContentTitle(getResources().getString(R.string.notification_title));
-            //builder.setContentText(getResources().getString(R.string.ftp_status_running_head)+ValueUtil.getFTPServiceFullAddress(this));
             builder.setContentTitle(title);
             builder.setContentText(content);
-
-            //RemoteViews rv=new RemoteViews(getPackageName(),R.layout.layout_notification);
-            //rv.setTextViewText(R.id.notification_title,getResources().getString(R.string.notification_title));
-            //rv.setTextViewText(R.id.notification_text,getResources().getString(R.string.ftp_status_running_head)+ValueUtil.getFTPServiceFullAddress(this));
-            //builder.setCustomContentView(rv);
-
             builder.setContentIntent(PendingIntent.getActivity(this,0,new Intent(this, MainActivity.class),PendingIntent.FLAG_UPDATE_CURRENT));
-
             startForeground(1,builder.build());
         }catch (Exception e){e.printStackTrace();}
     }

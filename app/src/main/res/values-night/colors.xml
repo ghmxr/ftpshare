@@ -4,12 +4,9 @@
     <color name="colorPrimaryDark">#202020</color>
     <color name="colorAccent">#FF4081</color>
 
-    <color name="color_normal_background">#303030</color>
-    <color name="color_normal_background_highlight">#202020</color>
     <color name="color_text_dark">#FFFFFF</color>
-    <color name="color_text_normal">#eeeeee</color>
-    <color name="color_dialog_back">#333333</color>
     <color name="color_dividing_line">#666666</color>
     <color name="color_arrow_color">#eeeeee</color>
-    <color name="color_nav_text">#FFFFFF</color>
+    <color name="color_bottom_nav_selected_color">#ffffff</color>
+    <color name="color_bottom_nav_normal_color">#666666</color>
 </resources>

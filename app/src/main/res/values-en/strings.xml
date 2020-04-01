@@ -1,105 +1,109 @@
 <resources>
-    <string name="app_name">FTP Share</string>
-    <string name="title_home">FTP服务</string>
-    <string name="title_settings">账户设置</string>
-    <string name="activity_title_add">添加</string>
-    <string name="activity_title_edit">编辑</string>
+    <string name="title_home">FTP service</string>
+    <string name="title_settings">Account</string>
+    <string name="activity_title_add">Add</string>
+    <string name="activity_title_edit">Edit</string>
 
-    <string name="item_main">启用FTP服务</string>
-    <string name="item_port">端口号</string>
-    <string name="item_port_hint">输入端口号</string>
-    <string name="item_charset">编码方式</string>
-    <string name="item_charset_att">如果出现乱码或者文件传输报错可尝试更改，通常建议保留默认选项</string>
-    <string name="item_charset_utf">UTF-8(默认)</string>
-    <string name="item_charset_gbk">GBK(简体中文)</string>
-    <string name="item_wakelock">保持唤醒</string>
-    <string name="item_wakelock_att">FTP服务运行期间保持CPU唤醒，可能会增大耗电量</string>
-    <string name="item_writable">可写入</string>
-    <string name="item_ignore_battery">忽略电池优化</string>
-    <string name="item_ignore_battery_att">可保持FTP服务长时间运行</string>
-    <string name="account_anonymous">匿名模式</string>
-    <string name="account_anonymous_att">以匿名模式登录FTP服务</string>
-    <string name="account_null_att">账户名不能为空</string>
-    <string name="account_duplicate">账户名已存在</string>
-    <string name="account_anonymous_name_set_att">请使用匿名模式来启用匿名登录(不能设置anonymous为账户名)</string>
-    <string name="account_user">账户名称</string>
-    <string name="account_password">密码</string>
-    <string name="account_password_att">请设置密码</string>
-    <string name="account_path">主路径</string>
-    <string name="account_path_dialog_title">选择路径</string>
-    <string name="account_writable">允许写入</string>
-    <string name="account_writable_att">允许此账户在主路径下写入数据</string>
-    <string name="account_user_dialog_title">账户名称</string>
-    <string name="account_user_dialog_edittext_hint">输入账户名</string>
-    <string name="account_password_dialog_title">密码</string>
-    <string name="account_password_dialog_edittext_hint">输入密码</string>
-    <string name="anonymous_path">匿名模式主路径</string>
-    <string name="anonymous_writable">匿名模式下允许写入</string>
-    <string name="anonymous_writable_att">在匿名模式下允许在主路径写入数据</string>
-    <string name="ftp_status_not_running">FTP服务没有运行</string>
-    <string name="ftp_status_running_head">FTP服务运行于</string>
-    <string name="attention_ftp_is_running">需要先关闭FTP服务才可以修改设置</string>
-    <string name="attention_opening_ftp">正在打开FTP服务&#8230;</string>
-    <string name="attention_closing_ftp">正在关闭FTP服务&#8230;</string>
-    <string name="attention_invalid_port_number">请输入有效的数字</string>
-    <string name="attention_port_number_out_of_range">请输入1024~65535之间的数字</string>
-    <string name="attention_delete_confirm">再点击一次确定删除</string>
-    <string name="attention_changes_confirm">没有保存更改，再点击一次确认退出</string>
-    <string name="attention_no_user_account">请添加一个账户或者使用匿名模式来打开FTP服务</string>
-    <string name="notification_title">FTP服务正在运行</string>
-    <string name="permission_write_external">请授权存储读写权限</string>
-    <string name="attention_no_active_network">没有可用的网络连接，请连接WiFi或打开热点</string>
-    <string name="snackbar_action_goto">前往设置</string>
-    <string name="attention_add_a_user">请添加一个账户来使用</string>
-    <string name="attention_clipboard">已复制到剪贴板</string>
+    <string name="item_main">Start FTP Service</string>
+    <string name="item_port">Port</string>
+    <string name="item_port_hint">type in port number</string>
+    <string name="item_charset">Charset</string>
+    <string name="item_charset_att">you can try to change it in case of garbled code or file transfer error. It is generally recommended to keep the default option</string>
+    <string name="item_charset_utf">UTF-8(default)</string>
+    <string name="item_charset_gbk">GBK(Simplified Chinese)</string>
+    <string name="item_wakelock">Keep awake</string>
+    <string name="item_wakelock_att">keep CPU awake while FTP service is running, may spend more battery</string>
+    <string name="item_writable">writable</string>
+    <string name="item_ignore_battery">Ignore battery optimization</string>
+    <string name="item_ignore_battery_att">can keep FTP service running longer</string>
+    <string name="item_more_settings">More settings</string>
+    <string name="item_ftp_addresses">View FTP addresses</string>
+    <string name="item_ftp_addresses_att">view all available FTP addresses</string>
+    <string name="account_anonymous">Anonymous mode</string>
+    <string name="account_anonymous_att">Log in to FTP service in anonymous mode</string>
+    <string name="account_null_att">account can not be blank</string>
+    <string name="account_duplicate">account already existed</string>
+    <string name="account_anonymous_name_set_att">Please use anonymous mode to enable anonymous login(cannot set anonymous as account name)</string>
+    <string name="account_user">Account name</string>
+    <string name="account_password">Password</string>
+    <string name="account_password_att">please set a password</string>
+    <string name="account_path">Main path</string>
+    <string name="account_path_dialog_title">Selecting path</string>
+    <string name="account_writable">Writing permission</string>
+    <string name="account_writable_att">allow this account to write data in the main path</string>
+    <string name="account_user_dialog_title">Account name</string>
+    <string name="account_user_dialog_edittext_hint">type in account name</string>
+    <string name="account_password_dialog_title">Password</string>
+    <string name="account_password_dialog_edittext_hint">type in pass</string>
+    <string name="anonymous_path">Anonymous mode path</string>
+    <string name="anonymous_writable">Anonymous mode writing permission</string>
+    <string name="anonymous_writable_att">allow to write data to the path in anonymous mode</string>
+    <string name="ftp_status_not_running">FTP Service is not running</string>
+    <string name="ftp_status_running_head">FTP Service is running at </string>
+    <string name="attention_ftp_is_running">Can not change FTP settings before closing FTP service</string>
+    <string name="attention_opening_ftp">starting FTP service&#8230;</string>
+    <string name="attention_closing_ftp">stopping FTP service&#8230;</string>
+    <string name="attention_invalid_port_number">please type in a valid number</string>
+    <string name="attention_port_number_out_of_range">please type in a number between 1024~65535</string>
+    <string name="attention_delete_confirm">Click again to confirm delete</string>
+    <string name="attention_changes_confirm">Click again to confirm exit for there are some changes left</string>
+    <string name="attention_no_user_account">Please add an account or change to anonymous mode to run FTP service</string>
+    <string name="notification_title">FTP service is running</string>
+    <string name="permission_write_external">Please grant writing permission</string>
+    <string name="snackbar_action_goto">Go</string>
+    <string name="attention_add_a_user">Please add an account</string>
+    <string name="attention_clipboard">has been copied to clipboard</string>
 
-    <string name="action_account_save">保存</string>
-    <string name="action_account_delete">删除</string>
-    <string name="action_main_add">添加</string>
-    <string name="action_main_about">关于</string>
-    <string name="action_main_anonymous_opened">切换为登录模式</string>
-    <string name="action_main_anonymous_closed">切换为匿名模式</string>
+    <string name="action_account_save">Save</string>
+    <string name="action_account_delete">Delete</string>
+    <string name="action_main_add">Add</string>
+    <string name="action_main_about">About</string>
+    <string name="action_main_anonymous_opened">Change to login mode</string>
+    <string name="action_main_anonymous_closed">Change to anonymous mode</string>
 
-    <string name="dialog_button_confirm">确定</string>
-    <string name="dialog_button_cancel">取消</string>
-    <string name="dialog_button_show_password">显示/隐藏密码</string>
-    <string name="dialog_button_default">恢复默认</string>
+    <string name="dialog_button_confirm">confirm</string>
+    <string name="dialog_button_cancel">@android:string/cancel</string>
+    <string name="dialog_button_show_password">show/hide</string>
+    <string name="dialog_button_default">restore</string>
 
-    <string name="notification_channel_foreground_service">前台服务</string>
-    <string name="notification_channel_attention">提示</string>
+    <string name="notification_channel_foreground_service">Foreground service</string>
+    <string name="notification_channel_attention">Attention</string>
 
-    <string name="notification_ftp_start_error_title">FTP服务无法启动</string>
-    <string name="notification_ftp_start_errer_message">FTP服务无法启动，请检查网络、权限、运行模式</string>
+    <string name="notification_ftp_start_error_title">FTP service can not be started</string>
+    <string name="notification_ftp_start_errer_message">FTP can not be started, please check the network, permissions or running mode</string>
     
-    <string name="setting_auto_start">开机自启</string>
-    <string name="setting_auto_start_att">系统引导完成后自动启动FTP服务</string>
-    <string name="setting_disconnect">自动断开FTP服务</string>
-    <string name="setting_disconnect_wifi_disconnected">WiFi断开时</string>
-    <string name="setting_disconnect_ap_disconnected">热点关闭时</string>
-    <string name="setting_disconnect_time">FTP服务启动后指定时间</string>
-    <string name="setting_night_mode">夜间模式</string>
-    <string name="setting_night_mode_auto">自动</string>
-    <string name="setting_night_mode_enabled">启用</string>
-    <string name="setting_night_mode_disabled">禁用</string>
-    <string name="setting_night_mode_follow_system">跟随系统</string>
-    <string name="setting_language">语言</string>
-    <string name="setting_language_follow_system">跟随系统</string>
+    <string name="setting_auto_start">Start automatically</string>
+    <string name="setting_auto_start_att">start the FTP service after the OS boot complete</string>
+    <string name="setting_disconnect">FTP Auto-Shut</string>
+    <string name="setting_disconnect_wifi_disconnected">WiFi disconnected</string>
+    <string name="setting_disconnect_ap_disconnected">AP closed</string>
+    <string name="setting_disconnect_time">Certain period after FTP started</string>
+    <string name="setting_night_mode">Dark mode</string>
+    <string name="setting_night_mode_auto">Auto</string>
+    <string name="setting_night_mode_enabled">Enabled</string>
+    <string name="setting_night_mode_disabled">Disabled</string>
+    <string name="setting_night_mode_follow_system">Follow the system</string>
+    <string name="setting_language">Language</string>
+    <string name="setting_language_follow_system">Follow the system</string>
+    <string name="hint_disconnect_time">type in seconds</string>
+    <string name="toast_invalid_value">please type in a number greater than 0</string>
+    <string name="toast_cancel_auto_disconnect_att">Canceled FTP Auto-Shut this time</string>
 
-    <string name="count_title">自动断开</string>
-    <string name="word_none">无</string>
-    <string name="word_hour">小时</string>
-    <string name="word_minute">分钟</string>
-    <string name="word_second">秒</string>
+    <string name="count_title">Auto-Shut</string>
+    <string name="word_none">none</string>
+    <string name="word_hour">hour(s)</string>
+    <string name="word_minute">minute(s)</string>
+    <string name="word_second">second(s)</string>
 
     <string name="about_content">
-        这是一个基于Apache FtpServer框架开发的Android平台实现FTP文件共享的应用。\n\n
-        如果手机浏览器无法访问FTP协议链接，建议下载使用Chrome。\n\n
-        开源地址:\n
+        This is an application of FTP file sharing based on Android platform developed by Apache FTP server framework. \n\n
+        If the mobile browser cannot access the FTP protocol link, it is recommended to download and use Chrome.\n\n
+        Open source:\n
         https://github.com/ghmxr/ftpshare \n\n
 
-        Apache FtpServer开源许可证:\n
+        Apache FtpServer Open source license:\n
         http://www.apache.org/licenses \n\n
 
-        打赏作者:
+        Donate:
     </string>
 </resources>

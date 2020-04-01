@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.ghmxr.ftpshare.Constants;
+import com.github.ghmxr.ftpshare.MyApplication;
 import com.github.ghmxr.ftpshare.R;
 import com.github.ghmxr.ftpshare.adapers.AccountListAdapter;
 import com.github.ghmxr.ftpshare.services.FtpService;
@@ -32,7 +33,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
     private TextView anonymous_path;
     private CheckBox writable_cb;
 
-    private final SharedPreferences settings= CommonUtils.getSettingSharedPreferences();
+    private final SharedPreferences settings= CommonUtils.getSettingSharedPreferences(MyApplication.getGlobalBaseContext());
     private final SharedPreferences.Editor editor=settings.edit();
 
     @Nullable
@@ -112,9 +113,9 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
         writable_cb.setChecked(settings.getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE_WRITABLE,Constants.PreferenceConsts.ANONYMOUS_MODE_WRITABLE_DEFAULT));
         AccountListAdapter accountListAdapter=new AccountListAdapter(getActivity(),accountListView);
         accountListView.setAdapter(accountListAdapter);
-        viewGroup_anonymous.setVisibility(CommonUtils.isAnonymousMode()?View.VISIBLE:View.GONE);
-        accountListView.setVisibility(CommonUtils.isAnonymousMode()?View.GONE:View.VISIBLE);
-        viewGroup_no_account.setVisibility(CommonUtils.isAnonymousMode()?View.GONE:(accountListAdapter.getAccountItems().size()>0?View.GONE:View.VISIBLE));
+        viewGroup_anonymous.setVisibility(CommonUtils.isAnonymousMode(getActivity())?View.VISIBLE:View.GONE);
+        accountListView.setVisibility(CommonUtils.isAnonymousMode(getActivity())?View.GONE:View.VISIBLE);
+        viewGroup_no_account.setVisibility(CommonUtils.isAnonymousMode(getActivity())?View.GONE:(accountListAdapter.getAccountItems().size()>0?View.GONE:View.VISIBLE));
     }
 
 }

@@ -28,7 +28,7 @@ public class MyApplication extends Application{
         catch (Exception e) {e.printStackTrace();}
         super.onCreate();
         NetworkStatusMonitor.init(this);
-        AppCompatDelegate.setDefaultNightMode(CommonUtils.getSettingSharedPreferences()
+        AppCompatDelegate.setDefaultNightMode(CommonUtils.getSettingSharedPreferences(this)
                 .getInt(Constants.PreferenceConsts.NIGHT_MODE,Constants.PreferenceConsts.NIGHT_MODE_DEFAULT));
     }
 

@@ -1,5 +1,7 @@
 package com.github.ghmxr.ftpshare.activities;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -8,6 +10,16 @@ import com.github.ghmxr.ftpshare.data.AccountItem;
 import com.github.ghmxr.ftpshare.services.FtpService;
 
 public class AddAccountActivity extends AccountActivity {
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        try{
+            getSupportActionBar().setTitle(getResources().getString(R.string.activity_title_add));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void initializeAccountItem() {

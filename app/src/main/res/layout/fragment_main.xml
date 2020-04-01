@@ -36,7 +36,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
-                    android:textColor="@color/color_text_normal"
                     tools:text="Start FTP Service"/>
             </LinearLayout>
             <android.support.v7.widget.SwitchCompat
@@ -82,7 +81,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
-                    android:textColor="@color/color_text_normal"
                     android:text="65535"/>
             </LinearLayout>
             <ImageView
@@ -126,7 +124,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
-                    android:textColor="@color/color_text_normal"
                     android:text="@string/item_charset_utf"/>
             </LinearLayout>
             <ImageView
@@ -170,7 +167,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="11sp"
-                    android:textColor="@color/color_text_normal"
                     android:text="@string/item_wakelock_att"/>
             </LinearLayout>
             <CheckBox
@@ -218,8 +214,50 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
-                    android:textColor="@color/color_text_normal"
                     android:text="@string/item_ignore_battery_att"/>
+            </LinearLayout>
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="25dp"
+                android:src="@drawable/arrow_right"/>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:background="@color/color_dividing_line"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/ftp_addresses_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="60dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:textColor="@color/color_text_dark"
+                    android:text="@string/item_ftp_addresses"/>
+                <TextView
+                    android:id="@+id/ftp_addresses_att"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:text="@string/item_ftp_addresses_att"/>
             </LinearLayout>
             <ImageView
                 android:layout_width="15dp"
@@ -269,25 +307,10 @@
         <LinearLayout
             android:id="@+id/area_address"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
             android:orientation="vertical"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
             android:visibility="visible"
             tools:visibility="visible">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/ftp_addresses"
-                android:layout_marginTop="55dp"
-                android:layout_marginBottom="100dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:textIsSelectable="true"
-                android:textColor="@color/colorAccent"
-                android:textStyle="bold"
-                android:textSize="17sp"
-                tools:text="ftp://192.168.43.1:5656"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

@@ -69,7 +69,7 @@ public class DisconnectSelectionDialog extends AlertDialog implements View.OnCli
     @Override
     public void show() {
         super.show();
-        selection=CommonUtils.getSettingSharedPreferences().getInt(Constants.PreferenceConsts.AUTO_STOP,Constants.PreferenceConsts.AUTO_STOP_DEFAULT);
+        selection=CommonUtils.getSettingSharedPreferences(getContext()).getInt(Constants.PreferenceConsts.AUTO_STOP,Constants.PreferenceConsts.AUTO_STOP_DEFAULT);
         ra_time.setOnClickListener(this);
         ra_ap.setOnClickListener(this);
         ra_wifi.setOnClickListener(this);
@@ -77,7 +77,7 @@ public class DisconnectSelectionDialog extends AlertDialog implements View.OnCli
         getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences.Editor editor=CommonUtils.getSettingSharedPreferences().edit();
+                SharedPreferences.Editor editor=CommonUtils.getSettingSharedPreferences(getContext()).edit();
                 if(selection==Constants.PreferenceConsts.AUTO_STOP_TIME_COUNT){
                     final String value=editText_time.getText().toString();
                     if(TextUtils.isEmpty(value)){
@@ -117,7 +117,7 @@ public class DisconnectSelectionDialog extends AlertDialog implements View.OnCli
         ra_ap.setChecked(selection==Constants.PreferenceConsts.AUTO_STOP_AP_DISCONNECTED);
         final boolean isTime=selection==Constants.PreferenceConsts.AUTO_STOP_TIME_COUNT;
         ra_time.setChecked(isTime);
-        editText_time.setText(String.valueOf(CommonUtils.getSettingSharedPreferences()
+        editText_time.setText(String.valueOf(CommonUtils.getSettingSharedPreferences(getContext())
                 .getInt(Constants.PreferenceConsts.AUTO_STOP_VALUE,Constants.PreferenceConsts.AUTO_STOP_VALUE_DEFAULT)));
         editText_time.setEnabled(isTime);
     }

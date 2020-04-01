@@ -110,7 +110,7 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
             return;
         }
 
-        int disconnect_value=CommonUtils.getSettingSharedPreferences()
+        int disconnect_value=CommonUtils.getSettingSharedPreferences(this)
                 .getInt(Constants.PreferenceConsts.AUTO_STOP,Constants.PreferenceConsts.AUTO_STOP_DEFAULT);
         switch (disconnect_value){
             default:break;
@@ -166,7 +166,7 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
     private void onNavigationAccountSelected(){
         try{
             getSupportFragmentManager().beginTransaction().replace(R.id.main_frame,accountFragment).commit();
-            menu.getItem(MENU_ACCOUNT_ADD).setVisible(!CommonUtils.isAnonymousMode());
+            menu.getItem(MENU_ACCOUNT_ADD).setVisible(!CommonUtils.isAnonymousMode(this));
             menu.getItem(MENU_ANONYMOUS_SWITCH).setVisible(true);
             getSupportActionBar().setTitle(getResources().getString(R.string.title_settings));
         }catch (Exception e){e.printStackTrace();}
@@ -177,7 +177,7 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main,menu);
-        menu.getItem(MENU_ANONYMOUS_SWITCH).setTitle(CommonUtils.isAnonymousMode()?getResources().getString(R.string.action_main_anonymous_opened):getResources().getString(R.string.action_main_anonymous_closed));
+        menu.getItem(MENU_ANONYMOUS_SWITCH).setTitle(CommonUtils.isAnonymousMode(this)?getResources().getString(R.string.action_main_anonymous_opened):getResources().getString(R.string.action_main_anonymous_closed));
         this.menu=menu;
         return super.onCreateOptionsMenu(menu);
     }

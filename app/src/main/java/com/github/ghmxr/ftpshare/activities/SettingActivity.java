@@ -10,6 +10,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.github.ghmxr.ftpshare.Constants;
+import com.github.ghmxr.ftpshare.MyApplication;
 import com.github.ghmxr.ftpshare.R;
 import com.github.ghmxr.ftpshare.ui.DisconnectSelectionDialog;
 import com.github.ghmxr.ftpshare.ui.RadioSelectionDialog;
@@ -17,7 +18,7 @@ import com.github.ghmxr.ftpshare.utils.CommonUtils;
 
 public class SettingActivity extends BaseActivity implements View.OnClickListener{
 
-    private final SharedPreferences settings=CommonUtils.getSettingSharedPreferences();
+    private final SharedPreferences settings=CommonUtils.getSettingSharedPreferences(MyApplication.getGlobalBaseContext());
     private final SharedPreferences.Editor editor=settings.edit();
     private int resultCode=RESULT_CANCELED;
     private static final String ACTIVITY_RESULT="result";
@@ -27,7 +28,14 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        try {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try{
+            getSupportActionBar().setTitle(getResources().getString(R.string.item_more_settings));
+        }catch (Exception e){e.printStackTrace();}
         setContentView(R.layout.activity_settings);
         cb_auto_start=findViewById(R.id.setting_auto_start_cb);
         tv_disconnect=findViewById(R.id.setting_disconnect_value);

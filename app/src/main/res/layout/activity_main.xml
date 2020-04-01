@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MainActivity"
-    android:background="@color/color_normal_background">
+    tools:context=".activities.MainActivity">
     <FrameLayout
         android:id="@+id/main_frame"
         android:layout_width="match_parent"
@@ -18,7 +17,9 @@
         android:layout_marginStart="0dp"
         android:background="?android:attr/windowBackground"
         android:layout_alignParentBottom="true"
-        app:menu="@menu/navigation" />
+        app:menu="@menu/navigation"
+        app:itemIconTint="@color/selector_bottom_nav"
+        app:itemTextColor="@color/selector_bottom_nav"/>
     <include layout="@layout/layout_disconnection"
         android:id="@+id/main_count"
         android:layout_width="wrap_content"

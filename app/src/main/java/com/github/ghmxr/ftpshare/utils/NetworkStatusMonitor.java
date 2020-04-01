@@ -30,10 +30,12 @@ public class NetworkStatusMonitor {
                 int state=intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE,0);
                 if(state==11){//AP关闭
                     //Log.e("111","热点关闭");
+                    sendStatusChangedToCallbacks();
                     sendToCallbacks(false,NetworkType.AP);
                 }
                 if(state==13){//AP打开
                     //Log.e("111","热点打开");
+                    sendStatusChangedToCallbacks();
                     sendToCallbacks(true,NetworkType.AP);
                 }
             }
@@ -47,9 +49,7 @@ public class NetworkStatusMonitor {
         @Override
         public void onReceive(Context context, Intent intent) {
             if(ConnectivityManager.CONNECTIVITY_ACTION.equalsIgnoreCase(intent.getAction())){
-                for(NetworkStatusCallback callback:callbacks){
-                    callback.onNetworkStatusRefreshed();
-                }
+                sendStatusChangedToCallbacks();
                 if(connectivityManager==null)return;
                 NetworkInfo networkInfo=connectivityManager.getActiveNetworkInfo();
                 if(networkInfo==null){
@@ -145,7 +145,7 @@ public class NetworkStatusMonitor {
         @Override
         public void onAvailable(Network network) {
             super.onAvailable(network);
-            for(NetworkStatusCallback callback:callbacks)callback.onNetworkStatusRefreshed();
+            sendStatusChangedToCallbacks();
             if(connectivityManager==null)return;
             NetworkCapabilities networkCapabilities=connectivityManager.getNetworkCapabilities(network);
             if(networkCapabilities==null)return;
@@ -169,7 +169,7 @@ public class NetworkStatusMonitor {
         @Override
         public void onLost(Network network) {
             super.onLost(network);
-            for(NetworkStatusCallback callback:callbacks)callback.onNetworkStatusRefreshed();
+            sendStatusChangedToCallbacks();
             if(connectivityManager==null)return;
             NetworkCapabilities networkCapabilities=connectivityManager.getNetworkCapabilities(network);
             if(networkCapabilities==null){
@@ -217,6 +217,12 @@ public class NetworkStatusMonitor {
             for(NetworkStatusCallback callback:callbacks){
                 callback.onNetworkDisconnected(networkType);
             }
+        }
+    }
+
+    private static void sendStatusChangedToCallbacks(){
+        for(NetworkStatusCallback callback:callbacks){
+            callback.onNetworkStatusRefreshed();
         }
     }
 

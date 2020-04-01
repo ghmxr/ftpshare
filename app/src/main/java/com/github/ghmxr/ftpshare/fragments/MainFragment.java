@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Network;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,10 +20,8 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,21 +31,19 @@ import com.github.ghmxr.ftpshare.MyApplication;
 import com.github.ghmxr.ftpshare.R;
 import com.github.ghmxr.ftpshare.activities.SettingActivity;
 import com.github.ghmxr.ftpshare.services.FtpService;
+import com.github.ghmxr.ftpshare.ui.FtpAddressesDialog;
 import com.github.ghmxr.ftpshare.utils.CommonUtils;
-import com.github.ghmxr.ftpshare.utils.NetworkEnvironmentUtil;
 import com.github.ghmxr.ftpshare.utils.NetworkStatusMonitor;
-
-import java.util.List;
 
 public class MainFragment extends Fragment implements View.OnClickListener,FtpService.OnFTPServiceStatusChangedListener,
         NetworkStatusMonitor.NetworkStatusCallback {
 
-    ViewGroup viewGroup_main,viewGroup_port,viewGroup_charset,viewGroup_wakelock,viewGroup_battery,viewGroup_more;
+    ViewGroup viewGroup_main,viewGroup_port,viewGroup_charset,viewGroup_wakelock,viewGroup_battery,viewGroup_more,viewGroup_addresses;
     SwitchCompat switchCompat;
-    TextView tv_main,tv_port,tv_charset,tv_ips;
+    TextView tv_main,tv_port,tv_charset;
     CheckBox cb_wakelock;
 
-    final SharedPreferences settings=CommonUtils.getSettingSharedPreferences();
+    final SharedPreferences settings=CommonUtils.getSettingSharedPreferences(MyApplication.getGlobalBaseContext());
     final SharedPreferences.Editor editor=settings.edit();
 
     @Nullable
@@ -67,11 +62,12 @@ public class MainFragment extends Fragment implements View.OnClickListener,FtpSe
         viewGroup_wakelock=view.findViewById(R.id.wakelock_area);
         viewGroup_battery=view.findViewById(R.id.battery_area);
         viewGroup_more=view.findViewById(R.id.setting_area);
+        viewGroup_addresses=view.findViewById(R.id.ftp_addresses_area);
         switchCompat=view.findViewById(R.id.main_switch);
         tv_main=view.findViewById(R.id.main_att);
         tv_port=view.findViewById(R.id.port_att);
         tv_charset=view.findViewById(R.id.charset_att);
-        tv_ips=view.findViewById(R.id.ftp_addresses);
+        //tv_ips=view.findViewById(R.id.ftp_addresses);
         cb_wakelock=view.findViewById(R.id.wakelock_cb);
 
         viewGroup_main.setOnClickListener(this);
@@ -79,6 +75,7 @@ public class MainFragment extends Fragment implements View.OnClickListener,FtpSe
         viewGroup_charset.setOnClickListener(this);
         viewGroup_wakelock.setOnClickListener(this);
         viewGroup_battery.setOnClickListener(this);
+        viewGroup_addresses.setOnClickListener(this);
         viewGroup_more.setOnClickListener(this);
     }
 
@@ -87,12 +84,12 @@ public class MainFragment extends Fragment implements View.OnClickListener,FtpSe
         super.onResume();
         if(getContext()==null||getActivity()==null||getView()==null)return;
         switchCompat.setChecked(FtpService.isFTPServiceRunning());
-        tv_main.setText(FtpService.getFTPStatusDescription(MyApplication.getGlobalBaseContext()));
+        tv_main.setText(FtpService.getFTPStatusDescription(getActivity()));
         tv_port.setText(String.valueOf(settings.getInt(Constants.PreferenceConsts.PORT_NUMBER,Constants.PreferenceConsts.PORT_NUMBER_DEFAULT)));
-        tv_charset.setText(CommonUtils.getDisplayCharsetValue());
+        tv_charset.setText(CommonUtils.getDisplayCharsetValue(getActivity()));
         cb_wakelock.setChecked(settings.getBoolean(Constants.PreferenceConsts.WAKE_LOCK,Constants.PreferenceConsts.WAKE_LOCK_DEFAULT));
+        viewGroup_addresses.setVisibility(FtpService.isFTPServiceRunning()?View.VISIBLE:View.GONE);
         refreshBatteryIgnoreStatus();
-        refreshIpViews();
     }
 
     @Override
@@ -186,7 +183,7 @@ public class MainFragment extends Fragment implements View.OnClickListener,FtpSe
                         editor.putString(Constants.PreferenceConsts.CHARSET_TYPE,Constants.Charset.CHAR_UTF);
                         editor.apply();
                         dialog.cancel();
-                        tv_charset.setText(CommonUtils.getDisplayCharsetValue());
+                        if(getActivity()!=null)tv_charset.setText(CommonUtils.getDisplayCharsetValue(getActivity()));
                     }
                 });
                 if(ra_gbk!=null)ra_gbk.setOnClickListener(new View.OnClickListener() {
@@ -195,7 +192,7 @@ public class MainFragment extends Fragment implements View.OnClickListener,FtpSe
                         editor.putString(Constants.PreferenceConsts.CHARSET_TYPE,Constants.Charset.CHAR_GBK);
                         editor.apply();
                         dialog.cancel();
-                        tv_charset.setText(CommonUtils.getDisplayCharsetValue());
+                        if(getActivity()!=null)tv_charset.setText(CommonUtils.getDisplayCharsetValue(getActivity()));
                     }
                 });
             }
@@ -218,6 +215,13 @@ public class MainFragment extends Fragment implements View.OnClickListener,FtpSe
                 startActivityForResult(new Intent(getActivity(), SettingActivity.class),0);
             }
             break;
+            case R.id.ftp_addresses_area:{
+                if(!FtpService.isFTPServiceRunning()){
+                    return;
+                }
+                new FtpAddressesDialog(getActivity()).show();
+            }
+            break;
         }
     }
 
@@ -228,7 +232,7 @@ public class MainFragment extends Fragment implements View.OnClickListener,FtpSe
         switchCompat.setChecked(true);
         tv_main.setText(getResources().getString(R.string.ftp_status_running_head)+ CommonUtils.getFTPServiceDisplayAddress(getActivity()));
         viewGroup_main.setClickable(true);
-        refreshIpViews();
+        viewGroup_addresses.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -251,7 +255,7 @@ public class MainFragment extends Fragment implements View.OnClickListener,FtpSe
         switchCompat.setEnabled(true);
         tv_main.setText(getResources().getString(R.string.ftp_status_not_running));
         viewGroup_main.setClickable(true);
-        refreshIpViews();
+        viewGroup_addresses.setVisibility(View.GONE);
     }
 
 
@@ -263,7 +267,7 @@ public class MainFragment extends Fragment implements View.OnClickListener,FtpSe
 
     @Override
     public void onNetworkStatusRefreshed() {
-        refreshIpViews();
+        tv_main.setText(FtpService.getFTPStatusDescription(MyApplication.getGlobalBaseContext()));
     }
 
     @Override
@@ -303,19 +307,4 @@ public class MainFragment extends Fragment implements View.OnClickListener,FtpSe
         }catch (Exception e){e.printStackTrace();}
     }
 
-    private void refreshIpViews(){
-        if(!FtpService.isFTPServiceRunning()){
-            tv_ips.setText("");
-        }else{
-            StringBuilder stringBuilder=new StringBuilder();
-            List<String> ips= NetworkEnvironmentUtil.getLocalIpv4Addresses();
-            for(String ip:ips){
-                if(stringBuilder.length()>0)stringBuilder.append("\n");
-                stringBuilder.append("ftp://"+ip+":"+CommonUtils.getSettingSharedPreferences()
-                        .getInt(Constants.PreferenceConsts.PORT_NUMBER,Constants.PreferenceConsts.PORT_NUMBER_DEFAULT));
-            }
-            tv_ips.setText(stringBuilder.toString());
-            tv_main.setText(CommonUtils.getFTPServiceDisplayAddress(MyApplication.getGlobalBaseContext()));
-        }
-    }
 }

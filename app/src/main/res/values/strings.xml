@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FTP Share</string>
+    <string name="app_name" translatable="false">FTP Share</string>
     <string name="title_home">FTP服务</string>
     <string name="title_settings">账户设置</string>
     <string name="activity_title_add">添加</string>
@@ -18,6 +18,8 @@
     <string name="item_ignore_battery">忽略电池优化</string>
     <string name="item_ignore_battery_att">可保持FTP服务长时间运行</string>
     <string name="item_more_settings">更多设置</string>
+    <string name="item_ftp_addresses">查看FTP地址</string>
+    <string name="item_ftp_addresses_att">查看本机所有可用FTP地址</string>
     <string name="account_anonymous">匿名模式</string>
     <string name="account_anonymous_att">以匿名模式登录FTP服务</string>
     <string name="account_null_att">账户名不能为空</string>
@@ -49,7 +51,6 @@
     <string name="attention_no_user_account">请添加一个账户或者使用匿名模式来打开FTP服务</string>
     <string name="notification_title">FTP服务正在运行</string>
     <string name="permission_write_external">请授权存储读写权限</string>
-    <string name="attention_no_active_network">没有可用的网络连接，请连接WiFi或打开热点</string>
     <string name="snackbar_action_goto">前往设置</string>
     <string name="attention_add_a_user">请添加一个账户来使用</string>
     <string name="attention_clipboard">已复制到剪贴板</string>

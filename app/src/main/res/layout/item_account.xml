@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
     <ImageView
         android:id="@+id/item_icon"
         android:layout_width="45dp"
@@ -24,12 +26,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textColor="@color/color_text_dark"
+            tools:text="user1"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/text_path"
-            android:textSize="14sp"/>
+            android:textSize="14sp"
+            tools:text="/storage/emulated/0"/>
         <LinearLayout
             android:id="@+id/area_writable"
             android:layout_width="wrap_content"

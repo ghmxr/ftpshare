@@ -13,7 +13,6 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.github.ghmxr.ftpshare.Constants;
-import com.github.ghmxr.ftpshare.MyApplication;
 import com.github.ghmxr.ftpshare.R;
 
 import java.io.File;
@@ -24,17 +23,17 @@ public class CommonUtils {
     /**
      * 拿到SP实例
      */
-    public static SharedPreferences getSettingSharedPreferences(){
-        return MyApplication.getGlobalBaseContext().getSharedPreferences(Constants.PreferenceConsts.FILE_NAME,Context.MODE_PRIVATE);
+    public static SharedPreferences getSettingSharedPreferences(@NonNull Context context){
+        return context.getSharedPreferences(Constants.PreferenceConsts.FILE_NAME,Context.MODE_PRIVATE);
     }
 
     /**
      * 编码展示值
      * @return GBK(简体中文)或者UTF-8(默认)
      */
-    public static String getDisplayCharsetValue(){
-        return MyApplication.getGlobalBaseContext().getResources().getString(
-                Constants.Charset.CHAR_GBK.equals(getSettingSharedPreferences().getString(Constants.PreferenceConsts.CHARSET_TYPE,Constants.PreferenceConsts.CHARSET_TYPE_DEFAULT))?
+    public static String getDisplayCharsetValue(@NonNull Context context){
+        return context.getResources().getString(
+                Constants.Charset.CHAR_GBK.equals(getSettingSharedPreferences(context).getString(Constants.PreferenceConsts.CHARSET_TYPE,Constants.PreferenceConsts.CHARSET_TYPE_DEFAULT))?
                         R.string.item_charset_gbk:R.string.item_charset_utf
         );
     }
@@ -72,8 +71,8 @@ public class CommonUtils {
      * 判断是否为匿名模式
      * @return true-为匿名模式
      */
-    public static boolean isAnonymousMode(){
-        return getSettingSharedPreferences().getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE,Constants.PreferenceConsts.ANONYMOUS_MODE_DEFAULT);
+    public static boolean isAnonymousMode(@NonNull Context context){
+        return getSettingSharedPreferences(context).getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE,Constants.PreferenceConsts.ANONYMOUS_MODE_DEFAULT);
     }
 
     /**
@@ -100,7 +99,7 @@ public class CommonUtils {
         return getFtpServiceAddress(context,CommonUtils.getIPAddressForFTPService(context));
     }
 
-    private static String getFtpServiceAddress(@NonNull Context context,@NonNull String ip){
+    public static String getFtpServiceAddress(@NonNull Context context,@NonNull String ip){
         return "ftp://"+ip+":"
                 +context.getSharedPreferences(Constants.PreferenceConsts.FILE_NAME,Context.MODE_PRIVATE)
                 .getInt(Constants.PreferenceConsts.PORT_NUMBER,Constants.PreferenceConsts.PORT_NUMBER_DEFAULT);

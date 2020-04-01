@@ -1,5 +1,7 @@
 package com.github.ghmxr.ftpshare.activities;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -15,6 +17,16 @@ public class EditAccountActivity extends AccountActivity {
 
     public static final String EXTRA_SERIALIZED_ACCOUNT_ITEM="account_item";
     private long first_clicked_delete =0;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        try{
+            getSupportActionBar().setTitle(getResources().getString(R.string.activity_title_edit));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void initializeAccountItem() {

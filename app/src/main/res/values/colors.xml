@@ -4,12 +4,9 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-    <color name="color_normal_background">#efefef</color>
-    <color name="color_normal_background_highlight">#efefef</color>
     <color name="color_text_dark">#000000</color>
-    <color name="color_text_normal">#333333</color>
-    <color name="color_dialog_back">#ffffff</color>
     <color name="color_dividing_line">#dddddd</color>
     <color name="color_arrow_color">#999999</color>
-    <color name="color_nav_text">#3F51B5</color>
+    <color name="color_bottom_nav_selected_color">#3F51B5</color>
+    <color name="color_bottom_nav_normal_color">#666666</color>
 </resources>

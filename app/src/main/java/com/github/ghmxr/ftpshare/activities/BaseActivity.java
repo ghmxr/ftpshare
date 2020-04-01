@@ -39,7 +39,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         Configuration config = resources.getConfiguration();
         //区别17版本（其实在17以上版本通过 config.locale设置也是有效的，不知道为什么还要区别）
         //在这里设置需要转换成的语言，也就是选择用哪个values目录下的strings.xml文件
-        int value= CommonUtils.getSettingSharedPreferences().getInt(Constants.PreferenceConsts.LANGUAGE_SETTING,Constants.PreferenceConsts.LANGUAGE_FOLLOW_SYSTEM);
+        int value= CommonUtils.getSettingSharedPreferences(this).getInt(Constants.PreferenceConsts.LANGUAGE_SETTING,Constants.PreferenceConsts.LANGUAGE_FOLLOW_SYSTEM);
         Locale locale=null;
         switch (value){
             default:break;
