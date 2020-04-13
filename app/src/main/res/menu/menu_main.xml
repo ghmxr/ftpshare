@@ -4,7 +4,7 @@
     <item
         android:id="@+id/action_main_add"
         android:title="@string/action_main_add"
-        android:icon="@android:drawable/ic_menu_add"
+        android:icon="@drawable/icon_add"
         app:showAsAction="ifRoom"
         android:orderInCategory="0"
         android:visible="false"/>

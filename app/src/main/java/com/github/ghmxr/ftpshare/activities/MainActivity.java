@@ -63,7 +63,11 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
                 return false;
             }
         });
-        onNavigationMainSelected();
+        //onNavigationMainSelected();
+        try{
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame,mainFragment).commit();
+            getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+        }catch (Exception e){e.printStackTrace();}
         findViewById(R.id.layout_disconnection_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

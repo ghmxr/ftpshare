@@ -10,7 +10,8 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
-import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 
 import java.util.HashSet;
@@ -20,6 +21,7 @@ public class NetworkStatusMonitor {
         WIFI,AP,ETHERNET,CELLULAR
     }
 
+    private static final Handler handler=new Handler(Looper.getMainLooper());
     private static final HashSet<NetworkStatusCallback> callbacks=new HashSet<>();
     private static final @TargetApi(21) MyNetworkCallback myNetworkCallback=new MyNetworkCallback();
     private static ConnectivityManager connectivityManager;
@@ -116,11 +118,12 @@ public class NetworkStatusMonitor {
     public static void init(@NonNull Context context){
         connectivityManager=(ConnectivityManager)context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         context.getApplicationContext().registerReceiver(apReceiver,new IntentFilter("android.net.wifi.WIFI_AP_STATE_CHANGED"));
-        if(Build.VERSION.SDK_INT>=24){
+        /*if(Build.VERSION.SDK_INT>=24){
             connectivityManager.registerDefaultNetworkCallback(myNetworkCallback);
         }else{
             context.getApplicationContext().registerReceiver(networkReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        }
+        }*/
+        context.getApplicationContext().registerReceiver(networkReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
     public static void addNetworkStatusCallback(@NonNull NetworkStatusCallback callback){
@@ -208,22 +211,32 @@ public class NetworkStatusMonitor {
         }
     }
 
-    private static void sendToCallbacks(boolean isConnected,NetworkType networkType){
-        if(isConnected){
-            for(NetworkStatusCallback callback:callbacks){
-                callback.onNetworkConnected(networkType);
+    private static void sendToCallbacks(final boolean isConnected,final NetworkType networkType){
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if(isConnected){
+                    for(NetworkStatusCallback callback:callbacks){
+                        callback.onNetworkConnected(networkType);
+                    }
+                }else{
+                    for(NetworkStatusCallback callback:callbacks){
+                        callback.onNetworkDisconnected(networkType);
+                    }
+                }
             }
-        }else{
-            for(NetworkStatusCallback callback:callbacks){
-                callback.onNetworkDisconnected(networkType);
-            }
-        }
+        });
     }
 
     private static void sendStatusChangedToCallbacks(){
-        for(NetworkStatusCallback callback:callbacks){
-            callback.onNetworkStatusRefreshed();
-        }
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                for(NetworkStatusCallback callback:callbacks){
+                    callback.onNetworkStatusRefreshed();
+                }
+            }
+        });
     }
 
     public interface NetworkStatusCallback{

@@ -5,6 +5,7 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="color_text_dark">#FFFFFF</color>
+    <color name="color_text_att">#FFFFFF</color>
     <color name="color_dividing_line">#666666</color>
     <color name="color_arrow_color">#eeeeee</color>
     <color name="color_bottom_nav_selected_color">#ffffff</color>

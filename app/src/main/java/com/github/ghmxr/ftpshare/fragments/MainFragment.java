@@ -56,6 +56,7 @@ public class MainFragment extends Fragment implements View.OnClickListener,FtpSe
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         FtpService.addOnFtpServiceStatusChangedListener(this);
+        NetworkStatusMonitor.addNetworkStatusCallback(this);
         viewGroup_main=view.findViewById(R.id.main_area);
         viewGroup_port=view.findViewById(R.id.port_area);
         viewGroup_charset=view.findViewById(R.id.charset_area);
@@ -263,6 +264,7 @@ public class MainFragment extends Fragment implements View.OnClickListener,FtpSe
     public void onDestroyView() {
         super.onDestroyView();
         FtpService.removeOnFtpServiceStatusChangedListener(this);
+        NetworkStatusMonitor.removeNetworkStatusCallback(this);
     }
 
     @Override
