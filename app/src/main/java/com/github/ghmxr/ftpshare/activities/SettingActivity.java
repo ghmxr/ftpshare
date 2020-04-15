@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.github.ghmxr.ftpshare.Constants;
 import com.github.ghmxr.ftpshare.MyApplication;
 import com.github.ghmxr.ftpshare.R;
+import com.github.ghmxr.ftpshare.services.FtpService;
 import com.github.ghmxr.ftpshare.ui.DisconnectSelectionDialog;
 import com.github.ghmxr.ftpshare.ui.RadioSelectionDialog;
 import com.github.ghmxr.ftpshare.utils.CommonUtils;
@@ -42,7 +43,11 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         tv_night_mode=findViewById(R.id.setting_night_mode_value);
         tv_language=findViewById(R.id.setting_language_value);
         if(bundle!=null){
-            setResult(bundle.getInt(ACTIVITY_RESULT));
+            final int result=bundle.getInt(ACTIVITY_RESULT);
+            if(result==RESULT_OK){
+                FtpService.refreshOngoingNotification();
+            }
+            setResult(result);
         }
         refreshSettingValues();
     }

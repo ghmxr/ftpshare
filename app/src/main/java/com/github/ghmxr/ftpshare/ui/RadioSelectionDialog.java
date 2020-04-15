@@ -17,6 +17,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.github.ghmxr.ftpshare.R;
+import com.github.ghmxr.ftpshare.utils.CommonUtils;
 
 public class RadioSelectionDialog<V> extends Dialog {
 
@@ -52,8 +53,9 @@ public class RadioSelectionDialog<V> extends Dialog {
             //layoutParams.gravity= Gravity.BOTTOM;
             layoutParams.width= WindowManager.LayoutParams.MATCH_PARENT;
             layoutParams.height=WindowManager.LayoutParams.WRAP_CONTENT;
+            layoutParams.horizontalMargin= CommonUtils.dip2px(getContext(),10F);
             window.setAttributes(layoutParams);
-            //window.setBackgroundDrawableResource(android.R.color.transparent);
+            window.setBackgroundDrawableResource(android.R.color.transparent);
             //window.setWindowAnimations(R.style.DialogAnimStyle);
         }
 
@@ -62,7 +64,6 @@ public class RadioSelectionDialog<V> extends Dialog {
     @Override
     public void show() {
         super.show();
-        if(!TextUtils.isEmpty(title))setTitle(title);
         RecyclerView recyclerView=findViewById(R.id.recycler_view);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);

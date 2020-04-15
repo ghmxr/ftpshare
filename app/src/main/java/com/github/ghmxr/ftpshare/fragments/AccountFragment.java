@@ -2,6 +2,7 @@ package com.github.ghmxr.ftpshare.fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -53,11 +54,6 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
 
         view.findViewById(R.id.anonymous_path).setOnClickListener(this);
         view.findViewById(R.id.anonymous_writable).setOnClickListener(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         refreshContents();
     }
 
@@ -105,6 +101,10 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
             }
             break;
         }
+    }
+
+    public void processingActivityResult(int requestCode, int resultCode, Intent data) {
+        refreshContents();
     }
 
     public void refreshContents(){

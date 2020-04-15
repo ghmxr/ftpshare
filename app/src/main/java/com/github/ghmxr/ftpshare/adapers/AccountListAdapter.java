@@ -22,12 +22,10 @@ public class AccountListAdapter extends BaseAdapter implements AdapterView.OnIte
 
     private final ArrayList<AccountItem>accountItems=new ArrayList<>();
     private final Activity activity;
-    private final ListView listView;
 
     public AccountListAdapter(@NonNull Activity activity, @NonNull ListView listView) {
         super();
         this.activity=activity;
-        this.listView=listView;
         accountItems.addAll(FtpService.getUserAccountList(activity));
         listView.setOnItemClickListener(this);
         listView.setDivider(null);

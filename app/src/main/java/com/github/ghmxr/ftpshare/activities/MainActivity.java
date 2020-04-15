@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -177,6 +178,12 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mainFragment.processingActivityResult(requestCode,resultCode,data);
+        accountFragment.processingActivityResult(requestCode,resultCode,data);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

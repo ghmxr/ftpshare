@@ -92,14 +92,10 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
         ftpService=this;
         handler=new MyHandler();
         NetworkStatusMonitor.addNetworkStatusCallback(this);
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
         makeThisForeground(getResources().getString(R.string.app_name),getResources().getString(R.string.attention_opening_ftp));
         if(!beforeStartCheck(this)){
             stopSelf();
-            return super.onStartCommand(intent,flags,startId);
+            return;
         }
         final boolean isAnonymousMode=CommonUtils.getSettingSharedPreferences(this)
                 .getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE,Constants.PreferenceConsts.ANONYMOUS_MODE_DEFAULT);
@@ -119,6 +115,10 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
                 }
             }
         }).start();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -545,5 +545,13 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
 
     public static boolean getIsIgnoreAutoCancelThisTime(){
         return ftpService!=null&&ftpService.isIgnoreAutoDisconnect;
+    }
+
+    public static void refreshOngoingNotification(){
+        FtpService ftpService=FtpService.ftpService;
+        if(ftpService==null)return;
+        CommonUtils.updateResourcesOfContext(ftpService);
+        ftpService.makeThisForeground(ftpService.getResources().getString(R.string.notification_title),
+                ftpService.getResources().getString(R.string.ftp_status_running_head)+ CommonUtils.getFTPServiceDisplayAddress(ftpService));
     }
 }

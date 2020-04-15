@@ -78,19 +78,8 @@ public class MainFragment extends Fragment implements View.OnClickListener,FtpSe
         viewGroup_battery.setOnClickListener(this);
         viewGroup_addresses.setOnClickListener(this);
         viewGroup_more.setOnClickListener(this);
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(getContext()==null||getActivity()==null||getView()==null)return;
-        switchCompat.setChecked(FtpService.isFTPServiceRunning());
-        tv_main.setText(FtpService.getFTPStatusDescription(getActivity()));
-        tv_port.setText(String.valueOf(settings.getInt(Constants.PreferenceConsts.PORT_NUMBER,Constants.PreferenceConsts.PORT_NUMBER_DEFAULT)));
-        tv_charset.setText(CommonUtils.getDisplayCharsetValue(getActivity()));
-        cb_wakelock.setChecked(settings.getBoolean(Constants.PreferenceConsts.WAKE_LOCK,Constants.PreferenceConsts.WAKE_LOCK_DEFAULT));
-        viewGroup_addresses.setVisibility(FtpService.isFTPServiceRunning()?View.VISIBLE:View.GONE);
-        refreshBatteryIgnoreStatus();
+        refreshContents();
     }
 
     @Override
@@ -213,7 +202,7 @@ public class MainFragment extends Fragment implements View.OnClickListener,FtpSe
             }
             break;
             case R.id.setting_area:{
-                startActivityForResult(new Intent(getActivity(), SettingActivity.class),0);
+                getActivity().startActivityForResult(new Intent(getActivity(), SettingActivity.class),0);
             }
             break;
             case R.id.ftp_addresses_area:{
@@ -278,12 +267,21 @@ public class MainFragment extends Fragment implements View.OnClickListener,FtpSe
     @Override
     public void onNetworkDisconnected(NetworkStatusMonitor.NetworkType networkType) {}
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    public void processingActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode==0&&resultCode== Activity.RESULT_OK&&getActivity()!=null){
             getActivity().recreate();
         }
+    }
+
+    private void refreshContents(){
+        if(getContext()==null||getActivity()==null||getView()==null)return;
+        switchCompat.setChecked(FtpService.isFTPServiceRunning());
+        tv_main.setText(FtpService.getFTPStatusDescription(getActivity()));
+        tv_port.setText(String.valueOf(settings.getInt(Constants.PreferenceConsts.PORT_NUMBER,Constants.PreferenceConsts.PORT_NUMBER_DEFAULT)));
+        tv_charset.setText(CommonUtils.getDisplayCharsetValue(getActivity()));
+        cb_wakelock.setChecked(settings.getBoolean(Constants.PreferenceConsts.WAKE_LOCK,Constants.PreferenceConsts.WAKE_LOCK_DEFAULT));
+        viewGroup_addresses.setVisibility(FtpService.isFTPServiceRunning()?View.VISIBLE:View.GONE);
+        refreshBatteryIgnoreStatus();
     }
 
     private void refreshBatteryIgnoreStatus(){

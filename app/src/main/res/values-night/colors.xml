@@ -10,4 +10,5 @@
     <color name="color_arrow_color">#eeeeee</color>
     <color name="color_bottom_nav_selected_color">#ffffff</color>
     <color name="color_bottom_nav_normal_color">#666666</color>
+    <color name="color_dialog_background">#232323</color>
 </resources>

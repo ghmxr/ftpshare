@@ -1,13 +1,10 @@
 package com.github.ghmxr.ftpshare.utils;
 
-import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
@@ -23,7 +20,7 @@ public class NetworkStatusMonitor {
 
     private static final Handler handler=new Handler(Looper.getMainLooper());
     private static final HashSet<NetworkStatusCallback> callbacks=new HashSet<>();
-    private static final @TargetApi(21) MyNetworkCallback myNetworkCallback=new MyNetworkCallback();
+    //private static final @TargetApi(21) MyNetworkCallback myNetworkCallback=new MyNetworkCallback();
     private static ConnectivityManager connectivityManager;
     private static final BroadcastReceiver apReceiver=new BroadcastReceiver() {
         @Override
@@ -138,7 +135,7 @@ public class NetworkStatusMonitor {
         }
     }
 
-    @TargetApi(21)
+    /*@TargetApi(21)
     private static class MyNetworkCallback extends ConnectivityManager.NetworkCallback{
 
         private boolean wifi=false;
@@ -209,7 +206,7 @@ public class NetworkStatusMonitor {
                 sendToCallbacks(false,NetworkType.ETHERNET);
             }
         }
-    }
+    }*/
 
     private static void sendToCallbacks(final boolean isConnected,final NetworkType networkType){
         handler.post(new Runnable() {
