@@ -159,7 +159,6 @@
                     android:textColor="@color/color_text_dark"
                     android:text="@string/item_wakelock"/>
                 <TextView
-                    android:id="@+id/wakelock_att"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="11sp"
@@ -205,7 +204,6 @@
                     android:textColor="@color/color_text_dark"
                     android:text="@string/item_ignore_battery"/>
                 <TextView
-                    android:id="@+id/battery_att"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
@@ -247,7 +245,6 @@
                     android:textColor="@color/color_text_dark"
                     android:text="@string/item_ftp_addresses"/>
                 <TextView
-                    android:id="@+id/ftp_addresses_att"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
@@ -298,7 +295,6 @@
                 android:src="@drawable/arrow_right"/>
         </RelativeLayout>
         <LinearLayout
-            android:id="@+id/area_address"
             android:layout_width="wrap_content"
             android:layout_height="100dp"
             android:orientation="vertical"

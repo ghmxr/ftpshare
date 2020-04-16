@@ -19,8 +19,6 @@
     <string name="item_more_settings">More settings</string>
     <string name="item_ftp_addresses">View FTP addresses</string>
     <string name="item_ftp_addresses_att">view all available FTP addresses</string>
-    <string name="account_anonymous">Anonymous mode</string>
-    <string name="account_anonymous_att">Log in to FTP service in anonymous mode</string>
     <string name="account_null_att">account can not be blank</string>
     <string name="account_duplicate">account already existed</string>
     <string name="account_anonymous_name_set_att">Please use anonymous mode to enable anonymous login(cannot set anonymous as account name)</string>
@@ -91,8 +89,6 @@
 
     <string name="count_title">Auto-Shut</string>
     <string name="word_none">none</string>
-    <string name="word_hour">hour(s)</string>
-    <string name="word_minute">minute(s)</string>
     <string name="word_second">second(s)</string>
 
     <string name="about_content">

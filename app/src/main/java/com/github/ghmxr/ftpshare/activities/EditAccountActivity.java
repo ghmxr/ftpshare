@@ -31,7 +31,6 @@ public class EditAccountActivity extends AccountActivity {
     @Override
     public void initializeAccountItem() {
         try{
-            //item= new AccountItem(FtpService.getUserAccountList(this).get(getIntent().getIntExtra(EXTRA_POSITION,-1)));
             item=(AccountItem)getIntent().getSerializableExtra(EXTRA_SERIALIZED_ACCOUNT_ITEM);
         }catch (Exception e){
             e.printStackTrace();

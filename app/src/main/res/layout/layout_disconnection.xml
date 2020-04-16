@@ -42,7 +42,6 @@
             android:layout_width="50dp"
             android:layout_height="30dp">
             <ImageView
-                android:id="@+id/layout_disconnection_cancel_icon"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_alignParentRight="true"

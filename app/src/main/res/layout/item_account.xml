@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="75dp"
+    android:minHeight="70dp"
+    android:id="@+id/item_account_root"
     xmlns:tools="http://schemas.android.com/tools">
     <ImageView
         android:id="@+id/item_icon"

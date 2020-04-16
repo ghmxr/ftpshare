@@ -62,30 +62,6 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
 
     private boolean isIgnoreAutoDisconnect=false;
 
-    //public static final int MESSAGE_REFRESH_FOREGROUND_NOTIFICATION=7;
-
-    /*private BroadcastReceiver receiver=new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            try{
-                if(intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)){
-                    NetworkInfo info=intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-                    if(info.getState().equals(NetworkInfo.State.DISCONNECTED)&&info.getType()==ConnectivityManager.TYPE_WIFI
-                            &&!info.isConnected()&&!APUtil.isAPEnabled(FtpService.this)){
-                        stopSelf();
-                        //Log.d("Network",""+info.getState()+" "+info.getTypeName()+" "+info.isConnected());
-                    }
-                }else if(intent.getAction().equals("android.net.wifi.WIFI_AP_STATE_CHANGED")){
-                    int state=intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE,0);
-                    if(state==11&&!CommonUtils.isWifiConnected(FtpService.this)){
-                        stopSelf();
-                        //Log.d("APState",""+state);
-                    }
-                }
-            }catch (Exception e){e.printStackTrace();}
-        }
-    };*/
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -266,16 +242,7 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
         ListenerFactory lfactory = new ListenerFactory();
         lfactory.setPort(settings.getInt(Constants.PreferenceConsts.PORT_NUMBER,Constants.PreferenceConsts.PORT_NUMBER_DEFAULT)); //设置端口号 非ROOT不可使用1024以下的端口
         factory.addListener("default", lfactory.createListener());
-        ConnectivityManager manager=null;
-            /*try{
-                manager=(ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-            }catch (Exception e){e.printStackTrace();}
-            if(manager!=null){
-                NetworkInfo info=manager.getActiveNetworkInfo();
-                if((info==null||info.getType()!=ConnectivityManager.TYPE_WIFI)&&!APUtil.isAPEnabled(this)) {
-                    throw new Exception(getResources().getString(R.string.attention_no_active_network));
-                }
-            }*/
+
         synchronized (FtpService.class) {
             try{
                 if(server!=null) server.stop();
@@ -331,19 +298,12 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
             switch (msg.what){
                 default:break;
                 case MESSAGE_START_FTP_COMPLETE:{
-                    try{
-                        IntentFilter filter=new IntentFilter();
-                        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-                        filter.addAction("android.net.wifi.WIFI_AP_STATE_CHANGED");
-                        //registerReceiver(receiver,filter);
-                    }catch (Exception e){e.printStackTrace();}
-
                     if(getSharedPreferences(Constants.PreferenceConsts.FILE_NAME,Context.MODE_PRIVATE).getBoolean(Constants.PreferenceConsts.WAKE_LOCK,Constants.PreferenceConsts.WAKE_LOCK_DEFAULT)){
                         sendEmptyMessage(MESSAGE_WAKELOCK_ACQUIRE);
                     }else {
                         sendEmptyMessage(MESSAGE_WAKELOCK_RELEASE);
                     }
-                    //Log.d("FTP",""+FtpService.isFTPServiceRunning());
+
                     for(OnFTPServiceStatusChangedListener listener:listeners){
                         listener.onFTPServiceStarted();
                     }
@@ -356,8 +316,6 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
                     }
                     makeThisForeground(getResources().getString(R.string.notification_title),
                             getResources().getString(R.string.ftp_status_running_head)+ CommonUtils.getFTPServiceDisplayAddress(this));
-                    //FtpWidget.sendUpdateWidgetBroadcast(this,null);
-                    //MyTileService.requestRefreshTile(this);
                 }
                 break;
                 case MESSAGE_START_FTP_ERROR:{
@@ -393,7 +351,6 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //Log.d("onDestroy","onDestroy method called");
         NetworkStatusMonitor.removeNetworkStatusCallback(this);
         new Thread(new Runnable() {
             @Override
@@ -408,15 +365,14 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
                 }
             }
         }).start();
+
         try{
             if(wakeLock!=null){
                 wakeLock.release();
                 wakeLock=null;
             }
         }catch (Exception e){e.printStackTrace();}
-       /* try{
-            unregisterReceiver(receiver);
-        }catch (Exception e){e.printStackTrace();}*/
+
         countHandler.removeCallbacks(stopExecutor);
         handler=null;
         ftpService=null;
@@ -424,8 +380,7 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
         for(OnFTPServiceStatusChangedListener listener:listeners){
             listener.onFTPServiceDestroyed();
         }
-        //FtpWidget.sendUpdateWidgetBroadcast(this,null);
-        //MyTileService.requestRefreshTile(this);
+
     }
 
     private static class MyHandler extends Handler{

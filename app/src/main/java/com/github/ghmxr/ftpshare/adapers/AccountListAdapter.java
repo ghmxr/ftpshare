@@ -33,7 +33,7 @@ public class AccountListAdapter extends BaseAdapter implements AdapterView.OnIte
 
     @Override
     public int getCount() {
-        return accountItems.size();
+        return accountItems.size()+2;
     }
 
     @Override
@@ -48,10 +48,17 @@ public class AccountListAdapter extends BaseAdapter implements AdapterView.OnIte
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final AccountItem accountItem=accountItems.get(position);
         if(convertView==null){
             convertView= LayoutInflater.from(activity).inflate(R.layout.item_account,parent,false);
         }
+        ViewGroup viewGroup=convertView.findViewById(R.id.item_account_root);
+        if(position>=accountItems.size()){
+            viewGroup.setVisibility(View.INVISIBLE);
+            return convertView;
+        }else{
+            viewGroup.setVisibility(View.VISIBLE);
+        }
+        final AccountItem accountItem=accountItems.get(position);
         TextView tv_account=convertView.findViewById(R.id.text_account);
         TextView tv_path=convertView.findViewById(R.id.text_path);
         View writable=convertView.findViewById(R.id.area_writable);

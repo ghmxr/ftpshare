@@ -68,7 +68,6 @@ public class MainFragment extends Fragment implements View.OnClickListener,FtpSe
         tv_main=view.findViewById(R.id.main_att);
         tv_port=view.findViewById(R.id.port_att);
         tv_charset=view.findViewById(R.id.charset_att);
-        //tv_ips=view.findViewById(R.id.ftp_addresses);
         cb_wakelock=view.findViewById(R.id.wakelock_cb);
 
         viewGroup_main.setOnClickListener(this);
@@ -80,6 +79,12 @@ public class MainFragment extends Fragment implements View.OnClickListener,FtpSe
         viewGroup_more.setOnClickListener(this);
 
         refreshContents();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshBatteryIgnoreStatus();
     }
 
     @Override
@@ -281,7 +286,7 @@ public class MainFragment extends Fragment implements View.OnClickListener,FtpSe
         tv_charset.setText(CommonUtils.getDisplayCharsetValue(getActivity()));
         cb_wakelock.setChecked(settings.getBoolean(Constants.PreferenceConsts.WAKE_LOCK,Constants.PreferenceConsts.WAKE_LOCK_DEFAULT));
         viewGroup_addresses.setVisibility(FtpService.isFTPServiceRunning()?View.VISIBLE:View.GONE);
-        refreshBatteryIgnoreStatus();
+        //refreshBatteryIgnoreStatus();
     }
 
     private void refreshBatteryIgnoreStatus(){

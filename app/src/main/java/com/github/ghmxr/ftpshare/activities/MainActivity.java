@@ -33,6 +33,9 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
     private static int MENU_ACCOUNT_ADD =0;
     private static int MENU_ANONYMOUS_SWITCH=1;
 
+    private static final String STATE_CURRENT_TAB="current_tab";
+    private int current_tab=0;
+
     private final MainFragment mainFragment=new MainFragment();
     private final AccountFragment accountFragment=new AccountFragment();
 
@@ -49,26 +52,36 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
         disconnect_viewgroup=findViewById(R.id.main_count);
         disconnect_icon=findViewById(R.id.layout_disconnect_icon);
         disconnect_tv_value =findViewById(R.id.layout_disconnect_value);
-        navigation.setSelectedItemId(R.id.navigation_main);
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_main:
+                        current_tab=0;
                         onNavigationMainSelected();
                         return true;
                     case R.id.navigation_settings:
+                        current_tab=1;
                         onNavigationAccountSelected();
                         return true;
                 }
                 return false;
             }
         });
-        //onNavigationMainSelected();
-        try{
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame,mainFragment).commit();
-            getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
-        }catch (Exception e){e.printStackTrace();}
+
+        if(savedInstanceState==null){
+            onNavigationMainSelected();
+            navigation.setSelectedItemId(R.id.navigation_main);
+        }else{
+            current_tab=savedInstanceState.getInt(STATE_CURRENT_TAB);
+            if(current_tab==0){
+                onNavigationMainSelected();
+                navigation.setSelectedItemId(R.id.navigation_main);
+            }else if(current_tab==1){
+                onNavigationAccountSelected();
+                navigation.setSelectedItemId(R.id.navigation_settings);
+            }
+        }
         findViewById(R.id.layout_disconnection_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,6 +97,12 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
     protected void onResume() {
         super.onResume();
         refreshDisconnectView();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(STATE_CURRENT_TAB,current_tab);
     }
 
     @Override
@@ -161,9 +180,8 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
     private void onNavigationMainSelected(){
         try{
             getSupportFragmentManager().beginTransaction().replace(R.id.main_frame,mainFragment).commit();
-            menu.getItem(MENU_ACCOUNT_ADD).setVisible(false);
-            menu.getItem(MENU_ANONYMOUS_SWITCH).setVisible(false);
             getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+            refreshMenuVisibilitiesForCurrentTab();
         }catch (Exception e){e.printStackTrace();}
 
     }
@@ -171,9 +189,8 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
     private void onNavigationAccountSelected(){
         try{
             getSupportFragmentManager().beginTransaction().replace(R.id.main_frame,accountFragment).commit();
-            menu.getItem(MENU_ACCOUNT_ADD).setVisible(!CommonUtils.isAnonymousMode(this));
-            menu.getItem(MENU_ANONYMOUS_SWITCH).setVisible(true);
             getSupportActionBar().setTitle(getResources().getString(R.string.title_settings));
+            refreshMenuVisibilitiesForCurrentTab();
         }catch (Exception e){e.printStackTrace();}
 
     }
@@ -185,11 +202,23 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
         accountFragment.processingActivityResult(requestCode,resultCode,data);
     }
 
+    private void refreshMenuVisibilitiesForCurrentTab(){
+        if(menu==null)return;
+        if(current_tab==0){
+            menu.getItem(MENU_ACCOUNT_ADD).setVisible(false);
+            menu.getItem(MENU_ANONYMOUS_SWITCH).setVisible(false);
+        }else if(current_tab==1){
+            menu.getItem(MENU_ACCOUNT_ADD).setVisible(!CommonUtils.isAnonymousMode(this));
+            menu.getItem(MENU_ANONYMOUS_SWITCH).setVisible(true);
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main,menu);
         menu.getItem(MENU_ANONYMOUS_SWITCH).setTitle(CommonUtils.isAnonymousMode(this)?getResources().getString(R.string.action_main_anonymous_opened):getResources().getString(R.string.action_main_anonymous_closed));
         this.menu=menu;
+        refreshMenuVisibilitiesForCurrentTab();
         return super.onCreateOptionsMenu(menu);
     }
 

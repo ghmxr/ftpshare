@@ -20,8 +20,6 @@
     <string name="item_more_settings">更多设置</string>
     <string name="item_ftp_addresses">查看FTP地址</string>
     <string name="item_ftp_addresses_att">查看本机所有可用FTP地址</string>
-    <string name="account_anonymous">匿名模式</string>
-    <string name="account_anonymous_att">以匿名模式登录FTP服务</string>
     <string name="account_null_att">账户名不能为空</string>
     <string name="account_duplicate">账户名已存在</string>
     <string name="account_anonymous_name_set_att">请使用匿名模式来启用匿名登录(不能设置anonymous为账户名)</string>
@@ -94,8 +92,6 @@
 
     <string name="count_title">自动断开</string>
     <string name="word_none">无</string>
-    <string name="word_hour">小时</string>
-    <string name="word_minute">分钟</string>
     <string name="word_second">秒</string>
 
     <string name="about_content">
