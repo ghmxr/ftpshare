@@ -13,16 +13,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         setAndRefreshLanguage();
     }
 
-    @Override
-    public void finish() {
-        super.finish();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
     public void setAndRefreshLanguage(){
         CommonUtils.updateResourcesOfContext(this);
     }

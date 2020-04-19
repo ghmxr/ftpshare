@@ -57,6 +57,18 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
         refreshContents();
     }
 
+    /**
+     * 在API22的虚拟机测试，当startActivityForResult()回来以后再切换fragment，这个方法不会被回调回来，暂不知道原因，所以
+     * {@link #refreshContents()}方法只能调用多次来适配这些系统。(在{@link #onViewCreated(View, Bundle)})方法里加入了这个方法。
+     * 重写这个方法是用来适配API21及以下版本系统的，因为onActivityResult()方法并不会在界面完成后回调，而是调用startActivityForResult()方法的瞬时就完成
+     * 了回调，而且页面完成了也就不再回调了，暂不知原因。
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshContents();
+    }
+
     @Override
     public void onClick(View v) {
         if(getActivity()==null||getContext()==null||getView()==null)return;

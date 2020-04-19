@@ -2,6 +2,7 @@ package com.github.ghmxr.ftpshare.activities;
 
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.MenuItem;
@@ -22,7 +23,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     private final SharedPreferences settings=CommonUtils.getSettingSharedPreferences(MyApplication.getGlobalBaseContext());
     private final SharedPreferences.Editor editor=settings.edit();
     private int resultCode=RESULT_CANCELED;
-    private static final String ACTIVITY_RESULT="result";
+    private static final String ACTIVITY_RESULT="result_code";
     private CheckBox cb_auto_start;
     private TextView tv_disconnect,tv_night_mode,tv_language;
 
@@ -43,11 +44,11 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         tv_night_mode=findViewById(R.id.setting_night_mode_value);
         tv_language=findViewById(R.id.setting_language_value);
         if(bundle!=null){
-            final int result=bundle.getInt(ACTIVITY_RESULT);
-            if(result==RESULT_OK){
+            resultCode=bundle.getInt(ACTIVITY_RESULT);
+            if(resultCode==RESULT_OK){
                 FtpService.refreshOngoingNotification();
             }
-            setResult(result);
+            setResult(resultCode);
         }
         refreshSettingValues();
     }
@@ -125,6 +126,14 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(ACTIVITY_RESULT,resultCode);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        if(Build.VERSION.SDK_INT<=21&&resultCode==RESULT_OK){
+            MainActivity.killInstanceAndRestart(this);
+        }
     }
 
     private void refreshSettingValues(){

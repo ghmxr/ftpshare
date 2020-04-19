@@ -1,5 +1,6 @@
 package com.github.ghmxr.ftpshare.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,6 +29,8 @@ import com.github.ghmxr.ftpshare.utils.CommonUtils;
 
 public class MainActivity extends BaseActivity implements FtpService.OnFTPServiceStatusChangedListener{
 
+    private static Activity mainActivity;
+
     private Menu menu;
 
     private static int MENU_ACCOUNT_ADD =0;
@@ -46,6 +49,7 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mainActivity=this;
         setContentView(R.layout.activity_main);
         FtpService.addOnFtpServiceStatusChangedListener(this);
         BottomNavigationView navigation = findViewById(R.id.navigation);
@@ -284,6 +288,14 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mainActivity=null;
         FtpService.removeOnFtpServiceStatusChangedListener(this);
+    }
+
+    public static void killInstanceAndRestart(@NonNull Activity activity){
+        if(mainActivity!=null){
+            mainActivity.finish();
+        }
+        activity.startActivity(new Intent(activity,MainActivity.class));
     }
 }
