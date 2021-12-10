@@ -28,13 +28,27 @@
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES"/>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter
+                android:label="@string/share_title">
+                <action android:name="android.intent.action.SEND"/>
+                <action android:name="android.intent.action.SEND_MULTIPLE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="*/*"/>
+            </intent-filter>
         </activity>
         <activity android:name=".activities.AddAccountActivity"
             android:label="@string/activity_title_add"/>
         <activity android:name=".activities.EditAccountActivity"
             android:label="@string/activity_title_edit"/>
-        <activity android:name=".activities.SettingActivity"
-            android:label="@string/item_more_settings"/>
+        <activity android:name=".activities.AddClientActivity"
+            android:label="@string/activity_title_add"/>
+        <activity android:name=".activities.EditClientActivity"
+            android:label="@string/activity_title_edit"/>
+        <activity android:name=".activities.FtpClientActivity" />
+        <activity android:name=".activities.ServiceAccountActivity"
+            android:label="@string/item_account_settings"/>
+        <activity android:name=".activities.FolderSelectorActivity"
+            android:label="@string/account_path_dialog_title"/>
 
         <service android:name=".services.FtpService"
             android:exported="true"/>

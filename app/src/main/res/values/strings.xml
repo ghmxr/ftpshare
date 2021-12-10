@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name" translatable="false">FTP Share</string>
     <string name="title_home">FTP服务</string>
-    <string name="title_settings">账户设置</string>
+    <string name="title_settings">设置</string>
+    <string name="title_device">设备</string>
     <string name="activity_title_add">添加</string>
     <string name="activity_title_edit">编辑</string>
 
@@ -9,6 +10,8 @@
     <string name="item_port">端口号</string>
     <string name="item_port_hint">输入端口号</string>
     <string name="item_charset">编码方式</string>
+    <string name="item_anonymous_num">最大匿名连接数</string>
+    <string name="item_login_num">最大连接数</string>
     <string name="item_charset_att">如果出现乱码或者文件传输报错可尝试更改，通常建议保留默认选项</string>
     <string name="item_charset_utf">UTF-8(默认)</string>
     <string name="item_charset_gbk">GBK(简体中文)</string>
@@ -18,6 +21,9 @@
     <string name="item_ignore_battery">忽略电池优化</string>
     <string name="item_ignore_battery_att">可保持FTP服务长时间运行</string>
     <string name="item_more_settings">更多设置</string>
+    <string name="item_account_settings">账户设置</string>
+    <string name="item_account_settings_login_mode">当前为登录模式</string>
+    <string name="item_account_settings_anonymous_mode">当前为匿名模式</string>
     <string name="item_ftp_addresses">查看FTP地址</string>
     <string name="item_ftp_addresses_att">查看本机所有可用FTP地址</string>
     <string name="account_null_att">账户名不能为空</string>
@@ -51,7 +57,65 @@
     <string name="permission_write_external">请授权存储读写权限</string>
     <string name="snackbar_action_goto">前往设置</string>
     <string name="attention_add_a_user">请添加一个账户来使用</string>
+    <string name="attention_add_a_client">请添加一个设备来使用</string>
+    <string name="attention_client_content_blank">内容为空</string>
     <string name="attention_clipboard">已复制到剪贴板</string>
+    <string name="client_host">主机地址</string>
+    <string name="client_host_hint">IP地址，域名</string>
+    <string name="client_port">端口号</string>
+    <string name="client_port_hint">0~65535</string>
+    <string name="client_user">账户名</string>
+    <string name="client_user_hint">匿名模式可留空</string>
+    <string name="client_password">密码</string>
+    <string name="client_nickname">备注名</string>
+    <string name="client_download_path">下载路径</string>
+    <string name="client_download_select">下载前询问</string>
+    <string name="client_download_select_att">下载前确认下载路径</string>
+    <string name="client_passive">被动模式</string>
+    <string name="client_passive_att">勾选以启用被动模式</string>
+    <string name="client_connect_timeout">连接超时</string>
+    <string name="client_connect_timeout_invalid_value">请输入大于0的数值</string>
+    <string name="client_host_name_blank">主机名不能为空</string>
+    <string name="client_port_invalid">端口号无效</string>
+    <string name="client_delete_confirm_head">删除</string>
+    <string name="client_delete_confirm_content">确定删除设备 %s 吗</string>
+    <string name="client_login_false">登录到FTP服务器失败</string>
+
+    <string name="client_initial_host" translatable="false">192.168.1.101</string>
+    <string name="client_initial_nickname">新建主机</string>
+
+    <string name="popup_edit">编辑</string>
+    <string name="popup_delete">删除</string>
+    <string name="popup_download">下载</string>
+    <string name="popup_rename">重命名</string>
+    <string name="popup_move">移动</string>
+
+    <string name="share_title">上传到FTP服务器</string>
+    <string name="share_invalid_data_source">无效的分享文件数据</string>
+    <string name="share_select_server">选择并进入要上传文件的服务器</string>
+    <string name="share_select_folder">选择要上传的文件夹然后点击右上角菜单的上传</string>
+
+    <string name="dialog_download_initial">正在计算文件大小</string>
+    <string name="dialog_download_title">正在下载</string>
+    <string name="dialog_upload_title">正在上传</string>
+    <string name="dialog_download1">正在复制到</string>
+    <string name="dialog_upload1">正在上传到</string>
+    <string name="dialog_download_complete">下载完成</string>
+    <string name="dialog_upload_complete">上传完成</string>
+    <string name="dialog_download_error_head">错误</string>
+    <string name="dialog_download_error_head2">提示</string>
+    <string name="dialog_download_error_message">在复制FTP服务器文件时出现异常：\n\n%s</string>
+    <string name="dialog_upload_error_message">在上传到FTP服务器时出现异常：\n\n%s</string>
+    <string name="dialog_rename_head">重命名</string>
+    <string name="dialog_rename_hint">输入文件名</string>
+    <string name="dialog_rename_error">输入有效的文件(夹)名（不能包含非法字符 ? \ / : * | &gt; &lt; "）</string>
+    <string name="dialog_rename_error2">重命名失败，请检查写入权限</string>
+    <string name="dialog_delete_head">删除</string>
+    <string name="dialog_delete_message">确定删除选中的文件或文件夹\n\n%s</string>
+    <string name="dialog_delete_message2">删除文件出现下列错误\n\n%s</string>
+    <string name="dialog_new_folder_hint">文件夹名</string>
+    <string name="dialog_new_folder_error">创建文件夹%s时出现错误\n\n%s</string>
+
 
     <string name="action_account_save">保存</string>
     <string name="action_account_delete">删除</string>
@@ -70,7 +134,7 @@
 
     <string name="notification_ftp_start_error_title">FTP服务无法启动</string>
     <string name="notification_ftp_start_errer_message">FTP服务无法启动，请检查网络、权限、运行模式</string>
-    
+
     <string name="setting_auto_start">开机自启</string>
     <string name="setting_auto_start_att">系统引导完成后自动启动FTP服务</string>
     <string name="setting_disconnect">自动断开FTP服务</string>
@@ -93,6 +157,17 @@
     <string name="count_title">自动断开</string>
     <string name="word_none">无</string>
     <string name="word_second">秒</string>
+
+    <string name="word_connect">连接</string>
+    <string name="word_disconnect">断开</string>
+    <string name="word_keep_screen_on">保持屏幕常亮</string>
+    <string name="word_new_folder">新建文件夹</string>
+    <string name="word_error">错误</string>
+    <string name="word_delete">删除</string>
+    <string name="word_download">下载</string>
+    <string name="word_upload">上传</string>
+    <string name="word_select_all">全选</string>
+    <string name="word_select_all_off">全不选</string>
 
     <string name="about_content">
         这是一个基于Apache FtpServer框架开发的Android平台实现FTP文件共享的应用。\n\n

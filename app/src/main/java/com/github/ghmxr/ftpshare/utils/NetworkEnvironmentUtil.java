@@ -65,9 +65,13 @@ public class NetworkEnvironmentUtil {
                             if(!result.contains(ip))result.add(ip);
                         }
                     }
-                }catch(Exception e){e.printStackTrace();}
+                }catch(Exception e){
+                    //
+                }
             }
-        }catch (Exception e){e.printStackTrace();}
+        }catch (Exception e){
+            //
+        }
         return result;
     }
 

@@ -101,9 +101,9 @@ public class NetworkStatusMonitor {
                         wifi=false;
                         sendToCallbacks(false,NetworkType.WIFI);
                     }
-                    if(cell){
-                        cell=false;
-                        sendToCallbacks(false,NetworkType.CELLULAR);
+                    if(ethernet){
+                        ethernet=false;
+                        sendToCallbacks(false,NetworkType.ETHERNET);
                     }
                     //Log.e("111","蜂窝网连接");
                     sendToCallbacks(true,NetworkType.CELLULAR);

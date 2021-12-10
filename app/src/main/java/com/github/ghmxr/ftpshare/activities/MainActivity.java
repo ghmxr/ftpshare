@@ -1,10 +1,9 @@
 package com.github.ghmxr.ftpshare.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,29 +21,36 @@ import android.widget.Toast;
 
 import com.github.ghmxr.ftpshare.Constants;
 import com.github.ghmxr.ftpshare.R;
-import com.github.ghmxr.ftpshare.fragments.AccountFragment;
+import com.github.ghmxr.ftpshare.fragments.ClientFragment;
 import com.github.ghmxr.ftpshare.fragments.MainFragment;
+import com.github.ghmxr.ftpshare.fragments.SettingFragment;
 import com.github.ghmxr.ftpshare.services.FtpService;
 import com.github.ghmxr.ftpshare.utils.CommonUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends BaseActivity implements FtpService.OnFTPServiceStatusChangedListener{
 
-    private static Activity mainActivity;
+    public static MainActivity mainActivity;
 
     private Menu menu;
 
-    private static int MENU_ACCOUNT_ADD =0;
-    private static int MENU_ANONYMOUS_SWITCH=1;
+    /*private static final int MENU_ACCOUNT_ADD =0;
+    private static final int MENU_CLIENT_ADD=1;
+    private static final int MENU_ANONYMOUS_SWITCH=2;*/
 
-    private static final String STATE_CURRENT_TAB="current_tab";
+    public static final String STATE_CURRENT_TAB="current_tab";
     private int current_tab=0;
 
     private final MainFragment mainFragment=new MainFragment();
-    private final AccountFragment accountFragment=new AccountFragment();
+    private final ClientFragment clientFragment=new ClientFragment();
+    private final SettingFragment settingFragment=new SettingFragment();
 
     private ViewGroup disconnect_viewgroup;
     private ImageView disconnect_icon;
     private TextView disconnect_tv_value;
+    private BottomNavigationView navigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,39 +58,33 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
         mainActivity=this;
         setContentView(R.layout.activity_main);
         FtpService.addOnFtpServiceStatusChangedListener(this);
-        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation = findViewById(R.id.navigation);
         disconnect_viewgroup=findViewById(R.id.main_count);
         disconnect_icon=findViewById(R.id.layout_disconnect_icon);
         disconnect_tv_value =findViewById(R.id.layout_disconnect_value);
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.navigation_main:
-                        current_tab=0;
-                        onNavigationMainSelected();
-                        return true;
-                    case R.id.navigation_settings:
-                        current_tab=1;
-                        onNavigationAccountSelected();
-                        return true;
+                if(R.id.navigation_main==item.getItemId()){
+                    setBottomNavAndTab(0);
+                    return true;
+                }
+                else if(R.id.navigation_device==item.getItemId()){
+                    setBottomNavAndTab(1);
+                    return true;
+                }
+                else if(R.id.navigation_settings==item.getItemId()){
+                    setBottomNavAndTab(2);
+                    return true;
                 }
                 return false;
             }
         });
 
         if(savedInstanceState==null){
-            onNavigationMainSelected();
-            navigation.setSelectedItemId(R.id.navigation_main);
+            setBottomNavAndTab(0);
         }else{
-            current_tab=savedInstanceState.getInt(STATE_CURRENT_TAB);
-            if(current_tab==0){
-                onNavigationMainSelected();
-                navigation.setSelectedItemId(R.id.navigation_main);
-            }else if(current_tab==1){
-                onNavigationAccountSelected();
-                navigation.setSelectedItemId(R.id.navigation_settings);
-            }
+            setBottomNavAndTab(savedInstanceState.getInt(STATE_CURRENT_TAB));
         }
         findViewById(R.id.layout_disconnection_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +95,29 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
                         getResources().getString(R.string.toast_cancel_auto_disconnect_att),Toast.LENGTH_SHORT).show();
             }
         });
+
+        final int selectedTab=getIntent().getIntExtra(STATE_CURRENT_TAB,-1);
+        if(selectedTab>=0){
+            setBottomNavAndTab(selectedTab);
+        }
+
+        checkAndShowUploadIntent(getIntent());
+    }
+
+    private void setBottomNavAndTab(int current_tab){
+        if(current_tab==0){
+            this.current_tab=0;
+            onNavigationMainSelected();
+            navigation.getMenu().getItem(0).setChecked(true);
+        }else if(current_tab==1){
+            this.current_tab=1;
+            onClientDeviceSelected();
+            navigation.getMenu().getItem(1).setChecked(true);
+        }else if(current_tab==2){
+            this.current_tab=2;
+            onNavigationAccountSelected();
+            navigation.getMenu().getItem(2).setChecked(true);
+        }
     }
 
     @Override
@@ -107,6 +130,42 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_CURRENT_TAB,current_tab);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        checkAndShowUploadIntent(intent);
+    }
+
+    private void checkAndShowUploadIntent(Intent intent){
+        if(Intent.ACTION_SEND.equalsIgnoreCase(intent.getAction())){
+            navigation.getMenu().getItem(1).setChecked(true);
+            onClientDeviceSelected();
+            Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            if(uri==null){
+                Toast.makeText(this,getResources().getString(R.string.share_invalid_data_source),Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
+            ArrayList<Uri>uris=new ArrayList<>();
+            uris.add(uri);
+            clientFragment.setSharingUriAndView(uris);
+            Toast.makeText(this,getResources().getString(R.string.share_select_server),Toast.LENGTH_LONG).show();
+        }
+
+        if(Intent.ACTION_SEND_MULTIPLE.equalsIgnoreCase(intent.getAction())){
+            navigation.getMenu().getItem(1).setChecked(true);
+            onClientDeviceSelected();
+            List<Uri> uris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+            if(uris==null){
+                Toast.makeText(this,getResources().getString(R.string.share_invalid_data_source),Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
+            clientFragment.setSharingUriAndView(uris);
+            Toast.makeText(this,getResources().getString(R.string.share_select_server),Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -132,7 +191,7 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
         setAutoDisconnectViewVisibleWithAnim(false);
     }
 
-    private void refreshDisconnectView(){
+    public void refreshDisconnectView(){
         if(!FtpService.isFTPServiceRunning()||FtpService.getIsIgnoreAutoCancelThisTime()){
             disconnect_viewgroup.setVisibility(View.GONE);
             return;
@@ -190,9 +249,17 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
 
     }
 
+    private void onClientDeviceSelected(){
+        try{
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame,clientFragment).commit();
+            getSupportActionBar().setTitle(getResources().getString(R.string.title_device));
+            refreshMenuVisibilitiesForCurrentTab();
+        }catch (Exception e){e.printStackTrace();}
+    }
+
     private void onNavigationAccountSelected(){
         try{
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame,accountFragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame,settingFragment).commit();
             getSupportActionBar().setTitle(getResources().getString(R.string.title_settings));
             refreshMenuVisibilitiesForCurrentTab();
         }catch (Exception e){e.printStackTrace();}
@@ -203,24 +270,27 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mainFragment.processingActivityResult(requestCode,resultCode,data);
-        accountFragment.processingActivityResult(requestCode,resultCode,data);
+        //accountFragment.processingActivityResult(requestCode,resultCode,data);
+        clientFragment.processActivityResult(requestCode,resultCode,data);
+        settingFragment.processActivityResult(requestCode,resultCode,data);
     }
 
     private void refreshMenuVisibilitiesForCurrentTab(){
         if(menu==null)return;
         if(current_tab==0){
-            menu.getItem(MENU_ACCOUNT_ADD).setVisible(false);
-            menu.getItem(MENU_ANONYMOUS_SWITCH).setVisible(false);
+            menu.getItem(0).setVisible(false);
+
         }else if(current_tab==1){
-            menu.getItem(MENU_ACCOUNT_ADD).setVisible(!CommonUtils.isAnonymousMode(this));
-            menu.getItem(MENU_ANONYMOUS_SWITCH).setVisible(true);
+            menu.getItem(0).setVisible(true);
+
+        }else if(current_tab==2){
+            menu.getItem(0).setVisible(false);
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main,menu);
-        menu.getItem(MENU_ANONYMOUS_SWITCH).setTitle(CommonUtils.isAnonymousMode(this)?getResources().getString(R.string.action_main_anonymous_opened):getResources().getString(R.string.action_main_anonymous_closed));
         this.menu=menu;
         refreshMenuVisibilitiesForCurrentTab();
         return super.onCreateOptionsMenu(menu);
@@ -228,59 +298,33 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            default:break;
-            case R.id.action_main_add:{
-                if(FtpService.isFTPServiceRunning()){
-                    CommonUtils.showSnackBarOfFtpServiceIsRunning(this);
-                    return true;
-                }
-                startActivityForResult(new Intent(this,AddAccountActivity.class),1);
-                return true;
-            }
-            case R.id.action_main_anonymous_switch:{
-                if(FtpService.isFTPServiceRunning()){
-                    CommonUtils.showSnackBarOfFtpServiceIsRunning(this);
-                    return true;
-                }
-                try{
-                    SharedPreferences settings=getSharedPreferences(Constants.PreferenceConsts.FILE_NAME, Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor=settings.edit();
-                    boolean isAnonymousMode=settings.getBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE,Constants.PreferenceConsts.ANONYMOUS_MODE_DEFAULT);
-                    editor.putBoolean(Constants.PreferenceConsts.ANONYMOUS_MODE,!isAnonymousMode);
-                    editor.apply();
-                    menu.getItem(MENU_ANONYMOUS_SWITCH).setTitle((!isAnonymousMode)?getResources().getString(R.string.action_main_anonymous_opened):getResources().getString(R.string.action_main_anonymous_closed));
-                    menu.getItem(MENU_ACCOUNT_ADD).setVisible(isAnonymousMode);
-                    accountFragment.refreshContents();
-                }catch (Exception e){e.printStackTrace();}
-            }
-            break;
-            case R.id.action_main_about:{
-                View dialogView=LayoutInflater.from(this).inflate(R.layout.layout_dialog_about,null);
-                dialogView.findViewById(R.id.donate).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        try{
-                            startActivity(Intent.parseUri("https://qr.alipay.com/FKX08041Y09ZGT6ZT91FA5",Intent.URI_INTENT_SCHEME));
-                        }
-                        catch (Exception e){
-                            e.printStackTrace();
-                            Toast.makeText(MainActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
-                        }
+        if(item.getItemId()==R.id.action_client_add){
+            startActivityForResult(new Intent(this,AddClientActivity.class),1);
+        }
+        if(item.getItemId()==R.id.action_main_about){
+            View dialogView=LayoutInflater.from(this).inflate(R.layout.layout_dialog_about,null);
+            dialogView.findViewById(R.id.donate).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try{
+                        startActivity(Intent.parseUri("https://qr.alipay.com/FKX08041Y09ZGT6ZT91FA5",Intent.URI_INTENT_SCHEME));
                     }
-                });
-                new AlertDialog.Builder(this)
-                        .setTitle(CommonUtils.getAppName(this)+"("+CommonUtils.getAppVersionName(this)+")")
-                        .setView(dialogView)
-                        .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                    catch (Exception e){
+                        e.printStackTrace();
+                        Toast.makeText(MainActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            new AlertDialog.Builder(this)
+                    .setTitle(CommonUtils.getAppName(this)+"("+CommonUtils.getAppVersionName(this)+")")
+                    .setView(dialogView)
+                    .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
-                            }
-                        })
-                        .show();
-            }
-            break;
+                        }
+                    })
+                    .show();
         }
         return super.onOptionsItemSelected(item);
     }

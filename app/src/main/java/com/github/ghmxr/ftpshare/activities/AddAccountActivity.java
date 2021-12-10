@@ -35,16 +35,12 @@ public class AddAccountActivity extends AccountActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            default:break;
-            case R.id.action_account_add_save:{
-                if(save2DB(null)>=0) {
-                    setResult(RESULT_OK);
-                    finish();
-                    return true;
-                }
+        if(item.getItemId()==R.id.action_account_add_save){
+            if(save2DB(null)>=0) {
+                setResult(RESULT_OK);
+                finish();
+                return true;
             }
-            break;
         }
         return super.onOptionsItemSelected(item);
     }

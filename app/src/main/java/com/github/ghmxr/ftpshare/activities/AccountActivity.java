@@ -25,7 +25,6 @@ import com.github.ghmxr.ftpshare.Constants;
 import com.github.ghmxr.ftpshare.R;
 import com.github.ghmxr.ftpshare.data.AccountItem;
 import com.github.ghmxr.ftpshare.services.FtpService;
-import com.github.ghmxr.ftpshare.ui.DialogOfFolderSelector;
 import com.github.ghmxr.ftpshare.utils.MySQLiteOpenHelper;
 
 public abstract class AccountActivity extends BaseActivity {
@@ -144,7 +143,7 @@ public abstract class AccountActivity extends BaseActivity {
                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
                        return;
                    }
-                   DialogOfFolderSelector dialog=new DialogOfFolderSelector(AccountActivity.this,item.path);
+                   /*DialogOfFolderSelector dialog=new DialogOfFolderSelector(AccountActivity.this,item.path);
                    dialog.show();
                    dialog.setOnFolderSelectorDialogConfirmedListener(new DialogOfFolderSelector.OnFolderSelectorDialogConfirmed() {
                        @Override
@@ -152,7 +151,10 @@ public abstract class AccountActivity extends BaseActivity {
                            item.path=path;
                            ((TextView)findViewById(R.id.account_path_value)).setText(path);
                        }
-                   });
+                   });*/
+                   Intent intent=new Intent(AccountActivity.this,FolderSelectorActivity.class);
+                   intent.putExtra(FolderSelectorActivity.getEXTRA_CURRENT_PATH(),item.path);
+                   startActivityForResult(intent,0);
                }
            });
 
@@ -179,6 +181,16 @@ public abstract class AccountActivity extends BaseActivity {
             if(i>16) break;
         }
         return builder.toString();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==0&&resultCode==RESULT_OK&&data!=null){
+            final String path=data.getStringExtra(FolderSelectorActivity.getEXTRA_SELECTED_PATH());
+            item.path=path;
+            ((TextView)findViewById(R.id.account_path_value)).setText(path);
+        }
     }
 
     @Override

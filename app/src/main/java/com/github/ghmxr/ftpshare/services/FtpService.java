@@ -16,6 +16,7 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -33,13 +34,17 @@ import com.github.ghmxr.ftpshare.MyApplication;
 import com.github.ghmxr.ftpshare.R;
 import com.github.ghmxr.ftpshare.activities.MainActivity;
 import com.github.ghmxr.ftpshare.data.AccountItem;
+import com.github.ghmxr.ftpshare.fragments.MainFragment;
 import com.github.ghmxr.ftpshare.utils.CommonUtils;
 import com.github.ghmxr.ftpshare.utils.MySQLiteOpenHelper;
 import com.github.ghmxr.ftpshare.utils.NetworkStatusMonitor;
 
+import org.apache.ftpserver.ConnectionConfig;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.Authority;
+import org.apache.ftpserver.ftplet.FileSystemFactory;
+import org.apache.ftpserver.impl.DefaultConnectionConfig;
 import org.apache.ftpserver.listener.ListenerFactory;
 import org.apache.ftpserver.usermanager.impl.BaseUser;
 import org.apache.ftpserver.usermanager.impl.WritePermission;
@@ -185,6 +190,7 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
             }else{
                 Toast.makeText(context,context.getResources().getString(R.string.attention_no_user_account),Toast.LENGTH_SHORT).show();
             }
+            context.sendBroadcast(new Intent(MainFragment.ACTION_FLASH_ACCOUNT_ITEM));
             return false;
         }
         return true;
@@ -242,6 +248,11 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
         ListenerFactory lfactory = new ListenerFactory();
         lfactory.setPort(settings.getInt(Constants.PreferenceConsts.PORT_NUMBER,Constants.PreferenceConsts.PORT_NUMBER_DEFAULT)); //设置端口号 非ROOT不可使用1024以下的端口
         factory.addListener("default", lfactory.createListener());
+        MyConnectionConfig connectionConfig = new MyConnectionConfig();
+        connectionConfig.setAnonymousEnabled(isAnonymousMode);
+        connectionConfig.setMaxAnonymousLogins(settings.getInt(Constants.PreferenceConsts.MAX_ANONYMOUS_NUM,10));
+        connectionConfig.setMaxLogins(settings.getInt(Constants.PreferenceConsts.MAX_LOGIN_NUM,10));
+        factory.setConnectionConfig(connectionConfig);
 
         synchronized (FtpService.class) {
             try{
@@ -249,6 +260,55 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
             }catch (Exception e){}
             server=factory.createServer();
             server.start();
+        }
+    }
+
+    private static class MyConnectionConfig implements ConnectionConfig{
+        private final DefaultConnectionConfig defaultConnectionConfig=new DefaultConnectionConfig();
+        private int maxAnonymousLogins=defaultConnectionConfig.getMaxAnonymousLogins();
+        private int maxLogins=defaultConnectionConfig.getMaxLogins();
+        private boolean isAnonymousEnabled=defaultConnectionConfig.isAnonymousLoginEnabled();
+
+        public void setMaxAnonymousLogins(int maxAnonymousLogins) {
+            this.maxAnonymousLogins = maxAnonymousLogins;
+        }
+
+        public void setMaxLogins(int maxLogins) {
+            this.maxLogins = maxLogins;
+        }
+
+        public void setAnonymousEnabled(boolean anonymousEnabled) {
+            isAnonymousEnabled = anonymousEnabled;
+        }
+
+        @Override
+        public int getMaxLoginFailures() {
+            return defaultConnectionConfig.getMaxLoginFailures();
+        }
+
+        @Override
+        public int getLoginFailureDelay() {
+            return defaultConnectionConfig.getLoginFailureDelay();
+        }
+
+        @Override
+        public int getMaxAnonymousLogins() {
+            return maxAnonymousLogins;
+        }
+
+        @Override
+        public int getMaxLogins() {
+            return maxLogins;
+        }
+
+        @Override
+        public boolean isAnonymousLoginEnabled() {
+            return isAnonymousEnabled;
+        }
+
+        @Override
+        public int getMaxThreads() {
+            return defaultConnectionConfig.getMaxThreads();
         }
     }
 
@@ -373,7 +433,10 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
             }
         }catch (Exception e){e.printStackTrace();}
 
-        countHandler.removeCallbacks(stopExecutor);
+        //countHandler.removeCallbacks(stopExecutor);
+        if(countDownTimer!=null){
+            countDownTimer.cancel();
+        }
         handler=null;
         ftpService=null;
 
@@ -429,8 +492,9 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
     }
 
     private int countSeconds=0;
-    private final Handler countHandler=new Handler();
-    private final Runnable stopExecutor=new Runnable() {
+    //private final Handler countHandler=new Handler();
+    private CountDownTimer countDownTimer ;
+    /*private final Runnable stopExecutor=new Runnable() {
         @Override
         public void run() {
             if(countSeconds<=0){
@@ -443,17 +507,35 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
                 countHandler.postDelayed(this,1000L);
             }
         }
-    };
+    };*/
 
     private void setCountSecondsAndStart(int seconds){
         if(seconds<0)return;
-        countHandler.removeCallbacks(stopExecutor);
+        //countHandler.removeCallbacks(stopExecutor);
+        if(countDownTimer!=null){
+            countDownTimer.cancel();
+        }
         this.countSeconds=seconds;
         if(seconds==0||isIgnoreAutoDisconnect)return;
         for(OnFTPServiceStatusChangedListener listener:listeners){
             listener.onRemainingSeconds(countSeconds);
         }
-        countHandler.postDelayed(stopExecutor,1000L);
+        //countHandler.postDelayed(stopExecutor,1000L);
+        countDownTimer=new CountDownTimer(seconds*1000L,500L) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                countSeconds=(int)(millisUntilFinished/1000);
+                for(OnFTPServiceStatusChangedListener listener:listeners){
+                    listener.onRemainingSeconds(countSeconds);
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                stopSelf();
+            }
+        };
+        countDownTimer.start();
     }
 
     /**

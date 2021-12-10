@@ -18,6 +18,7 @@ import com.github.ghmxr.ftpshare.ui.DisconnectSelectionDialog;
 import com.github.ghmxr.ftpshare.ui.RadioSelectionDialog;
 import com.github.ghmxr.ftpshare.utils.CommonUtils;
 
+@Deprecated
 public class SettingActivity extends BaseActivity implements View.OnClickListener{
 
     private final SharedPreferences settings=CommonUtils.getSettingSharedPreferences(MyApplication.getGlobalBaseContext());

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Deprecated
 public class DialogOfFolderSelector extends AlertDialog {
     private View dialogView;
     private Context context;

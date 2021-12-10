@@ -26,6 +26,7 @@ import com.github.ghmxr.ftpshare.services.FtpService;
 import com.github.ghmxr.ftpshare.ui.DialogOfFolderSelector;
 import com.github.ghmxr.ftpshare.utils.CommonUtils;
 
+@Deprecated
 public class AccountFragment extends Fragment implements View.OnClickListener{
 
     private ViewGroup viewGroup_anonymous;

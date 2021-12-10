@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:background="?attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/item_server_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/ic_server" />
+
+    <ImageView
+        android:id="@+id/item_server_status"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_below="@+id/item_server_icon"
+        android:layout_marginLeft="-13dp"
+        android:layout_marginTop="-13dp"
+        android:layout_toRightOf="@+id/item_server_icon"
+        android:src="@drawable/ic_round_check"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/item_server_des_area"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:layout_toLeftOf="@+id/item_server_action"
+        android:layout_toRightOf="@+id/item_server_icon"
+        android:gravity="start"
+        android:orientation="vertical"
+        android:paddingRight="10dp">
+
+        <TextView
+            android:id="@+id/item_server_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:textColor="@color/color_text_dark"
+            android:textSize="15sp"
+            tools:text="新建服务器" />
+
+        <TextView
+            android:id="@+id/item_server_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:textSize="13sp"
+            tools:text="ftp://192.168.1.101:5656" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/item_server_action"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="@string/word_connect"
+        android:textColor="@color/color_bottom_nav_selected_color"
+        android:textSize="16sp" />
+
+    <ProgressBar
+        android:id="@+id/item_server_progress"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:paddingLeft="20dp"
+        android:paddingTop="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="20dp"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignParentBottom="true"
+        android:background="#dddddd"
+        android:layout_marginLeft="20dp"/>
+</RelativeLayout>

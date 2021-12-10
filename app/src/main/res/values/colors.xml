@@ -11,4 +11,5 @@
     <color name="color_bottom_nav_selected_color">#008577</color>
     <color name="color_bottom_nav_normal_color">#666666</color>
     <color name="color_dialog_background">#f9f9f9</color>
+    <color name="color_dialog_background2">#e7e7e7</color>
 </resources>

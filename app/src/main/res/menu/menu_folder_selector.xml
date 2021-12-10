@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_cancel"
+        android:icon="@drawable/icon_close_white"
+        android:orderInCategory="0"
+        android:title="@string/dialog_button_cancel"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_mkdir"
+        android:icon="@drawable/ic_new_folder"
+        android:orderInCategory="1"
+        android:title="@string/word_new_folder"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_confirm"
+        android:icon="@drawable/icon_save"
+        android:orderInCategory="2"
+        android:title="@string/dialog_button_confirm"
+        app:showAsAction="ifRoom" />
+</menu>

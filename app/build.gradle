@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 28
@@ -6,8 +7,8 @@ android {
         applicationId "com.github.ghmxr.ftpshare"
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 11
-        versionName "Build 11"
+        versionCode 12
+        versionName "Build 12"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -20,9 +21,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    packagingOptions{
+    packagingOptions {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/DEPENDENCIES'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 }
 
@@ -34,7 +42,10 @@ dependencies {
     implementation files('libs/mina-core-2.0.16.jar')
     implementation files('libs/slf4j-api-1.7.21.jar')
     implementation files('libs/slf4j-log4j12-1.7.21.jar')
-    implementation files('libs/ftpserver-core-1.1.1-edited.jar')//由于修改并重写了jar包中的几个类，所以删掉了这些class，修改后的类在主路径org对应的包中，用于支持编码修改
+    implementation files('libs/commons-logging-1.2.jar')
+    implementation files('libs/commons-net-3.8.0.jar')
+    implementation files('libs/ftpserver-core-1.1.1-edited.jar')
+//由于修改并重写了jar包中的几个类，所以删掉了这些class，修改后的类在主路径org对应的包中，用于支持编码修改
 
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:design:28.0.0'
@@ -43,4 +54,5 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }

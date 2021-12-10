@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
-        android:id="@+id/action_main_add"
-        android:title="@string/action_main_add"
+        android:id="@+id/action_client_add"
         android:icon="@drawable/icon_add"
-        app:showAsAction="ifRoom"
         android:orderInCategory="0"
-        android:visible="false"/>
-    <item
-        android:id="@+id/action_main_anonymous_switch"
-        android:title="@string/action_main_anonymous_closed"
-        app:showAsAction="never"
-        android:orderInCategory="1"
-        android:visible="false"/>
+        android:title="@string/action_main_add"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/action_main_about"
+        android:orderInCategory="1"
         android:title="@string/action_main_about"
-        app:showAsAction="never"
-        android:orderInCategory="2"/>
+        app:showAsAction="never" />
 
 </menu>

@@ -1,13 +1,16 @@
 <resources>
     <string name="title_home">FTP service</string>
-    <string name="title_settings">Account</string>
+    <string name="title_settings">Settings</string>
     <string name="activity_title_add">Add</string>
     <string name="activity_title_edit">Edit</string>
+    <string name="title_device">Devices</string>
 
     <string name="item_main">Start FTP Service</string>
     <string name="item_port">Port</string>
     <string name="item_port_hint">type in port number</string>
     <string name="item_charset">Charset</string>
+    <string name="item_anonymous_num">maximum anonymous conn</string>
+    <string name="item_login_num">maximum conn</string>
     <string name="item_charset_att">you can try to change it in case of garbled code or file transfer error. It is generally recommended to keep the default option</string>
     <string name="item_charset_utf">UTF-8(default)</string>
     <string name="item_charset_gbk">GBK(Simplified Chinese)</string>
@@ -19,6 +22,9 @@
     <string name="item_more_settings">More settings</string>
     <string name="item_ftp_addresses">View FTP addresses</string>
     <string name="item_ftp_addresses_att">view all available FTP addresses</string>
+    <string name="item_account_settings">Account settings</string>
+    <string name="item_account_settings_login_mode">current login mode</string>
+    <string name="item_account_settings_anonymous_mode">current anonymous mode</string>
     <string name="account_null_att">account can not be blank</string>
     <string name="account_duplicate">account already existed</string>
     <string name="account_anonymous_name_set_att">Please use anonymous mode to enable anonymous login(cannot set anonymous as account name)</string>
@@ -46,11 +52,67 @@
     <string name="attention_delete_confirm">Click again to confirm delete</string>
     <string name="attention_changes_confirm">Click again to confirm exit for there are some changes left</string>
     <string name="attention_no_user_account">Please add an account or change to anonymous mode to run FTP service</string>
+    <string name="attention_add_a_client">Please add a client device to use</string>
+    <string name="attention_client_content_blank">No content</string>
     <string name="notification_title">FTP service is running</string>
     <string name="permission_write_external">Please grant writing permission</string>
     <string name="snackbar_action_goto">Go</string>
     <string name="attention_add_a_user">Please add an account</string>
     <string name="attention_clipboard">has been copied to clipboard</string>
+    <string name="client_host">Server host</string>
+    <string name="client_host_hint">IP Address, or domain</string>
+    <string name="client_port">port</string>
+    <string name="client_port_hint">0~65535</string>
+    <string name="client_user">user name</string>
+    <string name="client_user_hint">Keep blank if is anonymous</string>
+    <string name="client_password">pass</string>
+    <string name="client_nickname">remark</string>
+    <string name="client_download_path">downloading path</string>
+    <string name="client_download_select">ask before downloading</string>
+    <string name="client_download_select_att">confirm path before downloading</string>
+    <string name="client_host_name_blank">blank host name</string>
+    <string name="client_port_invalid">invalid port</string>
+    <string name="client_delete_confirm_head">delete</string>
+    <string name="client_delete_confirm_content">confirm to delete the device %s</string>
+    <string name="client_login_false">Failed to login the device</string>
+    <string name="client_passive">passive mode</string>
+    <string name="client_passive_att">check to activate passive mode</string>
+    <string name="client_connect_timeout">connection timeout</string>
+    <string name="client_connect_timeout_invalid_value">type in a number greater than 0</string>
+
+    <string name="client_initial_nickname">new device</string>
+
+    <string name="popup_edit">edit</string>
+    <string name="popup_delete">delete</string>
+    <string name="popup_download">download</string>
+    <string name="popup_rename">rename</string>
+    <string name="popup_move">move</string>
+
+    <string name="share_title">upload to ftp</string>
+    <string name="share_invalid_data_source">invalid sharing data</string>
+    <string name="share_select_server">choose and enter a device</string>
+    <string name="share_select_folder">choose a folder to upload then click the button right-top</string>
+
+    <string name="dialog_download_initial">calculating files length</string>
+    <string name="dialog_download_title">downloading</string>
+    <string name="dialog_upload_title">uploading</string>
+    <string name="dialog_download1">copying to </string>
+    <string name="dialog_upload1">uploading to </string>
+    <string name="dialog_download_complete">downloading completed</string>
+    <string name="dialog_upload_complete">uploading completed</string>
+    <string name="dialog_download_error_head">error</string>
+    <string name="dialog_download_error_head2">attention</string>
+    <string name="dialog_download_error_message">Exceptions while downloading:\n\n%s</string>
+    <string name="dialog_upload_error_message">Exceptions while uploading to FTP:\n\n%s</string>
+    <string name="dialog_rename_head">rename</string>
+    <string name="dialog_rename_hint">type in file name</string>
+    <string name="dialog_rename_error">type in a valid file name(should not contain ? \ / : * | &gt; &lt; ")</string>
+    <string name="dialog_rename_error2">renaming failed, please check permissions</string>
+    <string name="dialog_delete_head">delete</string>
+    <string name="dialog_delete_message">confirm to delete the files or folders selected\n\n%s</string>
+    <string name="dialog_delete_message2">Exceptions while deleting the ftp files:\n\n%s</string>
+    <string name="dialog_new_folder_hint">folder name</string>
+    <string name="dialog_new_folder_error">error occurred making new dir %s \n\n%s</string>
 
     <string name="action_account_save">Save</string>
     <string name="action_account_delete">Delete</string>
@@ -90,6 +152,17 @@
     <string name="count_title">Auto-Shut</string>
     <string name="word_none">none</string>
     <string name="word_second">second(s)</string>
+
+    <string name="word_connect">connect</string>
+    <string name="word_disconnect">disconnect</string>
+    <string name="word_keep_screen_on">keep screen awake</string>
+    <string name="word_new_folder">new folder</string>
+    <string name="word_error">error</string>
+    <string name="word_delete">delete</string>
+    <string name="word_download">download</string>
+    <string name="word_upload">upload</string>
+    <string name="word_select_all">select all</string>
+    <string name="word_select_all_off">deselect all</string>
 
     <string name="about_content">
         This is an application of FTP file sharing based on Android platform developed by Apache FTP server framework. \n\n

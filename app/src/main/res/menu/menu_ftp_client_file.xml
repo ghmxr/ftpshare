@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_close"
+        android:icon="@drawable/icon_close_white"
+        android:orderInCategory="0"
+        android:title="@string/dialog_button_cancel"
+        android:visible="true"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_new_folder"
+        android:icon="@drawable/ic_new_folder"
+        android:orderInCategory="1"
+        android:title="@string/word_new_folder"
+        android:visible="true"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_delete"
+        android:icon="@drawable/icon_delete"
+        android:orderInCategory="2"
+        android:title="@string/word_delete"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_download"
+        android:icon="@drawable/ic_download"
+        android:orderInCategory="3"
+        android:title="@string/word_download"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_upload"
+        android:icon="@drawable/ic_upload"
+        android:orderInCategory="4"
+        android:title="@string/word_upload"
+        android:visible="true"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_select_all"
+        android:icon="@drawable/ic_select_all"
+        android:orderInCategory="5"
+        android:title="@string/word_select_all"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_select_all_off"
+        android:icon="@drawable/ic_select_all_off"
+        android:orderInCategory="6"
+        android:title="@string/word_select_all_off"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+</menu>

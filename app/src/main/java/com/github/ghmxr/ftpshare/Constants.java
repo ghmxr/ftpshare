@@ -51,6 +51,8 @@ public class Constants {
          */
         public static final String CHARSET_TYPE ="charset_type";
         public static final String CHARSET_TYPE_DEFAULT ="UTF-8";
+        public static final String MAX_ANONYMOUS_NUM="max_anonymous_logins";
+        public static final String MAX_LOGIN_NUM="max_logins";
         /**
          * int value
          */

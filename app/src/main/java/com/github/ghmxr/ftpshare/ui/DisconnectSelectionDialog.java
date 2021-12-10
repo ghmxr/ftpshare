@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.github.ghmxr.ftpshare.Constants;
 import com.github.ghmxr.ftpshare.R;
+import com.github.ghmxr.ftpshare.activities.MainActivity;
 import com.github.ghmxr.ftpshare.services.FtpService;
 import com.github.ghmxr.ftpshare.utils.CommonUtils;
 
@@ -106,6 +107,7 @@ public class DisconnectSelectionDialog extends AlertDialog implements View.OnCli
                 editor.putInt(Constants.PreferenceConsts.AUTO_STOP,selection);
                 editor.apply();
                 cancel();
+                if(MainActivity.mainActivity!=null)MainActivity.mainActivity.refreshDisconnectView();
             }
         });
         refreshViews();
