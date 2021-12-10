@@ -131,7 +131,7 @@
 
     <string name="notification_ftp_start_error_title">FTP service can not be started</string>
     <string name="notification_ftp_start_errer_message">FTP can not be started, please check the network, permissions or running mode</string>
-    
+
     <string name="setting_auto_start">Start automatically</string>
     <string name="setting_auto_start_att">start the FTP service after the OS boot completed</string>
     <string name="setting_disconnect">FTP Auto-Shut</string>

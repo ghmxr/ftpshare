@@ -3,13 +3,12 @@ package com.github.ghmxr.ftpshare.fragments
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatDelegate
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import com.github.ghmxr.ftpshare.Constants
 import com.github.ghmxr.ftpshare.MyApplication
 import com.github.ghmxr.ftpshare.R
@@ -19,7 +18,7 @@ import com.github.ghmxr.ftpshare.ui.RadioSelectionDialog
 import com.github.ghmxr.ftpshare.ui.RadioSelectionDialog.ConfirmedCallback
 import com.github.ghmxr.ftpshare.utils.CommonUtils
 
-class SettingFragment : Fragment() {
+class SettingFragment : androidx.fragment.app.Fragment() {
     private val settings = CommonUtils.getSettingSharedPreferences(MyApplication.getGlobalBaseContext())
     private val editor = settings.edit()
     private var resultCode = Activity.RESULT_CANCELED
@@ -100,7 +99,7 @@ class SettingFragment : Fragment() {
 
 
     private fun refreshSettingValues() {
-        if(context==null)return
+        if (context == null) return
         cb_auto_start?.isChecked = settings.getBoolean(Constants.PreferenceConsts.START_AFTER_BOOT, Constants.PreferenceConsts.START_AFTER_BOOT_DEFAULT)
         var value_disconnect: String? = ""
         when (settings.getInt(Constants.PreferenceConsts.AUTO_STOP, Constants.PreferenceConsts.AUTO_STOP_DEFAULT)) {
@@ -155,12 +154,12 @@ class SettingFragment : Fragment() {
         tv_language?.text = language_value
     }
 
-    private fun reopen(){
+    private fun reopen() {
         activity?.let {
-            Intent(it,MainActivity::class.java).apply {
-                putExtra(MainActivity.STATE_CURRENT_TAB,2)
+            Intent(it, MainActivity::class.java).apply {
+                putExtra(MainActivity.STATE_CURRENT_TAB, 2)
                 it.finish()
-                it.overridePendingTransition(0,0)
+                it.overridePendingTransition(0, 0)
                 startActivity(this)
             }
         }

@@ -3,8 +3,9 @@ package com.github.ghmxr.ftpshare.views;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
+
+import androidx.appcompat.widget.AppCompatTextView;
 
 public class AutoMarqueeTextView extends AppCompatTextView {
 

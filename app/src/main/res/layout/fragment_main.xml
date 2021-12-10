@@ -1,398 +1,452 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_frame_sr"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/main_frame_sr"
-    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".fragments.MainFragment">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <RelativeLayout
             android:id="@+id/main_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="70dp"
+            android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:background="?attr/selectableItemBackground">
+            android:minHeight="70dp">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="60dp">
+                android:layout_marginRight="60dp"
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
+                    android:text="@string/item_main"
                     android:textColor="@color/color_text_dark"
-                    android:text="@string/item_main"/>
+                    android:textSize="15sp" />
+
                 <TextView
                     android:id="@+id/main_att"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
-                    tools:text="Start FTP Service"/>
+                    tools:text="Start FTP Service" />
             </LinearLayout>
-            <android.support.v7.widget.SwitchCompat
+
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/main_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
                 android:clickable="false"
-                android:focusable="false"
-                android:layout_marginRight="15dp"/>
+                android:focusable="false" />
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_alignParentBottom="true"
-                android:background="@color/color_dividing_line"/>
+                android:background="@color/color_dividing_line" />
         </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/port_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="70dp"
+            android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:background="?attr/selectableItemBackground">
+            android:minHeight="70dp">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="60dp">
+                android:layout_marginRight="60dp"
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
+                    android:text="@string/item_port"
                     android:textColor="@color/color_text_dark"
-                    android:text="@string/item_port"/>
+                    android:textSize="15sp" />
+
                 <TextView
                     android:id="@+id/port_att"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:text="65535"/>
+                    android:text="65535"
+                    android:textSize="12sp" />
             </LinearLayout>
+
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="25dp"
-                android:src="@drawable/arrow_right"/>
+                android:src="@drawable/arrow_right" />
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_alignParentBottom="true"
-                android:background="@color/color_dividing_line"/>
+                android:background="@color/color_dividing_line" />
         </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/charset_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="70dp"
+            android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:background="?attr/selectableItemBackground">
+            android:minHeight="70dp">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="60dp">
+                android:layout_marginRight="60dp"
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
+                    android:text="@string/item_charset"
                     android:textColor="@color/color_text_dark"
-                    android:text="@string/item_charset"/>
+                    android:textSize="15sp" />
+
                 <TextView
                     android:id="@+id/charset_att"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:text="@string/item_charset_utf"/>
+                    android:text="@string/item_charset_utf"
+                    android:textSize="12sp" />
             </LinearLayout>
+
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="25dp"
-                android:src="@drawable/arrow_right"/>
+                android:src="@drawable/arrow_right" />
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_alignParentBottom="true"
-                android:background="@color/color_dividing_line"/>
+                android:background="@color/color_dividing_line" />
         </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/anonymous_connect_num_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="70dp"
+            android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:background="?attr/selectableItemBackground">
+            android:minHeight="70dp">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="60dp">
+                android:layout_marginRight="60dp"
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
+                    android:text="@string/item_anonymous_num"
                     android:textColor="@color/color_text_dark"
-                    android:text="@string/item_anonymous_num"/>
+                    android:textSize="15sp" />
+
                 <TextView
                     android:id="@+id/anonymous_connect_num"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
                     android:text=""
-                    tools:text="10"/>
+                    android:textSize="12sp"
+                    tools:text="10" />
             </LinearLayout>
+
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="25dp"
-                android:src="@drawable/arrow_right"/>
+                android:src="@drawable/arrow_right" />
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_alignParentBottom="true"
-                android:background="@color/color_dividing_line"/>
+                android:background="@color/color_dividing_line" />
         </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/login_connect_num_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="70dp"
+            android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:background="?attr/selectableItemBackground">
+            android:minHeight="70dp">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="60dp">
+                android:layout_marginRight="60dp"
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
+                    android:text="@string/item_login_num"
                     android:textColor="@color/color_text_dark"
-                    android:text="@string/item_login_num"/>
+                    android:textSize="15sp" />
+
                 <TextView
                     android:id="@+id/login_connect_num"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
                     android:text=""
-                    tools:text="10"/>
+                    android:textSize="12sp"
+                    tools:text="10" />
             </LinearLayout>
+
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="25dp"
-                android:src="@drawable/arrow_right"/>
+                android:src="@drawable/arrow_right" />
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_alignParentBottom="true"
-                android:background="@color/color_dividing_line"/>
+                android:background="@color/color_dividing_line" />
         </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/wakelock_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="70dp"
+            android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:background="?attr/selectableItemBackground">
+            android:minHeight="70dp">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="60dp">
+                android:layout_marginRight="60dp"
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
+                    android:text="@string/item_wakelock"
                     android:textColor="@color/color_text_dark"
-                    android:text="@string/item_wakelock"/>
+                    android:textSize="15sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="11sp"
-                    android:text="@string/item_wakelock_att"/>
+                    android:text="@string/item_wakelock_att"
+                    android:textSize="11sp" />
             </LinearLayout>
+
             <CheckBox
                 android:id="@+id/wakelock_cb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
                 android:clickable="false"
-                android:focusable="false"
-                android:layout_marginRight="20dp"/>
+                android:focusable="false" />
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_alignParentBottom="true"
-                android:background="@color/color_dividing_line"/>
+                android:background="@color/color_dividing_line" />
         </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/battery_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="70dp"
+            android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:background="?attr/selectableItemBackground"
+            android:minHeight="70dp"
             android:visibility="gone"
             tools:visibility="visible">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="60dp">
+                android:layout_marginRight="60dp"
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
+                    android:text="@string/item_ignore_battery"
                     android:textColor="@color/color_text_dark"
-                    android:text="@string/item_ignore_battery"/>
+                    android:textSize="15sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:text="@string/item_ignore_battery_att"/>
+                    android:text="@string/item_ignore_battery_att"
+                    android:textSize="12sp" />
             </LinearLayout>
+
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="25dp"
-                android:src="@drawable/arrow_right"/>
+                android:src="@drawable/arrow_right" />
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_alignParentBottom="true"
-                android:background="@color/color_dividing_line"/>
+                android:background="@color/color_dividing_line" />
         </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/ftp_addresses_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="70dp"
+            android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:background="?attr/selectableItemBackground">
+            android:minHeight="70dp">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="60dp">
+                android:layout_marginRight="60dp"
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
+                    android:text="@string/item_ftp_addresses"
                     android:textColor="@color/color_text_dark"
-                    android:text="@string/item_ftp_addresses"/>
+                    android:textSize="15sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:text="@string/item_ftp_addresses_att"/>
+                    android:text="@string/item_ftp_addresses_att"
+                    android:textSize="12sp" />
             </LinearLayout>
+
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="25dp"
-                android:src="@drawable/arrow_right"/>
+                android:src="@drawable/arrow_right" />
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_alignParentBottom="true"
-                android:background="@color/color_dividing_line"/>
+                android:background="@color/color_dividing_line" />
         </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/setting_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="65dp"
+            android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:background="?attr/selectableItemBackground">
+            android:minHeight="65dp">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="60dp">
+                android:layout_marginRight="60dp"
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
+                    android:text="@string/item_account_settings"
                     android:textColor="@color/color_text_dark"
-                    android:text="@string/item_account_settings"/>
+                    android:textSize="15sp" />
+
                 <TextView
                     android:id="@+id/setting_area_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:text="@string/item_account_settings_anonymous_mode"/>
+                    android:text="@string/item_account_settings_anonymous_mode"
+                    android:textSize="12sp" />
             </LinearLayout>
+
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="25dp"
-                android:src="@drawable/arrow_right"/>
+                android:src="@drawable/arrow_right" />
         </RelativeLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="100dp"
             android:orientation="vertical"
             android:visibility="visible"
-            tools:visibility="visible">
-        </LinearLayout>
+            tools:visibility="visible"></LinearLayout>
     </LinearLayout>
 </ScrollView>

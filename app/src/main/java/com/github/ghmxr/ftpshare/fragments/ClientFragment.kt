@@ -8,16 +8,13 @@ import android.content.IntentFilter
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.ghmxr.ftpshare.MyApplication
 import com.github.ghmxr.ftpshare.R
 import com.github.ghmxr.ftpshare.activities.EditClientActivity
@@ -27,12 +24,13 @@ import com.github.ghmxr.ftpshare.adapers.ViewHolder
 import com.github.ghmxr.ftpshare.data.ClientBean
 import com.github.ghmxr.ftpshare.ftpclient.FtpClientManager
 import com.github.ghmxr.ftpshare.utils.CommonUtils
+import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
 
-class ClientFragment : Fragment() {
+class ClientFragment : androidx.fragment.app.Fragment() {
 
-    private var recyclerView: RecyclerView? = null
+    private var recyclerView: androidx.recyclerview.widget.RecyclerView? = null
     private var adapter: FtpClientListAdapter? = null
     private var sharingUris: List<Uri>? = null
 
@@ -67,7 +65,7 @@ class ClientFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = view.findViewById(R.id.client_rv)
         noClientView = view.findViewById(R.id.add_client_att)
-        recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        recyclerView?.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context, androidx.recyclerview.widget.LinearLayoutManager.VERTICAL, false)
         context?.let { it ->
             adapter = FtpClientListAdapter(it, object : FtpClientListAdapter.ItemCallback {
                 override fun onItemLongClick(i: Int, b: ClientBean, a: FtpClientListAdapter, h: ViewHolder) {

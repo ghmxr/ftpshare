@@ -1,69 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_account_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="70dp"
-    android:id="@+id/item_account_root"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:minHeight="70dp">
+
     <ImageView
         android:id="@+id/item_icon"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
         android:layout_margin="10dp"
-        android:src="@drawable/icon_account"/>
+        android:src="@drawable/icon_account" />
+
     <LinearLayout
-        android:layout_toRightOf="@+id/item_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="50dp"
         android:layout_marginBottom="10dp"
-        android:layout_marginRight="50dp">
+        android:layout_toRightOf="@+id/item_icon"
+        android:orientation="vertical">
+
         <TextView
             android:id="@+id/text_account"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/color_text_dark"
             android:textSize="15sp"
             android:textStyle="bold"
-            android:textColor="@color/color_text_dark"
-            tools:text="user1"/>
+            tools:text="user1" />
+
         <TextView
+            android:id="@+id/text_path"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/text_path"
             android:textSize="14sp"
-            tools:text="/storage/emulated/0"/>
+            tools:text="/storage/emulated/0" />
+
         <LinearLayout
             android:id="@+id/area_writable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:src="@drawable/icon_check"/>
+                android:src="@drawable/icon_check" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:text="@string/item_writable"/>
+                android:text="@string/item_writable"
+                android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
+
     <ImageView
         android:layout_width="15dp"
         android:layout_height="15dp"
-        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:layout_marginRight="20dp"
-        android:src="@drawable/arrow_right"/>
+        android:src="@drawable/arrow_right" />
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_alignParentBottom="true"
-        android:background="@color/color_dividing_line"/>
+        android:background="@color/color_dividing_line" />
 </RelativeLayout>

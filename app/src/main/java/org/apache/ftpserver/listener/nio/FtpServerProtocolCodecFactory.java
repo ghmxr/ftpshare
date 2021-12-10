@@ -11,12 +11,12 @@ import org.apache.mina.filter.codec.textline.TextLineDecoder;
 import java.nio.charset.Charset;
 
 public class FtpServerProtocolCodecFactory implements ProtocolCodecFactory {
-    private final ProtocolDecoder decoder ;
+    private final ProtocolDecoder decoder;
     private final ProtocolEncoder encoder = new FtpResponseEncoder();
 
     public FtpServerProtocolCodecFactory() {
-        String charset=FtpService.getCharsetFromSharedPreferences();
-        decoder= new TextLineDecoder(Charset.forName(charset));
+        String charset = FtpService.getCharsetFromSharedPreferences();
+        decoder = new TextLineDecoder(Charset.forName(charset));
         //Log.d(getClass().getName(),"the charset is "+charset);
     }
 

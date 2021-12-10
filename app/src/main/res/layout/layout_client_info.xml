@@ -421,6 +421,11 @@
                 android:clickable="false"
                 android:focusable="false" />
 
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:background="@color/color_dividing_line" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -462,11 +467,6 @@
                 android:layout_marginRight="20dp"
                 android:src="@drawable/arrow_right" />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_alignParentBottom="true"
-                android:background="@color/color_dividing_line" />
         </RelativeLayout>
     </LinearLayout>
 </ScrollView>

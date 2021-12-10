@@ -11,9 +11,9 @@ import com.github.ghmxr.ftpshare.utils.CommonUtils;
 public class BootCompletedReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        if(Intent.ACTION_BOOT_COMPLETED.equalsIgnoreCase(intent.getAction())){
-            if(CommonUtils.getSettingSharedPreferences(context)
-                    .getBoolean(Constants.PreferenceConsts.START_AFTER_BOOT,Constants.PreferenceConsts.START_AFTER_BOOT_DEFAULT)){
+        if (Intent.ACTION_BOOT_COMPLETED.equalsIgnoreCase(intent.getAction())) {
+            if (CommonUtils.getSettingSharedPreferences(context)
+                    .getBoolean(Constants.PreferenceConsts.START_AFTER_BOOT, Constants.PreferenceConsts.START_AFTER_BOOT_DEFAULT)) {
                 FtpService.startService(context);
             }
         }

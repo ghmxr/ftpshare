@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.content.PermissionChecker
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -12,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ListView
 import android.widget.TextView
+import androidx.core.content.PermissionChecker
 import com.github.ghmxr.ftpshare.Constants
 import com.github.ghmxr.ftpshare.MyApplication
 import com.github.ghmxr.ftpshare.R

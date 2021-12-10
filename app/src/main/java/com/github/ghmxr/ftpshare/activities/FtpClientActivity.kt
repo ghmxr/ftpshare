@@ -4,15 +4,13 @@ import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.provider.DocumentFile
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.widget.EditText
 import android.widget.PopupWindow
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.ghmxr.ftpshare.R
 import com.github.ghmxr.ftpshare.adapers.FtpFileListAdapter
 import com.github.ghmxr.ftpshare.adapers.ViewHolderFtpFile
@@ -37,7 +35,7 @@ class FtpClientActivity : BaseActivity() {
     private var client: FTPClient? = null
 
     private var bean: ClientBean? = null
-    private var rv: RecyclerView? = null
+    private var rv: androidx.recyclerview.widget.RecyclerView? = null
     private var blankView: View? = null
     private var adapter: FtpFileListAdapter? = null
     private var pg: ProgressBar? = null
@@ -48,7 +46,7 @@ class FtpClientActivity : BaseActivity() {
 
     private var isReconnected = false
 
-    private val scrollPositionCache = HashMap<String,Int>()
+    private val scrollPositionCache = HashMap<String, Int>()
 
 
     override fun onCreate(bundle: Bundle?) {
@@ -113,7 +111,7 @@ class FtpClientActivity : BaseActivity() {
                             setProgressVisibility(true)
                             FtpClientUtil.createFolder(client!!, getFullPath(), s) {
                                 it?.let {
-                                    if(isFinishing)return@let
+                                    if (isFinishing) return@let
                                     AlertDialog.Builder(this@FtpClientActivity)
                                             .setTitle(resources.getString(R.string.word_error))
                                             .setMessage(resources.getString(R.string.dialog_new_folder_error).format(s, it.toString()))
@@ -170,7 +168,7 @@ class FtpClientActivity : BaseActivity() {
                             contentResolver.openInputStream(uri)?.let {
                                 add(it)
                                 val s = uri.lastPathSegment
-                                val fileName =/*s?.substring(s.lastIndexOf("/")+1)?:""*/DocumentFile.fromSingleUri(this@FtpClientActivity, uri)?.name
+                                val fileName =/*s?.substring(s.lastIndexOf("/")+1)?:""*/androidx.documentfile.provider.DocumentFile.fromSingleUri(this@FtpClientActivity, uri)?.name
                                         ?: "aaa"
                                 fileNames.add(fileName)
                             }
@@ -212,7 +210,7 @@ class FtpClientActivity : BaseActivity() {
                         add(it)
                     }
                 }, ArrayList<String>().apply {
-                    val name = DocumentFile.fromSingleUri(this@FtpClientActivity, it)?.name
+                    val name = androidx.documentfile.provider.DocumentFile.fromSingleUri(this@FtpClientActivity, it)?.name
                             ?: "aaaa"
                     add(name)
                 })
@@ -273,7 +271,7 @@ class FtpClientActivity : BaseActivity() {
         }
     }
 
-    var lm:LinearLayoutManager?=null
+    var lm: androidx.recyclerview.widget.LinearLayoutManager? = null
 
     private fun init() {
         uploadUris = intent.getParcelableArrayListExtra(EXTRA_UPLOAD_URIS)
@@ -283,7 +281,7 @@ class FtpClientActivity : BaseActivity() {
         pg = findViewById(R.id.ftp_client_pg)
         rv = findViewById(R.id.ftp_client_rv)
         blankView = findViewById(R.id.client_no_content_att)
-        lm=LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        lm = androidx.recyclerview.widget.LinearLayoutManager(this, androidx.recyclerview.widget.LinearLayoutManager.VERTICAL, false)
         rv?.layoutManager = lm
         adapter = FtpFileListAdapter(this, null, object : FtpFileListAdapter.AdapterCallback {
             override fun onCdClicked() {
@@ -296,7 +294,7 @@ class FtpClientActivity : BaseActivity() {
 
             override fun onItemClicked(f: FTPFile?, h: ViewHolderFtpFile) {
                 if (f?.isDirectory == true) {
-                    cacheFirstItemPosition=lm?.findFirstVisibleItemPosition()?:0
+                    cacheFirstItemPosition = lm?.findFirstVisibleItemPosition() ?: 0
                     scrollPositionCache[getFullPath()] = cacheFirstItemPosition
                     pathFolders.addLast(f.name)
                     refreshList()
@@ -376,18 +374,18 @@ class FtpClientActivity : BaseActivity() {
             }
         })
         rv?.adapter = adapter
-        rv?.addOnScrollListener(object :RecyclerView.OnScrollListener(){
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+        rv?.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 //在这里进行第二次滚动（最后的100米！）
                 //在这里进行第二次滚动（最后的100米！）
                 if (move) {
                     move = false
                     //获取要置顶的项在当前屏幕的位置，mIndex是记录的要置顶项在RecyclerView中的位置
-                    val n: Int = cacheFirstItemPosition - (lm?.findFirstVisibleItemPosition()?:0)
-                    if (0 <= n && n < rv?.getChildCount()?:0) {
+                    val n: Int = cacheFirstItemPosition - (lm?.findFirstVisibleItemPosition() ?: 0)
+                    if (0 <= n && n < rv?.getChildCount() ?: 0) {
                         //获取要置顶的项顶部离RecyclerView顶部的距离
-                        val top: Int = rv?.getChildAt(n)?.getTop()?:0
+                        val top: Int = rv?.getChildAt(n)?.getTop() ?: 0
                         //最后的移动
                         rv?.scrollBy(0, top)
                     }
@@ -418,25 +416,25 @@ class FtpClientActivity : BaseActivity() {
                     View.GONE
                 }
                 adapter?.showCd = pathFolders.size != 0
-                moveToPosition(scrollPositionCache[getFullPath()]?:0)
+                moveToPosition(scrollPositionCache[getFullPath()] ?: 0)
             }
         }
     }
 
-    var move=false
-    var cacheFirstItemPosition=0
+    var move = false
+    var cacheFirstItemPosition = 0
 
     private fun moveToPosition(n: Int) {
         //先从RecyclerView的LayoutManager中获取第一项和最后一项的Position
-        val firstItem: Int = lm?.findFirstVisibleItemPosition()?:0
-        val lastItem: Int = lm?.findLastVisibleItemPosition()?:0
+        val firstItem: Int = lm?.findFirstVisibleItemPosition() ?: 0
+        val lastItem: Int = lm?.findLastVisibleItemPosition() ?: 0
         //然后区分情况
         if (n <= firstItem) {
             //当要置顶的项在当前显示的第一个项的前面时
             rv?.scrollToPosition(n)
         } else if (n <= lastItem) {
             //当要置顶的项已经在屏幕上显示时
-            val top: Int = rv?.getChildAt(n - firstItem)?.getTop()?:0
+            val top: Int = rv?.getChildAt(n - firstItem)?.getTop() ?: 0
             rv?.scrollBy(0, top)
         } else {
             //当要置顶的项在当前显示的最后一项的后面时

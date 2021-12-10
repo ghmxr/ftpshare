@@ -9,7 +9,7 @@ android {
         targetSdkVersion 28
         versionCode 12
         versionName "Build 12"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
         release {
@@ -47,12 +47,12 @@ dependencies {
     implementation files('libs/ftpserver-core-1.1.1-edited.jar')
 //由于修改并重写了jar包中的几个类，所以删掉了这些class，修改后的类在主路径org对应的包中，用于支持编码修改
 
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
     //implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     //implementation 'com.android.support:support-vector-drawable:28.0.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }

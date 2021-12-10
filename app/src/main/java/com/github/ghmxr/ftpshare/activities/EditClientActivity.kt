@@ -1,11 +1,11 @@
 package com.github.ghmxr.ftpshare.activities
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.view.Menu
 import android.view.MenuItem
 import com.github.ghmxr.ftpshare.R
 import com.github.ghmxr.ftpshare.ftpclient.FtpClientManager
+import com.google.android.material.snackbar.Snackbar
 
 class EditClientActivity : ClientInfoActivity() {
 

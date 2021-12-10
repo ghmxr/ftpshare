@@ -4,19 +4,19 @@
     <item
         android:id="@+id/navigation_main"
         android:icon="@drawable/ic_ex_24dp"
-        android:title="@string/title_home"
-        android:orderInCategory="0"/>
+        android:orderInCategory="0"
+        android:title="@string/title_home" />
 
     <item
         android:id="@+id/navigation_device"
         android:icon="@drawable/ic_device"
-        android:title="@string/title_device"
-        android:orderInCategory="1"/>
+        android:orderInCategory="1"
+        android:title="@string/title_device" />
 
     <item
         android:id="@+id/navigation_settings"
         android:icon="@drawable/ic_wheel_24dp"
-        android:title="@string/title_settings"
-        android:orderInCategory="2"/>
+        android:orderInCategory="2"
+        android:title="@string/title_settings" />
 
 </menu>

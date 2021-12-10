@@ -1,31 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
     <Spinner
         android:id="@+id/folder_storage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"/>
+        android:layout_margin="5dp" />
+
     <TextView
         android:id="@+id/folder_path"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:maxLines="2"
-        android:ellipsize="start"
         android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"/>
+        android:layout_marginRight="5dp"
+        android:ellipsize="start"
+        android:maxLines="2"
+        android:textSize="14sp" />
+
     <ListView
         android:id="@+id/folder_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="@null"/>
+        android:divider="@null" />
+
     <ProgressBar
         android:id="@+id/folder_load"
+        style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_gravity="center_horizontal"
-        style="@style/Widget.AppCompat.ProgressBar"/>
+        android:layout_gravity="center_horizontal" />
 </LinearLayout>

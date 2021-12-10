@@ -1,30 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="50dp">
+
     <ImageView
         android:id="@+id/item_folder_icon"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_margin="10dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/icon_folder"/>
+        android:layout_margin="10dp"
+        android:src="@drawable/icon_folder" />
+
     <TextView
         android:id="@+id/item_folder_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/item_folder_icon"
         android:layout_centerVertical="true"
         android:layout_marginRight="20dp"
-        android:singleLine="true"
+        android:layout_toRightOf="@+id/item_folder_icon"
         android:ellipsize="end"
+        android:singleLine="true"
         android:textSize="13sp"
-        tools:text="FolderName"/>
+        tools:text="FolderName" />
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_alignParentBottom="true"
-        android:background="@color/color_dividing_line"/>
+        android:background="@color/color_dividing_line" />
 </RelativeLayout>

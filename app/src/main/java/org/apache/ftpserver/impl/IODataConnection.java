@@ -21,8 +21,8 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
 public class IODataConnection implements DataConnection {
-    private final Logger LOG = LoggerFactory.getLogger(IODataConnection.class);
     private static final byte[] EOL = System.getProperty("line.separator").getBytes();
+    private final Logger LOG = LoggerFactory.getLogger(IODataConnection.class);
     private final FtpIoSession session;
     private final Socket socket;
     private final ServerDataConnectionFactory factory;
@@ -41,10 +41,10 @@ public class IODataConnection implements DataConnection {
             } else {
                 InputStream is = dataSoc.getInputStream();
                 if (this.factory.isZipMode()) {
-                    is = new InflaterInputStream((InputStream)is);
+                    is = new InflaterInputStream((InputStream) is);
                 }
 
-                return (InputStream)is;
+                return (InputStream) is;
             }
         } catch (IOException var3) {
             this.factory.closeDataConnection();
@@ -60,10 +60,10 @@ public class IODataConnection implements DataConnection {
             } else {
                 OutputStream os = dataSoc.getOutputStream();
                 if (this.factory.isZipMode()) {
-                    os = new DeflaterOutputStream((OutputStream)os);
+                    os = new DeflaterOutputStream((OutputStream) os);
                 }
 
-                return (OutputStream)os;
+                return (OutputStream) os;
             }
         } catch (IOException var3) {
             this.factory.closeDataConnection();
@@ -73,7 +73,7 @@ public class IODataConnection implements DataConnection {
 
     public final long transferFromClient(FtpSession session, OutputStream out) throws IOException {
         TransferRateRequest transferRateRequest = new TransferRateRequest();
-        transferRateRequest = (TransferRateRequest)session.getUser().authorize(transferRateRequest);
+        transferRateRequest = (TransferRateRequest) session.getUser().authorize(transferRateRequest);
         int maxRate = 0;
         if (transferRateRequest != null) {
             maxRate = transferRateRequest.getMaxUploadRate();
@@ -93,7 +93,7 @@ public class IODataConnection implements DataConnection {
 
     public final long transferToClient(FtpSession session, InputStream in) throws IOException {
         TransferRateRequest transferRateRequest = new TransferRateRequest();
-        transferRateRequest = (TransferRateRequest)session.getUser().authorize(transferRateRequest);
+        transferRateRequest = (TransferRateRequest) session.getUser().authorize(transferRateRequest);
         int maxRate = 0;
         if (transferRateRequest != null) {
             maxRate = transferRateRequest.getMaxDownloadRate();
@@ -120,7 +120,7 @@ public class IODataConnection implements DataConnection {
             //Log.d(getClass().getName(),"the charset is "+FtpService.getCharsetFromSharedPreferences());
             writer.write(str);
             if (session instanceof DefaultFtpSession) {
-                ((DefaultFtpSession)session).increaseWrittenDataBytes(str.getBytes(FtpService.getCharsetFromSharedPreferences()).length);
+                ((DefaultFtpSession) session).increaseWrittenDataBytes(str.getBytes(FtpService.getCharsetFromSharedPreferences()).length);
             }
         } finally {
             if (writer != null) {
@@ -145,13 +145,13 @@ public class IODataConnection implements DataConnection {
             bos = IoUtils.getBufferedOutputStream(out);
             DefaultFtpSession defaultFtpSession = null;
             if (session instanceof DefaultFtpSession) {
-                defaultFtpSession = (DefaultFtpSession)session;
+                defaultFtpSession = (DefaultFtpSession) session;
             }
 
             byte lastByte = 0;
 
-            while(true) {
-                while(true) {
+            while (true) {
+                while (true) {
                     if (maxRate > 0) {
                         long interval = System.currentTimeMillis() - startTime;
                         if (interval == 0L) {
@@ -159,7 +159,7 @@ public class IODataConnection implements DataConnection {
                         }
 
                         long currRate = transferredSize * 1000L / interval;
-                        if (currRate > (long)maxRate) {
+                        if (currRate > (long) maxRate) {
                             try {
                                 Thread.sleep(50L);
                                 continue;
@@ -183,7 +183,7 @@ public class IODataConnection implements DataConnection {
                     }
 
                     if (isAscii) {
-                        for(int i = 0; i < count; ++i) {
+                        for (int i = 0; i < count; ++i) {
                             byte b = buff[i];
                             if (isWrite) {
                                 if (b == 10 && lastByte != 13) {
@@ -207,7 +207,7 @@ public class IODataConnection implements DataConnection {
                         bos.write(buff, 0, count);
                     }
 
-                    transferredSize += (long)count;
+                    transferredSize += (long) count;
                     this.notifyObserver();
                 }
             }

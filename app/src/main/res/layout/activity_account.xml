@@ -1,159 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
+
     <LinearLayout
-        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <RelativeLayout
+            android:id="@+id/account_user"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/account_user"
-            android:clickable="true"
             android:background="?attr/selectableItemBackground"
+            android:clickable="true"
             android:focusable="true">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginRight="50dp"
                 android:layout_marginBottom="20dp"
-                android:layout_marginRight="50dp">
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
+                    android:text="@string/account_user"
                     android:textColor="@color/color_text_dark"
-                    android:text="@string/account_user"/>
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/account_user_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:text="user"/>
+                    android:text="user"
+                    android:textSize="14sp" />
             </LinearLayout>
+
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
-                android:src="@drawable/arrow_right"/>
+                android:src="@drawable/arrow_right" />
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_alignParentBottom="true"
-                android:background="@color/color_dividing_line"/>
+                android:background="@color/color_dividing_line" />
         </RelativeLayout>
+
         <RelativeLayout
+            android:id="@+id/account_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/account_password"
-            android:clickable="true"
             android:background="?attr/selectableItemBackground"
+            android:clickable="true"
             android:focusable="true">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_centerVertical="true"
-                android:layout_margin="20dp">
+                android:layout_margin="20dp"
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
+                    android:text="@string/account_password"
                     android:textColor="@color/color_text_dark"
-                    android:text="@string/account_password"/>
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/account_password_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"/>
+                    android:textSize="14sp" />
             </LinearLayout>
+
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
-                android:src="@drawable/arrow_right"/>
+                android:src="@drawable/arrow_right" />
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_alignParentBottom="true"
-                android:background="@color/color_dividing_line"/>
+                android:background="@color/color_dividing_line" />
         </RelativeLayout>
+
         <RelativeLayout
+            android:id="@+id/account_path"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/account_path"
-            android:clickable="true"
             android:background="?attr/selectableItemBackground"
+            android:clickable="true"
             android:focusable="true">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_centerVertical="true"
-                android:layout_margin="20dp">
+                android:layout_margin="20dp"
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
+                    android:text="@string/account_path"
                     android:textColor="@color/color_text_dark"
-                    android:text="@string/account_path"/>
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/account_path_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
-                    tools:text="/storage/emulated/0"/>
+                    tools:text="/storage/emulated/0" />
             </LinearLayout>
+
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
-                android:src="@drawable/arrow_right"/>
+                android:src="@drawable/arrow_right" />
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_alignParentBottom="true"
-                android:background="@color/color_dividing_line"/>
+                android:background="@color/color_dividing_line" />
         </RelativeLayout>
+
         <RelativeLayout
+            android:id="@+id/account_writable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/account_writable"
-            android:clickable="true"
             android:background="?attr/selectableItemBackground"
+            android:clickable="true"
             android:focusable="true">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_centerVertical="true"
-                android:layout_margin="20dp">
+                android:layout_margin="20dp"
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
+                    android:text="@string/account_writable"
                     android:textColor="@color/color_text_dark"
-                    android:text="@string/account_writable"/>
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:text="@string/account_writable_att"/>
+                    android:text="@string/account_writable_att"
+                    android:textSize="14sp" />
             </LinearLayout>
+
             <CheckBox
                 android:id="@+id/account_writable_cb"
                 android:layout_width="wrap_content"
@@ -161,13 +186,14 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
-                android:focusable="false"
-                android:clickable="false"/>
+                android:clickable="false"
+                android:focusable="false" />
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_alignParentBottom="true"
-                android:background="@color/color_dividing_line"/>
+                android:background="@color/color_dividing_line" />
         </RelativeLayout>
     </LinearLayout>
 </ScrollView>

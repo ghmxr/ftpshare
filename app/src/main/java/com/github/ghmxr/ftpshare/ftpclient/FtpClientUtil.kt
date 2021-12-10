@@ -2,9 +2,9 @@ package com.github.ghmxr.ftpshare.ftpclient
 
 import android.content.Context
 import android.os.Looper
-import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.github.ghmxr.ftpshare.MyApplication
 import com.github.ghmxr.ftpshare.R
 import com.github.ghmxr.ftpshare.ui.ProgressDialog
@@ -12,7 +12,6 @@ import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPFile
 import org.apache.commons.net.ftp.FTPReply
 import java.io.*
-import java.nio.charset.Charset
 
 object FtpClientUtil {
 
@@ -41,7 +40,8 @@ object FtpClientUtil {
         }
         val dialog = ProgressDialog(context, context.resources.getString(R.string.dialog_download_title))
         var thread: DownloadFtpFilesTask? = null
-        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, context.resources.getString(R.string.dialog_button_cancel)) { _, _ ->callback?.invoke(null)
+        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, context.resources.getString(R.string.dialog_button_cancel)) { _, _ ->
+            callback?.invoke(null)
             thread?.flag = true
             dialog.cancel()
         }
@@ -445,13 +445,13 @@ object FtpClientUtil {
         private fun uploadFileItem(client: FTPClient, path: String, fileName: String, inputStream: InputStream) {
             // 设置PassiveMode传输
             if (flag) return
-            var out:OutputStream?=null
+            var out: OutputStream? = null
             try {
                 // 设置以二进制流的方式传输
                 client.setFileType(FTPClient.BINARY_FILE_TYPE)
                 client.changeWorkingDirectory(path)
                 out = client.storeFileStream(fileName)
-                if(out==null){
+                if (out == null) {
                     throw RuntimeException("can not obtain output stream, check permission")
                 }
                 var i: Int
@@ -486,12 +486,13 @@ object FtpClientUtil {
                 errorInfo.append(e.toString())
                 errorInfo.append("\n\n")
             } finally {
-                try{
+                try {
                     out?.flush()
                     out?.close()
-                }catch (e:Exception){}
+                } catch (e: Exception) {
+                }
                 try {
-                    if(out!=null)client.completePendingCommand()
+                    if (out != null) client.completePendingCommand()
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

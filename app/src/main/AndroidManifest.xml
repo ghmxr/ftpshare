@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.github.ghmxr.ftpshare">
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".MyApplication"
@@ -24,54 +25,64 @@
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.intent.action.VIEW"/>
-                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES"/>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter
-                android:label="@string/share_title">
-                <action android:name="android.intent.action.SEND"/>
-                <action android:name="android.intent.action.SEND_MULTIPLE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="*/*"/>
+            <intent-filter android:label="@string/share_title">
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.AddAccountActivity"
-            android:label="@string/activity_title_add"/>
-        <activity android:name=".activities.EditAccountActivity"
-            android:label="@string/activity_title_edit"/>
-        <activity android:name=".activities.AddClientActivity"
-            android:label="@string/activity_title_add"/>
-        <activity android:name=".activities.EditClientActivity"
-            android:label="@string/activity_title_edit"/>
+        <activity
+            android:name=".activities.AddAccountActivity"
+            android:label="@string/activity_title_add" />
+        <activity
+            android:name=".activities.EditAccountActivity"
+            android:label="@string/activity_title_edit" />
+        <activity
+            android:name=".activities.AddClientActivity"
+            android:label="@string/activity_title_add" />
+        <activity
+            android:name=".activities.EditClientActivity"
+            android:label="@string/activity_title_edit" />
         <activity android:name=".activities.FtpClientActivity" />
-        <activity android:name=".activities.ServiceAccountActivity"
-            android:label="@string/item_account_settings"/>
-        <activity android:name=".activities.FolderSelectorActivity"
-            android:label="@string/account_path_dialog_title"/>
+        <activity
+            android:name=".activities.ServiceAccountActivity"
+            android:label="@string/item_account_settings" />
+        <activity
+            android:name=".activities.FolderSelectorActivity"
+            android:label="@string/account_path_dialog_title" />
 
-        <service android:name=".services.FtpService"
-            android:exported="true"/>
-        <service android:name=".services.MyTileService"
+        <service
+            android:name=".services.FtpService"
+            android:exported="true" />
+        <service
+            android:name=".services.MyTileService"
             android:icon="@drawable/ic_ex_24dp"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
+
         <receiver android:name=".widgets.FtpWidget">
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/ftp_desktop_widget" />
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-                <action android:name="com.github.ghmxr.ftpshare.UPDATE_WIDGET"/>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.github.ghmxr.ftpshare.UPDATE_WIDGET" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".widgets.FtpWidget$FtpWidgetReceiver"/>
+        <receiver android:name=".widgets.FtpWidget$FtpWidgetReceiver" />
         <receiver android:name=".receivers.BootCompletedReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
     </application>

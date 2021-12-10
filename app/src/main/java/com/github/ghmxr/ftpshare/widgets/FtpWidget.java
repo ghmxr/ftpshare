@@ -21,49 +21,50 @@ public class FtpWidget extends AppWidgetProvider implements FtpService.OnFTPServ
     @Override
     public void onEnabled(Context context) {
         super.onEnabled(context);
-        this.context=context;
+        this.context = context;
         FtpService.addOnFtpServiceStatusChangedListener(this);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
-        appWidgetManager.updateAppWidget(new ComponentName(context,FtpWidget.class),getCurrentRemoteView(context));
+        appWidgetManager.updateAppWidget(new ComponentName(context, FtpWidget.class), getCurrentRemoteView(context));
     }
 
     @Override
     public void onFTPServiceStarted() {
-        if(context==null)return;
-        AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context,FtpWidget.class),getCurrentRemoteView(context));
+        if (context == null) return;
+        AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context, FtpWidget.class), getCurrentRemoteView(context));
     }
 
     @Override
     public void onFTPServiceStartError(Exception e) {
-        if(context==null)return;
-        Toast.makeText(context,String.valueOf(e),Toast.LENGTH_SHORT).show();
+        if (context == null) return;
+        Toast.makeText(context, String.valueOf(e), Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onRemainingSeconds(int seconds) {}
+    public void onRemainingSeconds(int seconds) {
+    }
 
     @Override
     public void onFTPServiceDestroyed() {
-        if(context==null)return;
-        AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context,FtpWidget.class),getCurrentRemoteView(context));
+        if (context == null) return;
+        AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context, FtpWidget.class), getCurrentRemoteView(context));
     }
 
-    private RemoteViews getCurrentRemoteView(Context context){
-        RemoteViews remoteViews=new RemoteViews(context.getPackageName(), R.layout.widget_switch);
-        boolean isRunning= FtpService.isFTPServiceRunning();
-        remoteViews.setImageViewResource(R.id.widget_switch_icon,isRunning?R.drawable.switch_on:R.drawable.switch_off);
-        remoteViews.setTextViewText(R.id.widget_description,isRunning?FtpService.getFTPStatusDescription(context):
+    private RemoteViews getCurrentRemoteView(Context context) {
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_switch);
+        boolean isRunning = FtpService.isFTPServiceRunning();
+        remoteViews.setImageViewResource(R.id.widget_switch_icon, isRunning ? R.drawable.switch_on : R.drawable.switch_off);
+        remoteViews.setTextViewText(R.id.widget_description, isRunning ? FtpService.getFTPStatusDescription(context) :
                 context.getResources().getString(R.string.ftp_status_not_running));
         remoteViews.setOnClickPendingIntent(R.id.widget_switch_area,
                 PendingIntent.getBroadcast(context,
                         1,
                         new Intent(context, FtpWidgetReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT));
         remoteViews.setOnClickPendingIntent(R.id.widget_switch_root,
-                PendingIntent.getActivity(context,2,new Intent(context, MainActivity.class),PendingIntent.FLAG_UPDATE_CURRENT));
+                PendingIntent.getActivity(context, 2, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
         return remoteViews;
     }
 
@@ -73,11 +74,11 @@ public class FtpWidget extends AppWidgetProvider implements FtpService.OnFTPServ
         FtpService.removeOnFtpServiceStatusChangedListener(this);
     }
 
-    public static class FtpWidgetReceiver extends BroadcastReceiver{
+    public static class FtpWidgetReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            boolean b=FtpService.isFTPServiceRunning();
-            if(b)FtpService.stopService();
+            boolean b = FtpService.isFTPServiceRunning();
+            if (b) FtpService.stopService();
             else FtpService.startService(context);
         }
     }

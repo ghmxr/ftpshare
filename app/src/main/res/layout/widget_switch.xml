@@ -1,46 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/widget_switch_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/widget_switch_root"
     android:background="#ffffff"
-    android:clickable="true"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:clickable="true">
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
-        android:layout_centerVertical="true">
+        android:orientation="vertical">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textAppearance="?attr/titleTextStyle"
             android:singleLine="true"
-            android:text="FTP Share"/>
+            android:text="FTP Share"
+            android:textAppearance="?attr/titleTextStyle"
+            android:textSize="14sp" />
+
         <TextView
+            android:id="@+id/widget_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/widget_description"
-            android:textSize="12sp"
             android:singleLine="true"
             android:textAppearance="?attr/editTextStyle"
-            tools:text="FTP服务运行于ftp://192.168.1.101:5656"/>
+            android:textSize="12sp"
+            tools:text="FTP服务运行于ftp://192.168.1.101:5656" />
     </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/widget_switch_area"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:minWidth="80dp"
         android:layout_alignParentRight="true"
-        android:clickable="true">
+        android:clickable="true"
+        android:minWidth="80dp">
+
         <ImageView
+            android:id="@+id/widget_switch_icon"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:id="@+id/widget_switch_icon"
-            android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/switch_off"/>
+            android:layout_centerVertical="true"
+            android:src="@drawable/switch_off" />
     </RelativeLayout>
 </RelativeLayout>

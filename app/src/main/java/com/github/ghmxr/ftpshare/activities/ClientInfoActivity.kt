@@ -6,9 +6,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.support.design.widget.Snackbar
-import android.support.v4.content.PermissionChecker
-import android.support.v7.app.AlertDialog
 import android.text.InputType
 import android.text.method.DigitsKeyListener
 import android.text.method.PasswordTransformationMethod
@@ -17,10 +14,13 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.PermissionChecker
 import com.github.ghmxr.ftpshare.Constants
 import com.github.ghmxr.ftpshare.R
 import com.github.ghmxr.ftpshare.data.ClientBean
 import com.github.ghmxr.ftpshare.ftpclient.FtpClientManager
+import com.google.android.material.snackbar.Snackbar
 
 abstract class ClientInfoActivity : BaseActivity() {
 
@@ -121,7 +121,7 @@ abstract class ClientInfoActivity : BaseActivity() {
                 refreshAllViews()
             }
             dialog.show()*/
-            if(checkAndRequestWritingPermission()){
+            if (checkAndRequestWritingPermission()) {
                 return@setOnClickListener
             }
             Intent(this, FolderSelectorActivity::class.java).apply {
@@ -186,10 +186,10 @@ abstract class ClientInfoActivity : BaseActivity() {
 
     }
 
-    private fun checkAndRequestWritingPermission():Boolean{
-        var b=false
+    private fun checkAndRequestWritingPermission(): Boolean {
+        var b = false
         if (PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED && Build.VERSION.SDK_INT >= 23) {
-            b=true
+            b = true
             //requestPermissions(Array(1){Manifest.permission.WRITE_EXTERNAL_STORAGE},0)
             val snackbar: Snackbar = Snackbar.make(findViewById<View>(android.R.id.content), getResources().getString(R.string.permission_write_external), Snackbar.LENGTH_SHORT)
             snackbar.setAction(getResources().getString(R.string.snackbar_action_goto), View.OnClickListener {

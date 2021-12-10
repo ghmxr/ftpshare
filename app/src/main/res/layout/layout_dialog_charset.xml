@@ -1,31 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="start">
+    android:gravity="start"
+    android:orientation="vertical">
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textColor="@color/color_text_att"
-        android:text="@string/item_charset_att"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
         android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"/>
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/item_charset_att"
+        android:textColor="@color/color_text_att"
+        android:textSize="14sp" />
+
     <RadioButton
+        android:id="@+id/charset_selection_utf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:layout_marginLeft="15dp"
-        android:id="@+id/charset_selection_utf"
-        android:text="@string/item_charset_utf"/>
+        android:text="@string/item_charset_utf" />
+
     <RadioButton
+        android:id="@+id/charset_selection_gbk"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
         android:layout_marginLeft="15dp"
-        android:id="@+id/charset_selection_gbk"
-        android:text="@string/item_charset_gbk"/>
+        android:layout_marginBottom="30dp"
+        android:text="@string/item_charset_gbk" />
 </LinearLayout>

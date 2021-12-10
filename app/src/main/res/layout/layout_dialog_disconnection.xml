@@ -1,55 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
     <RadioButton
+        android:id="@+id/dialog_disconnection_none"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/dialog_disconnection_none"
         android:layout_margin="10dp"
         android:text="@string/word_none" />
+
     <RadioButton
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/dialog_disconnection_wifi"
-        android:layout_margin="10dp"
-        android:text="@string/setting_disconnect_wifi_disconnected"/>
-    <RadioButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/dialog_disconnection_ap"
         android:layout_margin="10dp"
-        android:text="@string/setting_disconnect_ap_disconnected"/>
+        android:text="@string/setting_disconnect_wifi_disconnected" />
+
+    <RadioButton
+        android:id="@+id/dialog_disconnection_ap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="@string/setting_disconnect_ap_disconnected" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_margin="10dp"
         android:gravity="center_vertical"
-        android:layout_margin="10dp">
+        android:orientation="horizontal">
+
         <RadioButton
+            android:id="@+id/dialog_disconnect_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:id="@+id/dialog_disconnect_time"
-            android:text="@string/setting_disconnect_time"/>
+            android:text="@string/setting_disconnect_time" />
+
         <EditText
+            android:id="@+id/dialog_disconnect_time_edit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:digits="0123456789"
             android:hint="@string/hint_disconnect_time"
             android:inputType="number"
-            android:digits="0123456789"
             android:maxLength="9"
-            android:singleLine="true"
-            android:id="@+id/dialog_disconnect_time_edit"/>
+            android:singleLine="true" />
+
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/word_second"/>
+            android:text="@string/word_second" />
     </LinearLayout>
 </LinearLayout>

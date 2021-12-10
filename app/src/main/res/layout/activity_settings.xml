@@ -3,35 +3,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <RelativeLayout
             android:id="@+id/setting_auto_start"
             android:layout_width="match_parent"
             android:layout_height="65dp"
+            android:background="?attr/selectableItemBackground"
             android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground">
+            android:focusable="true">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:orientation="vertical"
-                android:layout_marginLeft="15dp">
+                android:layout_marginLeft="15dp"
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
+                    android:text="@string/setting_auto_start"
                     android:textColor="@color/color_text_dark"
-                    android:text="@string/setting_auto_start"/>
+                    android:textSize="16sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/setting_auto_start_att"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp" />
             </LinearLayout>
+
             <CheckBox
                 android:id="@+id/setting_auto_start_cb"
                 android:layout_width="wrap_content"
@@ -40,124 +46,142 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
                 android:clickable="false"
-                android:focusable="false"/>
+                android:focusable="false" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_alignParentBottom="true"
-                android:background="@color/color_dividing_line"/>
+                android:background="@color/color_dividing_line" />
         </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/setting_disconnect"
             android:layout_width="match_parent"
             android:layout_height="65dp"
+            android:background="?attr/selectableItemBackground"
             android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground">
+            android:focusable="true">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:orientation="vertical"
-                android:layout_marginLeft="15dp">
+                android:layout_marginLeft="15dp"
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
+                    android:text="@string/setting_disconnect"
                     android:textColor="@color/color_text_dark"
-                    android:text="@string/setting_disconnect"/>
+                    android:textSize="16sp" />
+
                 <TextView
                     android:id="@+id/setting_disconnect_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="@string/setting_disconnect_wifi_disconnected"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp"
+                    tools:text="@string/setting_disconnect_wifi_disconnected" />
             </LinearLayout>
+
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="15dp"
-                android:src="@drawable/arrow_right"/>
+                android:src="@drawable/arrow_right" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_alignParentBottom="true"
-                android:background="@color/color_dividing_line"/>
+                android:background="@color/color_dividing_line" />
         </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/setting_night_mode"
             android:layout_width="match_parent"
             android:layout_height="65dp"
+            android:background="?attr/selectableItemBackground"
             android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground">
+            android:focusable="true">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:orientation="vertical"
-                android:layout_marginLeft="15dp">
+                android:layout_marginLeft="15dp"
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
+                    android:text="@string/setting_night_mode"
                     android:textColor="@color/color_text_dark"
-                    android:text="@string/setting_night_mode"/>
+                    android:textSize="16sp" />
+
                 <TextView
                     android:id="@+id/setting_night_mode_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="@string/setting_night_mode_auto"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp"
+                    tools:text="@string/setting_night_mode_auto" />
             </LinearLayout>
+
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="15dp"
-                android:src="@drawable/arrow_right"/>
+                android:src="@drawable/arrow_right" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_alignParentBottom="true"
-                android:background="@color/color_dividing_line"/>
+                android:background="@color/color_dividing_line" />
         </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/setting_language"
             android:layout_width="match_parent"
             android:layout_height="65dp"
+            android:background="?attr/selectableItemBackground"
             android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground">
+            android:focusable="true">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:orientation="vertical"
-                android:layout_marginLeft="15dp">
+                android:layout_marginLeft="15dp"
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
+                    android:text="@string/setting_language"
                     android:textColor="@color/color_text_dark"
-                    android:text="@string/setting_language"/>
+                    android:textSize="16sp" />
+
                 <TextView
                     android:id="@+id/setting_language_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="@string/setting_language_follow_system"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp"
+                    tools:text="@string/setting_language_follow_system" />
             </LinearLayout>
+
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="15dp"
-                android:src="@drawable/arrow_right"/>
+                android:src="@drawable/arrow_right" />
         </RelativeLayout>
     </LinearLayout>
 </ScrollView>

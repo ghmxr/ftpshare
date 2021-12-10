@@ -10,14 +10,15 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import com.github.ghmxr.ftpshare.Constants;
 import com.github.ghmxr.ftpshare.R;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -239,7 +240,7 @@ public class CommonUtils {
 
     public static boolean isALegalFileName(@NonNull String name) {
         try {
-            if(name.trim().isEmpty())return false;
+            if (name.trim().isEmpty()) return false;
             if (name.contains("?") || name.contains("\\") || name.contains("/") || name.contains(":") || name.contains("*") || name.contains("\"")
                     || name.contains("<") || name.contains(">") || name.contains("|")) return false;
         } catch (Exception e) {

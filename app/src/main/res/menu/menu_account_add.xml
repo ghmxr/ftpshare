@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_account_add_save"
-        android:title="@string/action_account_save"
         android:icon="@drawable/icon_save"
-        app:showAsAction="ifRoom"
-        android:orderInCategory="0"/>
+        android:orderInCategory="0"
+        android:title="@string/action_account_save"
+        app:showAsAction="ifRoom" />
 </menu>

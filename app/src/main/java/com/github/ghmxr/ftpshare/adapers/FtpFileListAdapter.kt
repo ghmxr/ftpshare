@@ -1,7 +1,6 @@
 package com.github.ghmxr.ftpshare.adapers
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
 import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,7 @@ import com.github.ghmxr.ftpshare.R
 import com.github.ghmxr.ftpshare.utils.CommonUtils
 import org.apache.commons.net.ftp.FTPFile
 
-class FtpFileListAdapter(val context: Context, list: Array<FTPFile>?, private val c: AdapterCallback?) : RecyclerView.Adapter<ViewHolderFtpFile>() {
+class FtpFileListAdapter(val context: Context, list: Array<FTPFile>?, private val c: AdapterCallback?) : androidx.recyclerview.widget.RecyclerView.Adapter<ViewHolderFtpFile>() {
     private val dataList: ArrayList<FTPFile> = ArrayList()
 
     interface AdapterCallback {
@@ -75,7 +74,7 @@ class FtpFileListAdapter(val context: Context, list: Array<FTPFile>?, private va
 
     }
 
-    fun setSelectedState(b:Boolean){
+    fun setSelectedState(b: Boolean) {
         selected?.fill(b)
         notifyDataSetChanged()
     }
@@ -155,7 +154,7 @@ class FtpFileListAdapter(val context: Context, list: Array<FTPFile>?, private va
     }
 }
 
-class ViewHolderFtpFile(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class ViewHolderFtpFile(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
     val icon: ImageView = itemView.findViewById(R.id.item_ftp_file_icon)
     val tvName: TextView = itemView.findViewById(R.id.item_ftp_file_name)
     val tvDate: TextView = itemView.findViewById(R.id.item_ftp_file_info)

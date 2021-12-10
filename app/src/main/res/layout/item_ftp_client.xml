@@ -89,6 +89,6 @@
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_alignParentBottom="true"
-        android:background="#dddddd"
-        android:layout_marginLeft="20dp"/>
+        android:layout_marginLeft="20dp"
+        android:background="#dddddd" />
 </RelativeLayout>

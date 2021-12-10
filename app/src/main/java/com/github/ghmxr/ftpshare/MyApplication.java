@@ -4,8 +4,9 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v7.app.AppCompatDelegate;
 import android.view.ViewConfiguration;
+
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.github.ghmxr.ftpshare.utils.CommonUtils;
 import com.github.ghmxr.ftpshare.utils.NetworkStatusMonitor;
@@ -14,8 +15,12 @@ import java.lang.reflect.Field;
 
 public class MyApplication extends Application {
 
-    private static MyApplication myApplication;
     public static final Handler handler = new Handler(Looper.getMainLooper());
+    private static MyApplication myApplication;
+
+    public static Context getGlobalBaseContext() {
+        return myApplication.getApplicationContext();
+    }
 
     @Override
     public void onCreate() {
@@ -34,10 +39,5 @@ public class MyApplication extends Application {
         NetworkStatusMonitor.init(this);
         AppCompatDelegate.setDefaultNightMode(CommonUtils.getSettingSharedPreferences(this)
                 .getInt(Constants.PreferenceConsts.NIGHT_MODE, Constants.PreferenceConsts.NIGHT_MODE_DEFAULT));
-    }
-
-
-    public static Context getGlobalBaseContext() {
-        return myApplication.getApplicationContext();
     }
 }

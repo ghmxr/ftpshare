@@ -5,11 +5,11 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.support.v7.app.AlertDialog
 import android.view.*
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.AdapterView.OnItemSelectedListener
+import androidx.appcompat.app.AlertDialog
 import com.github.ghmxr.ftpshare.R
 import com.github.ghmxr.ftpshare.utils.CommonUtils
 import com.github.ghmxr.ftpshare.utils.StorageUtil

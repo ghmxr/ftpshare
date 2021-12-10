@@ -1,9 +1,6 @@
 package com.github.ghmxr.ftpshare.ui;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatCheckBox;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +8,10 @@ import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatCheckBox;
 
 import com.github.ghmxr.ftpshare.R;
 
@@ -49,7 +50,7 @@ public class ProgressDialog extends AlertDialog {
         progressBar.setIndeterminate(true);
     }
 
-    public void setProgressIndeterminate(boolean b){
+    public void setProgressIndeterminate(boolean b) {
         progressBar.setIndeterminate(b);
     }
 
