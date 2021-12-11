@@ -9,6 +9,7 @@
     <string name="item_main">启用FTP服务</string>
     <string name="item_port">端口号</string>
     <string name="item_port_hint">输入端口号</string>
+    <string name="item_max_num_hint">输入数值</string>
     <string name="item_charset">编码方式</string>
     <string name="item_anonymous_num">最大匿名连接数</string>
     <string name="item_login_num">最大连接数</string>

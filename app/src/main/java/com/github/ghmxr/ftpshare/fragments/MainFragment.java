@@ -261,7 +261,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, FtpS
                     CommonUtils.showSnackBarOfFtpServiceIsRunning(getActivity());
                     return;
                 }
-                inlineMethod(R.string.item_anonymous_num, Constants.PreferenceConsts.MAX_ANONYMOUS_NUM);
+                inlineMethod(R.string.item_anonymous_num, Constants.PreferenceConsts.MAX_ANONYMOUS_NUM, R.string.item_anonymous_num);
             }
             break;
             case R.id.login_connect_num_area: {
@@ -269,14 +269,14 @@ public class MainFragment extends Fragment implements View.OnClickListener, FtpS
                     CommonUtils.showSnackBarOfFtpServiceIsRunning(getActivity());
                     return;
                 }
-                inlineMethod(R.string.item_login_num, Constants.PreferenceConsts.MAX_LOGIN_NUM);
+                inlineMethod(R.string.item_login_num, Constants.PreferenceConsts.MAX_LOGIN_NUM, R.string.item_login_num);
             }
             break;
         }
     }
 
-    private void inlineMethod(int var1, String var2) {
-        final AlertDialog dialog = createAndShowEditDialog();
+    private void inlineMethod(int var1, String var2, int var3) {
+        final AlertDialog dialog = createAndShowEditDialog(var3);
         dialog.setTitle(getResources().getString(var1));
         dialog.show();
         EditText editText = dialog.<EditText>findViewById(R.id.dialog_edittext);
@@ -304,15 +304,15 @@ public class MainFragment extends Fragment implements View.OnClickListener, FtpS
         });
     }
 
-    private AlertDialog createAndShowEditDialog() {
+    private AlertDialog createAndShowEditDialog(int titleRes) {
         View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.layout_with_edittext, null);
         final EditText edit = dialogView.findViewById(R.id.dialog_edittext);
         edit.setInputType(InputType.TYPE_CLASS_NUMBER);
         edit.setSingleLine(true);
-        edit.setHint(getResources().getString(R.string.item_port_hint));
+        edit.setHint(getResources().getString(R.string.item_max_num_hint));
         edit.setText(String.valueOf(settings.getInt(Constants.PreferenceConsts.PORT_NUMBER, Constants.PreferenceConsts.PORT_NUMBER_DEFAULT)));
         final AlertDialog dialog = new AlertDialog.Builder(getActivity())
-                .setTitle(getResources().getString(R.string.item_port))
+                .setTitle(getResources().getString(titleRes))
                 .setView(dialogView)
                 .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), null)
                 .setNegativeButton(getResources().getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {

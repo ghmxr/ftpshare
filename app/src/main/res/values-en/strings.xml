@@ -8,6 +8,7 @@
     <string name="item_main">Start FTP Service</string>
     <string name="item_port">Port</string>
     <string name="item_port_hint">type in port number</string>
+    <string name="item_max_num_hint">type in a value</string>
     <string name="item_charset">Charset</string>
     <string name="item_anonymous_num">maximum anonymous conn</string>
     <string name="item_login_num">maximum conn</string>
