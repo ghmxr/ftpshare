@@ -59,6 +59,9 @@ public class MainActivity extends BaseActivity implements FtpService.OnFTPServic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (mainActivity != null) {
+            mainActivity.finish();
+        }
         mainActivity = this;
         setContentView(R.layout.activity_main);
         FtpService.addOnFtpServiceStatusChangedListener(this);
