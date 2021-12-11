@@ -169,6 +169,7 @@
     <string name="word_upload">上传</string>
     <string name="word_select_all">全选</string>
     <string name="word_select_all_off">全不选</string>
+    <string name="word_stop">停止</string>
 
     <string name="about_content">
         这是一个基于Apache FtpServer框架开发的Android平台实现FTP文件共享的应用。\n\n

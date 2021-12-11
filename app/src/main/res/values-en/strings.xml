@@ -164,6 +164,7 @@
     <string name="word_upload">upload</string>
     <string name="word_select_all">select all</string>
     <string name="word_select_all_off">deselect all</string>
+    <string name="word_stop">stop</string>
 
     <string name="about_content">
         This is an application of FTP file sharing based on Android platform developed by Apache FTP server framework. \n\n

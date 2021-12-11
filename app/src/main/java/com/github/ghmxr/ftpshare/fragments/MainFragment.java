@@ -261,7 +261,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, FtpS
                     CommonUtils.showSnackBarOfFtpServiceIsRunning(getActivity());
                     return;
                 }
-                inlineMethod(R.string.item_anonymous_num, Constants.PreferenceConsts.MAX_ANONYMOUS_NUM, R.string.item_anonymous_num);
+                inlineMethod(Constants.PreferenceConsts.MAX_ANONYMOUS_NUM, R.string.item_anonymous_num);
             }
             break;
             case R.id.login_connect_num_area: {
@@ -269,15 +269,15 @@ public class MainFragment extends Fragment implements View.OnClickListener, FtpS
                     CommonUtils.showSnackBarOfFtpServiceIsRunning(getActivity());
                     return;
                 }
-                inlineMethod(R.string.item_login_num, Constants.PreferenceConsts.MAX_LOGIN_NUM, R.string.item_login_num);
+                inlineMethod(Constants.PreferenceConsts.MAX_LOGIN_NUM, R.string.item_login_num);
             }
             break;
         }
     }
 
-    private void inlineMethod(int var1, String var2, int var3) {
+    private void inlineMethod(String var2, int var3) {
         final AlertDialog dialog = createAndShowEditDialog(var3);
-        dialog.setTitle(getResources().getString(var1));
+        //dialog.setTitle(getResources().getString(var1));
         dialog.show();
         EditText editText = dialog.<EditText>findViewById(R.id.dialog_edittext);
         editText.setKeyListener(DigitsKeyListener.getInstance("1234567890"));

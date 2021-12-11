@@ -6,6 +6,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -55,6 +56,7 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
     public static final int MESSAGE_START_FTP_ERROR = -1;
     public static final int MESSAGE_WAKELOCK_ACQUIRE = 5;
     public static final int MESSAGE_WAKELOCK_RELEASE = 6;
+    public static final String ACTION_STOP_SERVICE = MyApplication.getGlobalBaseContext().getPackageName() + ":stop_ftp_service";
     private static final LinkedList<OnFTPServiceStatusChangedListener> listeners = new LinkedList<>();
     private static FtpServer server;//this static field is guarded by FtpService.class
     private static PowerManager.WakeLock wakeLock;
@@ -314,6 +316,20 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
     @Override
     public void onNetworkConnected(NetworkStatusMonitor.NetworkType networkType) {
     }
+    /*private final Runnable stopExecutor=new Runnable() {
+        @Override
+        public void run() {
+            if(countSeconds<=0){
+                stopSelf();
+            }else{
+                countSeconds--;
+                for(OnFTPServiceStatusChangedListener listener:listeners){
+                    listener.onRemainingSeconds(countSeconds);
+                }
+                countHandler.postDelayed(this,1000L);
+            }
+        }
+    };*/
 
     @Override
     public void onNetworkDisconnected(NetworkStatusMonitor.NetworkType networkType) {
@@ -337,20 +353,6 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
             break;
         }
     }
-    /*private final Runnable stopExecutor=new Runnable() {
-        @Override
-        public void run() {
-            if(countSeconds<=0){
-                stopSelf();
-            }else{
-                countSeconds--;
-                for(OnFTPServiceStatusChangedListener listener:listeners){
-                    listener.onRemainingSeconds(countSeconds);
-                }
-                countHandler.postDelayed(this,1000L);
-            }
-        }
-    };*/
 
     private void startFTPService(boolean isAnonymousMode, List<AccountItem> list) throws Exception {
         FtpServerFactory factory = new FtpServerFactory();
@@ -382,7 +384,7 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
         factory.addListener("default", lfactory.createListener());
         MyConnectionConfig connectionConfig = new MyConnectionConfig();
         connectionConfig.setAnonymousEnabled(isAnonymousMode);
-        connectionConfig.setMaxAnonymousLogins(settings.getInt(Constants.PreferenceConsts.MAX_ANONYMOUS_NUM, 10));
+        connectionConfig.setMaxAnonymousLogins(settings.getInt(Constants.PreferenceConsts.MAX_LOGIN_NUM, 10));
         connectionConfig.setMaxLogins(settings.getInt(Constants.PreferenceConsts.MAX_LOGIN_NUM, 10));
         factory.setConnectionConfig(connectionConfig);
 
@@ -409,6 +411,9 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
             builder.setSmallIcon(R.drawable.ic_ex_24dp);
             builder.setContentTitle(title);
             builder.setContentText(content);
+            Intent stopIntent = new Intent(this, StopServiceReceiver.class);
+            stopIntent.setAction(ACTION_STOP_SERVICE);
+            builder.addAction(R.drawable.ic_stop, getResources().getString(R.string.word_stop), PendingIntent.getBroadcast(this, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT));
             builder.setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
             startForeground(1, builder.build());
         } catch (Exception e) {
@@ -558,6 +563,15 @@ public class FtpService extends Service implements NetworkStatusMonitor.NetworkS
         void onRemainingSeconds(int seconds);
 
         void onFTPServiceDestroyed();
+    }
+
+    public static class StopServiceReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (ACTION_STOP_SERVICE.equalsIgnoreCase(intent.getAction())) {
+                stopService();
+            }
+        }
     }
 
     private static class MyConnectionConfig implements ConnectionConfig {

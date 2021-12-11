@@ -85,6 +85,11 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".services.FtpService$StopServiceReceiver">
+            <intent-filter>
+                <action android:name="${applicationId}:stop_ftp_service" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

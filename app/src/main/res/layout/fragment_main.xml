@@ -164,7 +164,8 @@
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:minHeight="70dp">
+            android:minHeight="70dp"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="wrap_content"
